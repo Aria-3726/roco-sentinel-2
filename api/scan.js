@@ -1,5 +1,5 @@
 // Vercel Serverless Function — /api/scan
-// 调用 Anthropic API + Web Search 搜索最新舆情
+// Tavily 搜索 + Anthropic Claude 分析
 
 const QUERIES = [
   '"Roco Kingdom World" latest 2026',
@@ -11,7 +11,8 @@ const QUERIES = [
 const SYS = `You are a bilingual gaming sentiment analyst for "Roco Kingdom: World" (洛克王国：世界).
 Return ONLY valid JSON. No backticks, markdown, or preamble.
 {"posts":[{"p":"x|reddit|youtube|tiktok|media|forum|threads","u":"name","t":"Chinese summary max 60 chars","d":"YYYY-MM-DD","s":"pos|neg|neu","l":"language","url":"full https URL"}],"issues":[{"title":"Chinese max 25 chars","sev":"critical|warning|watch","desc":"Chinese max 100 chars","plats":["names"],"tip":"Chinese max 50 chars"}]}
-Only include items with real complete https:// URLs. Deduplicate. Summarize in Chinese. 2-5 issues.`;
+Only include items with real complete https:// URLs from the search results provided. Deduplicate. Summarize in Chinese. 2-5 issues.
+Classify platform by URL: x.com→x, reddit.com→reddit, youtube.com→youtube, tiktok.com→tiktok, threads.net→threads, taptap→forum, everything else→media.`;
 
 export default async function handler(req, res) {
   // CORS
@@ -21,73 +22,69 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) return res.status(500).json({ error: 'ANTHROPIC_API_KEY not configured' });
+  const tavilyKey = process.env.TAVILY_API_KEY;
+  const anthropicKey = process.env.ANTHROPIC_API_KEY;
+  if (!tavilyKey) return res.status(500).json({ error: 'TAVILY_API_KEY not configured' });
+  if (!anthropicKey) return res.status(500).json({ error: 'ANTHROPIC_API_KEY not configured' });
 
   const logs = [];
 
   try {
-    // Step 1: Search via Anthropic API + web_search tool
+    // Step 1: Search via Tavily API
     const chunks = [];
     for (const q of QUERIES) {
       logs.push(`🔍 Searching: ${q}`);
       try {
-        const searchRes = await fetch('https://api.anthropic.com/v1/messages', {
+        const searchRes = await fetch('https://api.tavily.com/search', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': apiKey,
-            'anthropic-version': '2023-06-01',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            model: 'claude-sonnet-4-20250514',
-            max_tokens: 1024,
-            tools: [{ type: 'web_search_20250305', name: 'web_search' }],
-            messages: [{
-              role: 'user',
-              content: `Search for: ${q}\nReturn all results with full URLs, titles, dates, content summaries. Be thorough.`
-            }],
+            api_key: tavilyKey,
+            query: q,
+            search_depth: 'advanced',
+            max_results: 10,
+            include_raw_content: false,
           }),
         });
 
         if (!searchRes.ok) {
-          logs.push(`❌ Search failed: ${searchRes.status}`);
+          logs.push(`❌ Tavily search failed: ${searchRes.status}`);
           continue;
         }
 
         const data = await searchRes.json();
-        const txt = (data.content || [])
-          .map(c => c.type === 'text' ? c.text : '')
-          .filter(Boolean)
-          .join('\n');
+        const results = (data.results || []).map(r =>
+          `Title: ${r.title}\nURL: ${r.url}\nDate: ${r.published_date || 'unknown'}\nSnippet: ${r.content}`
+        ).join('\n---\n');
 
-        if (txt.length > 50) {
-          chunks.push(`[WebSearch: ${q}]\n${txt}`);
-          logs.push(`✅ Got ${(txt.length / 1000).toFixed(1)}KB`);
+        if (results.length > 50) {
+          chunks.push(`[Search: ${q}]\n${results}`);
+          logs.push(`✅ Got ${data.results.length} results`);
         } else {
           logs.push('⚠️ Too few results');
         }
       } catch (e) {
-        logs.push(`❌ Error: ${e.message}`);
+        logs.push(`❌ Tavily error: ${e.message}`);
       }
     }
 
     if (chunks.length === 0) {
+      logs.push('⚠️ No search results from any query');
       return res.status(200).json({ posts: [], issues: [], logs });
     }
 
-    // Step 2: Analyze with Claude
-    logs.push(`📦 Analyzing ${chunks.length} result sets...`);
+    // Step 2: Analyze with Claude (no web_search tool needed)
+    logs.push(`📦 Analyzing ${chunks.length} result sets with Claude...`);
     const analysisRes = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': apiKey,
+        'x-api-key': anthropicKey,
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
-        max_tokens: 1024,
+        max_tokens: 2048,
         system: SYS,
         messages: [{
           role: 'user',
@@ -97,7 +94,8 @@ export default async function handler(req, res) {
     });
 
     if (!analysisRes.ok) {
-      logs.push(`❌ Analysis failed: ${analysisRes.status}`);
+      const errText = await analysisRes.text().catch(() => '');
+      logs.push(`❌ Claude analysis failed: ${analysisRes.status} ${errText.slice(0, 200)}`);
       return res.status(200).json({ posts: [], issues: [], logs });
     }
 
