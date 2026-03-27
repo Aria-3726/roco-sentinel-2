@@ -108,10 +108,9 @@ export default async function handler(req, res) {
   const logs = [];
 
   try {
-    // Step 1: Tavily search
+    // Step 1: Tavily search (all queries in parallel)
     const chunks = [];
-    for (const q of QUERIES) {
-      logs.push(`🔍 Searching: ${q}`);
+    const searchPromises = QUERIES.map(async (q) => {
       try {
         const searchRes = await fetch('https://api.tavily.com/search', {
           method: 'POST',
@@ -119,44 +118,39 @@ export default async function handler(req, res) {
           body: JSON.stringify({
             api_key: tavilyKey,
             query: q,
-            search_depth: 'advanced',
-            max_results: 10,
-            include_raw_content: true,
+            search_depth: 'basic',
+            max_results: 8,
+            include_raw_content: false,
           }),
         });
-
-        if (!searchRes.ok) {
-          logs.push(`❌ Tavily failed: ${searchRes.status}`);
-          continue;
-        }
-
+        if (!searchRes.ok) return { q, error: searchRes.status };
         const data = await searchRes.json();
-        const results = (data.results || []).filter(r =>
-          r.url?.startsWith('https://') && /roco|洛克|kingdom/i.test((r.title || '') + ' ' + (r.content || ''))
-        );
-        logs.push(`✅ Got ${results.length} relevant results`);
-
-        const formatted = results.map(r => {
-          // Extract date hints from URL path (e.g., /2024/06/...)
-          const urlDateHint = r.url.match(/\/(\d{4})\/(\d{2})\//);
-          const dateInfo = urlDateHint
-            ? `URL-date-hint: ${urlDateHint[1]}-${urlDateHint[2]}`
-            : `Tavily-date: ${r.published_date || 'unknown (需从内容判断)'}`;
-          // Include beginning of raw content for better context
-          const rawExcerpt = r.raw_content ? r.raw_content.slice(0, 500) : '';
-          return [
-            `Title: ${r.title}`,
-            `URL: ${r.url}`,
-            `${dateInfo}`,
-            `Snippet: ${(r.content || '').slice(0, 300)}`,
-            rawExcerpt ? `RawContent: ${rawExcerpt}` : '',
-          ].filter(Boolean).join('\n');
-        }).join('\n---\n');
-
-        if (formatted.length > 50) chunks.push(formatted);
+        return { q, results: data.results || [] };
       } catch (e) {
-        logs.push(`❌ Tavily error: ${e.message}`);
+        return { q, error: e.message };
       }
+    });
+
+    const searchResults = await Promise.all(searchPromises);
+
+    for (const { q, results, error } of searchResults) {
+      logs.push(`🔍 ${q}`);
+      if (error) { logs.push(`❌ Tavily failed: ${error}`); continue; }
+
+      const filtered = results.filter(r =>
+        r.url?.startsWith('https://') && /roco|洛克|kingdom/i.test((r.title || '') + ' ' + (r.content || ''))
+      );
+      logs.push(`✅ ${filtered.length} relevant results`);
+
+      const formatted = filtered.map(r => {
+        const urlDateHint = r.url.match(/\/(\d{4})\/(\d{2})\//);
+        const dateInfo = urlDateHint
+          ? `URL-date-hint: ${urlDateHint[1]}-${urlDateHint[2]}`
+          : `Tavily-date: ${r.published_date || 'unknown'}`;
+        return `Title: ${r.title}\nURL: ${r.url}\n${dateInfo}\nSnippet: ${(r.content || '').slice(0, 300)}`;
+      }).join('\n---\n');
+
+      if (formatted.length > 50) chunks.push(formatted);
     }
 
     if (chunks.length === 0) {
