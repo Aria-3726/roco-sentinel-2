@@ -18,13 +18,34 @@ export default function App() {
   const [cd, setCd] = useState("");
   const ref = useRef(null);
 
-  // Load from localStorage
+  // Load from localStorage + clean bad data
   useEffect(() => {
     try {
       const saved = localStorage.getItem("roco-sentinel-data");
       if (saved) {
         const d = JSON.parse(saved);
-        if (d.posts?.length > 0) { setPosts(d.posts); setIssues(d.issues || SEED_ISSUES); setScanN(d.n || 0); }
+        if (d.posts?.length > 0) {
+          // Clean: fix language codes, remove bad dates, fix usernames
+          const langMap = { en:'英语', english:'英语', zh:'中文', chinese:'中文', ja:'日语', japanese:'日语', th:'泰语', thai:'泰语', vi:'越南语', id:'印尼语', ko:'韩语' };
+          const cleaned = d.posts.map(p => {
+            // Fix language
+            if (p.l && langMap[p.l.toLowerCase()]) p.l = langMap[p.l.toLowerCase()];
+            // Fix bad dates: future dates or "unknown"
+            if (p.d === 'unknown' || p.d === 'none' || p.d === 'null') p.d = '';
+            if (p.d) {
+              const dt = new Date(p.d);
+              if (isNaN(dt) || dt > new Date() || dt < new Date('2020-01-01')) p.d = '';
+            }
+            // Fix bad usernames
+            if (p.u === '未知频道' || p.u === '未知' || p.u === 'Unknown') p.u = p.p === 'youtube' ? 'YouTube' : p.p;
+            return p;
+          }).filter(p => p._new ? p.d : true); // Drop NEW scan posts without dates, keep seed posts
+          setPosts(cleaned);
+          setIssues(d.issues || SEED_ISSUES);
+          setScanN(d.n || 0);
+          // Save cleaned version back
+          localStorage.setItem("roco-sentinel-data", JSON.stringify({ posts: cleaned, issues: d.issues || SEED_ISSUES, n: d.n || 0 }));
+        }
       }
     } catch(e) { /* no saved data */ }
   }, []);
