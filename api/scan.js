@@ -16,7 +16,7 @@ const SYS = `你是"洛克王国：世界"(Roco Kingdom: World)的海外舆情�
 每条post: {"p":"平台","u":"来源名","t":"中文摘要","d":"YYYY-MM-DD","s":"pos|neg|neu","l":"语言","url":"链接"}
 
 ### 平台(p) — 严格按URL域名判断：
-x.com/twitter.com→"x", reddit.com→"reddit", youtube.com/youtu.be→"youtube", tiktok.com→"tiktok", instagram.com→"instagram", threads.net→"threads", taptap.io/resetera.com/gamefaqs.gamespot.com→"forum", 其他所有→"media"
+x.com/twitter.com→"x", reddit.com→"reddit", youtube.com/youtu.be→"youtube", tiktok.com→"tiktok", instagram.com→"instagram", facebook.com/fb.com→"facebook", threads.net→"threads", taptap.io/resetera.com/gamefaqs.gamespot.com→"forum", 其他所有→"media"
 
 ### 来源名(u) — 严格使用提供的Author-hint字段：
 - 每条搜索结果附带了"Author-hint"字段，这是从URL精确提取的作者名
@@ -56,6 +56,7 @@ function detectPlatform(url) {
   if (url.includes('youtube.com') || url.includes('youtu.be')) return 'youtube';
   if (url.includes('tiktok.com')) return 'tiktok';
   if (url.includes('instagram.com')) return 'instagram';
+  if (url.includes('facebook.com') || url.includes('fb.com') || url.includes('fb.watch')) return 'facebook';
   if (url.includes('threads.net')) return 'threads';
   if (url.includes('taptap.io') || url.includes('resetera.com') || url.includes('gamefaqs.')) return 'forum';
   return 'media';
@@ -120,6 +121,12 @@ function extractUsername(url, title) {
       const skip = new Set(['p', 'reel', 'reels', 'stories', 'explore', 'accounts']);
       return m && !skip.has(m[1]) ? '@' + m[1] : 'Instagram';
     }
+    // Facebook
+    if (u.hostname.includes('facebook.com') || u.hostname.includes('fb.com')) {
+      const m = u.pathname.match(/^\/([^/]+)/);
+      const skip = new Set(['watch', 'reel', 'groups', 'pages', 'events', 'marketplace', 'profile.php', 'share', 'sharer']);
+      return m && !skip.has(m[1]) ? m[1] : 'Facebook';
+    }
     // Media — use brand mapping or derive from hostname
     const host = u.hostname.replace('www.', '');
     if (BRANDS[host]) return BRANDS[host];
@@ -132,7 +139,7 @@ function extractUsername(url, title) {
 async function fetchYouTubeAuthor(url) {
   try {
     const res = await fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent(url)}&format=json`, {
-      signal: AbortSignal.timeout(3000),
+      signal: AbortSignal.timeout(2000),
     });
     if (!res.ok) return null;
     const data = await res.json();
@@ -198,7 +205,7 @@ export default async function handler(req, res) {
             search_depth: 'basic',
             max_results: 5,
             include_raw_content: false,
-            days: 7,
+            days: 14,
           }),
         });
         if (!searchRes.ok) return { q, error: searchRes.status };
@@ -326,17 +333,12 @@ export default async function handler(req, res) {
     // For posts without date, use today instead of dropping them
     posts.forEach(p => { if (!p.d) p.d = TODAY; });
 
-    // Resolve YouTube channel names via oEmbed (only if we have time budget)
-    const elapsed = Date.now() - startTime;
-    if (elapsed < 35000) {
-      const ytPosts = posts.filter(p => p.p === 'youtube' && (p.u === 'YouTube' || !p.u));
-      if (ytPosts.length > 0) {
-        const ytResults = await Promise.all(ytPosts.map(p => fetchYouTubeAuthor(p.url)));
-        ytPosts.forEach((p, i) => { if (ytResults[i]) p.u = ytResults[i]; });
-        logs.push(`🎬 YouTube oEmbed: resolved ${ytResults.filter(Boolean).length}/${ytPosts.length} channel names`);
-      }
-    } else {
-      logs.push(`⏱ 跳过YouTube oEmbed (已用${Math.round(elapsed/1000)}s)`);
+    // Resolve YouTube channel names via oEmbed (2s timeout per request, all parallel)
+    const ytPosts = posts.filter(p => p.p === 'youtube');
+    if (ytPosts.length > 0) {
+      const ytResults = await Promise.all(ytPosts.map(p => fetchYouTubeAuthor(p.url)));
+      ytPosts.forEach((p, i) => { if (ytResults[i]) p.u = ytResults[i]; });
+      logs.push(`🎬 YouTube oEmbed: resolved ${ytResults.filter(Boolean).length}/${ytPosts.length} channel names`);
     }
 
     logs.push(`🎉 DeepSeek: ${posts.length} posts, ${(parsed.issues || []).length} issues`);
@@ -411,7 +413,7 @@ function postProcess(p, metadataMap) {
   //    For YouTube, keep LLM name only if it looks specific; oEmbed resolves later
   //    For media, use brand mapping
   const extracted = extractUsername(p.url, p.t);
-  if (p.p === 'x' || p.p === 'reddit' || p.p === 'tiktok' || p.p === 'instagram') {
+  if (p.p === 'x' || p.p === 'reddit' || p.p === 'tiktok' || p.p === 'instagram' || p.p === 'facebook') {
     // URL parsing is deterministic and reliable for these platforms
     if (extracted && extracted !== 'Unknown') p.u = extracted;
   } else if (p.p === 'youtube') {

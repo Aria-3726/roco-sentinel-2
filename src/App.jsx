@@ -2,8 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
 import { SEED_POSTS, SEED_ISSUES } from "./data.js";
 
-const C = { pos:'#34d399', neg:'#f87171', neu:'#64748b', x:'#60a5fa', reddit:'#fbbf24', youtube:'#f87171', tiktok:'#f472b6', instagram:'#e879f9', media:'#a78bfa', forum:'#22d3ee', threads:'#22d3ee' };
-const PN = { x:'𝕏', reddit:'Reddit', youtube:'YouTube', tiktok:'TikTok', instagram:'Instagram', media:'媒体', forum:'论坛', threads:'Threads' };
+const C = { pos:'#34d399', neg:'#f87171', neu:'#64748b', x:'#60a5fa', reddit:'#fbbf24', youtube:'#f87171', tiktok:'#f472b6', instagram:'#e879f9', facebook:'#60a5fa', media:'#a78bfa', forum:'#22d3ee', threads:'#22d3ee' };
+const PN = { x:'𝕏', reddit:'Reddit', youtube:'YouTube', tiktok:'TikTok', instagram:'Instagram', facebook:'Facebook', media:'媒体', forum:'论坛', threads:'Threads' };
 const SN = { pos:'正面', neg:'负面', neu:'中性' };
 const bg='#0a0c10', sf='#12151c', bd='#252b3b', bdH='#3a4560', t1='#e4e8f1', t2='#8e99b3', t3='#5a6580';
 
@@ -34,6 +34,7 @@ export default function App() {
             if (url.includes('youtube.com') || url.includes('youtu.be')) return 'youtube';
             if (url.includes('tiktok.com')) return 'tiktok';
             if (url.includes('instagram.com')) return 'instagram';
+            if (url.includes('facebook.com') || url.includes('fb.com') || url.includes('fb.watch')) return 'facebook';
             if (url.includes('threads.net')) return 'threads';
             if (url.includes('taptap.io') || url.includes('resetera.com') || url.includes('gamefaqs.')) return 'forum';
             return 'media';
@@ -46,6 +47,7 @@ export default function App() {
               if (u.hostname.includes('x.com') || u.hostname.includes('twitter.com')) { const m = u.pathname.match(/\/([^/]+)/); return m && !['search','hashtag','explore','i','settings','home'].includes(m[1]) ? '@'+m[1] : null; }
               if (u.hostname.includes('tiktok.com')) { const m = u.pathname.match(/@([^/]+)/); return m ? '@'+m[1] : null; }
               if (u.hostname.includes('instagram.com')) { const m = u.pathname.match(/^\/([^/]+)/); return m && !['p','reel','reels','stories','explore','accounts'].includes(m[1]) ? '@'+m[1] : null; }
+              if (u.hostname.includes('facebook.com') || u.hostname.includes('fb.com')) { const m = u.pathname.match(/^\/([^/]+)/); return m && !['watch','reel','groups','pages','events','marketplace','profile.php','share','sharer'].includes(m[1]) ? m[1] : null; }
               return null;
             } catch { return null; }
           };
@@ -58,7 +60,7 @@ export default function App() {
             // Fix platform from URL
             if (p.url) p.p = detectPlat(p.url);
             // Fix username from URL for reliable platforms
-            if (p.url && (p.p === 'x' || p.p === 'reddit' || p.p === 'tiktok' || p.p === 'instagram')) {
+            if (p.url && (p.p === 'x' || p.p === 'reddit' || p.p === 'tiktok' || p.p === 'instagram' || p.p === 'facebook')) {
               const u = extractUser(p.url);
               if (u) p.u = u;
             }
