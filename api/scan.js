@@ -4,6 +4,7 @@
 const QUERIES = [
   '"Roco Kingdom World" OR "洛克王国世界" latest news reaction',
   '"Roco Kingdom World" site:reddit.com OR site:youtube.com OR site:x.com OR site:tiktok.com',
+  '"Roco Kingdom World" review OR controversy OR reaction',
 ];
 
 const TODAY = new Date().toISOString().slice(0, 10);
@@ -203,7 +204,7 @@ export default async function handler(req, res) {
             api_key: tavilyKey,
             query: q,
             search_depth: 'advanced',
-            max_results: 5,
+            max_results: 8,
             include_raw_content: false,
             days: 14,
           }),
@@ -266,7 +267,7 @@ export default async function handler(req, res) {
           urlDateHint ? `URL-date-hint: ${urlDateHint}` : null,
           authorHint && authorHint !== 'Unknown' ? `Author-hint: ${authorHint}` : null,
           langHint ? `Lang-hint: ${langHint}` : null,
-          `Snippet: ${(r.content || '').slice(0, 300)}`,
+          `Snippet: ${(r.content || '').slice(0, 600)}`,
         ].filter(Boolean).join('\n'));
 
         // Store metadata for post-processing cross-validation
@@ -291,11 +292,11 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: 'deepseek-chat',
-        max_tokens: 2000,
+        max_tokens: 4000,
         temperature: 0.1,
         messages: [
           { role: 'system', content: SYS },
-          { role: 'user', content: allFormatted.join('\n---\n').slice(0, 6000) },
+          { role: 'user', content: allFormatted.join('\n---\n').slice(0, 16000) },
         ],
       }),
     });
@@ -325,14 +326,11 @@ export default async function handler(req, res) {
 
     let posts = rawPosts.map(p => postProcess(p, metadataMap));
 
-    // Log how many have dates vs not
+    // Log date stats
     const withDate = posts.filter(p => p.d).length;
     const noDate = posts.filter(p => !p.d).length;
-    if (noDate > 0) logs.push(`⚠️ ${noDate} posts 无确切日期`);
     if (withDate > 0) logs.push(`✅ ${withDate} posts 有确切日期`);
-
-    // For posts without date, mark with ~TODAY to indicate approximate
-    posts.forEach(p => { if (!p.d) p.d = '~' + TODAY; });
+    if (noDate > 0) logs.push(`⚠️ ${noDate} posts 无确切日期`);
 
     // Resolve YouTube channel names via oEmbed (2s timeout per request, all parallel)
     const ytPosts = posts.filter(p => p.p === 'youtube');
@@ -472,7 +470,7 @@ function fallbackParse(formatted, logs, res) {
       p: detectPlatform(url),
       u: extractUsername(url, titleM?.[1]),
       t: (titleM?.[1] || '').slice(0, 60),
-      d: dateM?.[1] || ('~' + TODAY),
+      d: dateM?.[1] || '',
       s,
       l: lang,
       url,

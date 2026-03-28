@@ -132,11 +132,11 @@ export default function App() {
   const platMap = {}; posts.forEach(x => { platMap[x.p] = (platMap[x.p] || 0) + 1; });
   const platData = Object.entries(platMap).map(([k, v]) => ({ name: PN[k] || k, value: v, color: C[k] || "#64748b" })).sort((a, b) => b.value - a.value);
   const allPlats = ["all", ...Object.keys(platMap)];
-  const list = (filter === "all" ? posts : posts.filter(x => x.p === filter)).sort((a, b) => (b.d || "").replace('~','').localeCompare((a.d || "").replace('~','')));
+  const list = (filter === "all" ? posts : posts.filter(x => x.p === filter)).sort((a, b) => (b.d || "0").localeCompare(a.d || "0"));
 
   // Daily growth
   const dailyMap = {};
-  posts.forEach(x => { if (!x.d) return; const dd = x.d.replace('~',''); if (!dailyMap[dd]) dailyMap[dd] = { date: dd, total: 0, pos: 0, neg: 0, neu: 0 }; dailyMap[dd].total++; dailyMap[dd][x.s]++; });
+  posts.forEach(x => { if (!x.d) return; if (!dailyMap[x.d]) dailyMap[x.d] = { date: x.d, total: 0, pos: 0, neg: 0, neu: 0 }; dailyMap[x.d].total++; dailyMap[x.d][x.s]++; });
   const dailyData = Object.values(dailyMap).sort((a, b) => a.date.localeCompare(b.date)).map(d => ({ name: d.date.slice(5), ...d }));
 
   const Badge = ({ type, children }) => {
@@ -277,7 +277,7 @@ export default function App() {
                 <span style={{ fontSize:10, fontWeight:700, padding:"2px 5px", borderRadius:3, background:(C[f.p]||"#64748b")+"1e", color:C[f.p]||t2 }}>{PN[f.p]||f.p}</span>
                 <span style={{ fontSize:11.5, fontWeight:500, color:t2 }}>{f.u}</span>
                 {f._new && <span style={{ fontSize:9, fontWeight:700, color:"#60a5fa", background:"rgba(96,165,250,.1)", padding:"1px 5px", borderRadius:3 }}>NEW</span>}
-                <span style={{ fontSize:10, color:f.d?.startsWith('~')?'#fbbf24':t3, marginLeft:"auto" }}>{f.d?.startsWith('~') ? f.d.slice(1)+' (约)' : f.d}</span>
+                <span style={{ fontSize:10, color:f.d?t3:'#fbbf24', marginLeft:"auto" }}>{f.d || '日期未知'}</span>
               </div>
               <div style={{ fontSize:12.5, color:t1, lineHeight:1.5, marginBottom:5 }}>{f.t}</div>
               <div style={{ display:"flex", alignItems:"center", gap:5, flexWrap:"wrap" }}>
