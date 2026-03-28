@@ -2,9 +2,8 @@
 // Tavily 搜索 + DeepSeek 情感分析/中文摘要
 
 const QUERIES = [
-  '"Roco Kingdom World" site:reddit.com OR site:youtube.com OR site:tiktok.com OR site:x.com',
-  '"Roco Kingdom World" review OR reaction OR controversy',
-  '洛克王国世界 海外 reaction global release',
+  '"Roco Kingdom World" OR "洛克王国世界" latest news reaction',
+  '"Roco Kingdom World" site:reddit.com OR site:youtube.com OR site:x.com OR site:tiktok.com',
 ];
 
 const TODAY = new Date().toISOString().slice(0, 10);
@@ -260,7 +259,7 @@ export default async function handler(req, res) {
           urlDateHint ? `URL-date-hint: ${urlDateHint}` : null,
           authorHint && authorHint !== 'Unknown' ? `Author-hint: ${authorHint}` : null,
           langHint ? `Lang-hint: ${langHint}` : null,
-          `Snippet: ${(r.content || '').slice(0, 400)}`,
+          `Snippet: ${(r.content || '').slice(0, 300)}`,
         ].filter(Boolean).join('\n'));
 
         // Store metadata for post-processing cross-validation
@@ -285,11 +284,11 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: 'deepseek-chat',
-        max_tokens: 3000,
+        max_tokens: 2000,
         temperature: 0.1,
         messages: [
           { role: 'system', content: SYS },
-          { role: 'user', content: allFormatted.join('\n---\n').slice(0, 12000) },
+          { role: 'user', content: allFormatted.join('\n---\n').slice(0, 6000) },
         ],
       }),
     });
@@ -321,7 +320,7 @@ export default async function handler(req, res) {
 
     // Resolve YouTube channel names via oEmbed (only if we have time budget)
     const elapsed = Date.now() - startTime;
-    if (elapsed < 45000) {
+    if (elapsed < 35000) {
       const ytPosts = posts.filter(p => p.p === 'youtube' && (p.u === 'YouTube' || !p.u));
       if (ytPosts.length > 0) {
         const ytResults = await Promise.all(ytPosts.map(p => fetchYouTubeAuthor(p.url)));
