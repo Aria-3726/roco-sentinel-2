@@ -2,10 +2,9 @@
 // Tavily 搜索 + DeepSeek 情感分析/中文摘要
 
 const QUERIES = [
-  '"Roco Kingdom World" latest 2026',
-  '"Roco Kingdom World" controversy Pokemon copy',
-  '"Roco Kingdom World" global release reaction',
-  '洛克王国世界 overseas TikTok Reddit 2026',
+  '"Roco Kingdom World" 2026 site:reddit.com OR site:youtube.com OR site:tiktok.com',
+  '"Roco Kingdom World" review OR reaction OR controversy 2026',
+  '洛克王国世界 海外 reaction global release 2026',
 ];
 
 const TODAY = new Date().toISOString().slice(0, 10);
@@ -20,41 +19,35 @@ const SYS = `你是"洛克王国：世界"(Roco Kingdom: World)的海外舆情�
 ### 平台(p) — 严格按URL域名判断：
 x.com/twitter.com→"x", reddit.com→"reddit", youtube.com/youtu.be→"youtube", tiktok.com→"tiktok", threads.net→"threads", taptap.io/resetera.com/gamefaqs.gamespot.com→"forum", 其他所有→"media"
 
-### 来源名(u) — 必须从内容/URL中提取真实名称：
-- X/Twitter: @用户名
+### 来源名(u) — 关键规则：
+- X/Twitter: 从URL提取@用户名
 - Reddit: r/子版块名
-- YouTube: 频道名（从标题或内容提取，不要写"YouTube"）
-- TikTok: @用户名
-- 媒体: 网站名称（如GamingOnPhone、South China Morning Post，不要写域名）
-- 如果是转载/聚合，写原始来源名
+- YouTube: 从标题中提取频道名（通常在 " - " 或 " | " 后面），如果无法提取就用标题前10个字
+- TikTok: 从URL提取@用户名
+- 媒体: 从URL的域名提取网站品牌名（gamingonphone.com→GamingOnPhone, scmp.com→SCMP）
+- 绝对不要输出"未知"、"Unknown"、"未知频道"这类占位符
 
-### 日期(d) — 这是最重要的字段，必须准确：
-- 从文章内容、URL路径中的日期、明确提到的发布时间来判断
-- 如果内容提到"June 2024 batch"或类似历史事件，日期应为2024年，不是今天
-- 如果内容讨论的是过去事件的回顾/存档页面，用原始事件日期
-- 绝对不要把搜索抓取时间当作发布日期
-- 如果实在无法判断准确日期，写"unknown"而不是猜测
+### 日期(d) — 严格使用提供的Verified-date字段：
+- 每条搜索结果都附带了"Verified-date"字段，这是从Tavily API获取的发布日期
+- 直接使用Verified-date的值，不要自己推测日期
+- 如果Verified-date是"none"，再从URL-date-hint或文章内容中判断
+- 如果仍然无法确定，写"unknown"
 
-### 情绪(s) — 基于内容实际态度判断：
-- pos: 明确表达喜爱、期待、推荐、赞美
-- neg: 明确表达批评、不满、担忧、反对（如抄袭指控、P2W吐槽、锁区不满）
-- neu: 纯新闻报道、信息转发、中立讨论、无明显倾向
+### 情绪(s) — 基于内容实际态度：
+- pos: 明确正面（喜爱/期待/推荐/赞美）
+- neg: 明确负面（批评/不满/抄袭指控/P2W吐槽/锁区不满）
+- neu: 中性（纯新闻/信息转发/无明显倾向）
 
-### 语言(l) — 根据原文实际语言：
-英语/中文/日语/泰语/越南语/印尼语/韩语。如果是英文媒体报道中国游戏，语言是"英语"不是"中文"。
+### 语言(l) — 必须用中文标签：
+英语/中文/日语/泰语/越南语/印尼语/韩语
 
-### 摘要(t) — 60字以内中文：
-概括核心信息，不要复述标题，要体现该条目的独特价值。
+### 摘要(t) — 60字以内中文，概括核心信息。
 
-## issues 字段规范
+## issues 字段
 2-5个核心议题: {"title":"中文≤25字","sev":"critical|warning|watch","desc":"中文≤100字","plats":["平台名"],"tip":"中文建议≤50字"}
-- critical: 需要立即响应的危机
-- warning: 需要关注的趋势
-- watch: 背景性风险
 
-## 过滤规则
-- 只收录有完整https://链接的条目
-- URL去重
+## 过滤
+- 只收录有完整https://链接的条目，URL去重
 - 过滤掉与洛克王国无关的结果`;
 
 function detectPlatform(url) {
@@ -71,26 +64,44 @@ function detectPlatform(url) {
 function extractUsername(url, title) {
   try {
     const u = new URL(url);
+    // Reddit
     if (u.hostname.includes('reddit.com')) {
       const m = u.pathname.match(/\/r\/([^/]+)/);
       return m ? 'r/' + m[1] : 'Reddit';
     }
+    // X/Twitter
     if (u.hostname.includes('x.com') || u.hostname.includes('twitter.com')) {
       const m = u.pathname.match(/\/([^/]+)/);
-      return m ? '@' + m[1] : 'X';
+      return m && m[1] !== 'search' && m[1] !== 'hashtag' ? '@' + m[1] : 'X';
     }
-    if (u.hostname.includes('youtube.com')) return title?.split(/[-–|]/).pop()?.trim()?.slice(0, 20) || 'YouTube';
+    // YouTube - try to extract channel from title pattern "Video Title - Channel Name"
+    if (u.hostname.includes('youtube.com') || u.hostname.includes('youtu.be')) {
+      if (title) {
+        const parts = title.split(/\s[-–|]\s/);
+        if (parts.length > 1) return parts[parts.length - 1].trim().slice(0, 25);
+        return title.slice(0, 20);
+      }
+      return 'YouTube';
+    }
+    // TikTok
     if (u.hostname.includes('tiktok.com')) {
       const m = u.pathname.match(/@([^/]+)/);
       return m ? '@' + m[1] : 'TikTok';
     }
-    return u.hostname.replace('www.', '').split('.')[0];
+    // Media - extract brand name from hostname
+    const host = u.hostname.replace('www.', '');
+    // Known brand mappings
+    const brands = {
+      'scmp.com': 'SCMP', 'yahoo.com': 'Yahoo', 'finance.yahoo.com': 'Yahoo Finance',
+      'gamingonphone.com': 'GamingOnPhone', 'gamerbraves.com': 'GamerBraves',
+      'gamefaqs.gamespot.com': 'GameFAQs', 'enduins.com': 'Enduins',
+      'pocketgamer.com': 'PocketGamer', 'toucharcade.com': 'TouchArcade',
+    };
+    if (brands[host]) return brands[host];
+    // Fallback: capitalize first part of hostname
+    const name = host.split('.')[0];
+    return name.charAt(0).toUpperCase() + name.slice(1);
   } catch { return 'Unknown'; }
-}
-
-function truncate(str, max) {
-  if (!str) return '';
-  return str.length > max ? str.slice(0, max - 1) + '…' : str;
 }
 
 export default async function handler(req, res) {
@@ -108,8 +119,7 @@ export default async function handler(req, res) {
   const logs = [];
 
   try {
-    // Step 1: Tavily search (all queries in parallel)
-    const chunks = [];
+    // Step 1: Tavily search (all queries in parallel, advanced for better metadata)
     const searchPromises = QUERIES.map(async (q) => {
       try {
         const searchRes = await fetch('https://api.tavily.com/search', {
@@ -118,8 +128,8 @@ export default async function handler(req, res) {
           body: JSON.stringify({
             api_key: tavilyKey,
             query: q,
-            search_depth: 'basic',
-            max_results: 8,
+            search_depth: 'advanced',
+            max_results: 5,
             include_raw_content: false,
           }),
         });
@@ -133,33 +143,58 @@ export default async function handler(req, res) {
 
     const searchResults = await Promise.all(searchPromises);
 
+    // Deduplicate across all queries
+    const seenUrls = new Set();
+    const allFormatted = [];
+
     for (const { q, results, error } of searchResults) {
       logs.push(`🔍 ${q}`);
       if (error) { logs.push(`❌ Tavily failed: ${error}`); continue; }
 
-      const filtered = results.filter(r =>
-        r.url?.startsWith('https://') && /roco|洛克|kingdom/i.test((r.title || '') + ' ' + (r.content || ''))
+      const filtered = (results || []).filter(r =>
+        r.url?.startsWith('https://') &&
+        !seenUrls.has(r.url) &&
+        /roco|洛克|kingdom/i.test((r.title || '') + ' ' + (r.content || ''))
       );
+      filtered.forEach(r => seenUrls.add(r.url));
       logs.push(`✅ ${filtered.length} relevant results`);
 
-      const formatted = filtered.map(r => {
-        const urlDateHint = r.url.match(/\/(\d{4})\/(\d{2})\//);
-        const dateInfo = urlDateHint
-          ? `URL-date-hint: ${urlDateHint[1]}-${urlDateHint[2]}`
-          : `Tavily-date: ${r.published_date || 'unknown'}`;
-        return `Title: ${r.title}\nURL: ${r.url}\n${dateInfo}\nSnippet: ${(r.content || '').slice(0, 300)}`;
-      }).join('\n---\n');
+      for (const r of filtered) {
+        // Build verified date from multiple sources
+        const urlDateMatch = r.url.match(/\/(\d{4})\/(\d{2})\//);
+        const urlDateHint = urlDateMatch ? `${urlDateMatch[1]}-${urlDateMatch[2]}` : null;
+        const tavilyDate = r.published_date || null;
+        // Validate Tavily date (reject future dates)
+        let verifiedDate = 'none';
+        if (tavilyDate) {
+          const d = new Date(tavilyDate);
+          if (!isNaN(d) && d <= new Date() && d >= new Date('2020-01-01')) {
+            verifiedDate = d.toISOString().slice(0, 10);
+          }
+        }
+        if (verifiedDate === 'none' && urlDateHint) {
+          verifiedDate = urlDateHint + '-01'; // approximate
+        }
 
-      if (formatted.length > 50) chunks.push(formatted);
+        allFormatted.push([
+          `Title: ${r.title}`,
+          `URL: ${r.url}`,
+          `Verified-date: ${verifiedDate}`,
+          urlDateHint ? `URL-date-hint: ${urlDateHint}` : null,
+          `Snippet: ${(r.content || '').slice(0, 400)}`,
+        ].filter(Boolean).join('\n'));
+      }
     }
 
-    if (chunks.length === 0) {
+    if (allFormatted.length === 0) {
       logs.push('⚠️ No relevant search results');
       return res.status(200).json({ posts: [], issues: [], logs });
     }
 
+    logs.push(`📦 Total unique results: ${allFormatted.length}`);
+
     // Step 2: DeepSeek analysis
-    logs.push(`🧠 DeepSeek 分析 ${chunks.length} 组结果...`);
+    logs.push(`🧠 DeepSeek 分析中...`);
     const llmRes = await fetch('https://api.deepseek.com/chat/completions', {
       method: 'POST',
       headers: {
@@ -172,7 +207,7 @@ export default async function handler(req, res) {
         temperature: 0.1,
         messages: [
           { role: 'system', content: SYS },
-          { role: 'user', content: chunks.join('\n\n===\n\n').slice(0, 20000) },
+          { role: 'user', content: allFormatted.join('\n---\n').slice(0, 20000) },
         ],
       }),
     });
@@ -180,10 +215,8 @@ export default async function handler(req, res) {
     if (!llmRes.ok) {
       const errText = await llmRes.text().catch(() => '');
       logs.push(`❌ DeepSeek failed: ${llmRes.status} ${errText.slice(0, 200)}`);
-
-      // Fallback: return raw Tavily results with basic keyword sentiment
       logs.push('⚠️ Falling back to keyword analysis...');
-      return fallbackParse(chunks, logs, res);
+      return fallbackParse(allFormatted, logs, res);
     }
 
     const llmData = await llmRes.json();
@@ -196,12 +229,13 @@ export default async function handler(req, res) {
       parsed = JSON.parse(raw);
     } catch (e) {
       logs.push(`❌ JSON parse failed, falling back: ${e.message}`);
-      return fallbackParse(chunks, logs, res);
+      return fallbackParse(allFormatted, logs, res);
     }
 
     const posts = (parsed.posts || [])
       .filter(p => p.url?.startsWith('https://'))
-      .map(p => postProcess(p));
+      .map(p => postProcess(p))
+      .filter(p => p.d); // Drop posts without verified date
     logs.push(`🎉 DeepSeek: ${posts.length} posts, ${(parsed.issues || []).length} issues`);
 
     return res.status(200).json({
@@ -219,18 +253,16 @@ export default async function handler(req, res) {
 // Post-process: validate and fix LLM output
 function postProcess(p) {
   // 1. Date validation
-  if (p.d && p.d !== 'unknown') {
+  if (p.d && p.d !== 'unknown' && p.d !== 'none') {
     const date = new Date(p.d);
     const now = new Date();
     const minDate = new Date('2020-01-01');
-    // Future dates or impossibly old dates → mark unknown
     if (isNaN(date) || date > now || date < minDate) {
-      // Try to salvage: if year is wrong but month/day exist, check URL for hints
-      p.d = 'unknown';
+      p.d = '';
     }
+  } else {
+    p.d = '';
   }
-  // Normalize "unknown" display
-  if (!p.d || p.d === 'unknown' || p.d === 'null') p.d = '';
 
   // 2. Language normalization
   const langMap = {
@@ -247,12 +279,17 @@ function postProcess(p) {
     if (normalized) p.l = normalized;
   }
 
-  // 3. Platform validation (override LLM with URL-based detection)
+  // 3. Platform (always override with URL-based detection)
   if (p.url) p.p = detectPlatform(p.url);
 
-  // 4. Username cleanup
-  if (!p.u || p.u === 'Unknown' || p.u === 'unknown' || p.u === '未知' || p.u === '未知频道') {
-    p.u = extractUsername(p.url, p.t);
+  // 4. Username (always override with URL-based extraction for reliability)
+  const extracted = extractUsername(p.url, p.t);
+  if (extracted && extracted !== 'Unknown') {
+    // Keep LLM username only if it looks more specific than URL extraction
+    if (!p.u || p.u === 'Unknown' || p.u === 'unknown' || p.u === '未知' ||
+        p.u === '未知频道' || p.u === 'YouTube' || p.u === 'TikTok' || p.u === 'Reddit') {
+      p.u = extracted;
+    }
   }
 
   // 5. Sentiment validation
@@ -261,26 +298,24 @@ function postProcess(p) {
   return p;
 }
 
-// Fallback: basic keyword sentiment when LLM fails
-function fallbackParse(chunks, logs, res) {
+// Fallback: keyword sentiment when LLM fails
+function fallbackParse(formatted, logs, res) {
   const NEG = /controversy|copy|plagiar|stolen|sue|lawsuit|ban|disappoint|boring|scam|p2w|predatory|rip.off|terrible|awful|backlash|trash|flop|抄袭|骗|垃圾|差评|失望/i;
   const POS = /amazing|beautiful|love|incredible|awesome|excited|hype|best|stunning|gorgeous|fantastic|great|wonderful|promising|fun|enjoy|好玩|期待|惊艳|推荐|喜欢|治愈/i;
 
   const posts = [];
   const seenUrls = new Set();
-  const urlRegex = /URL:\s*(https:\/\/[^\s\n]+)/g;
-  const combined = chunks.join('\n');
 
-  // Extract entries from raw text blocks
-  const blocks = combined.split('---');
-  for (const block of blocks) {
+  for (const block of formatted) {
     const urlM = block.match(/URL:\s*(https:\/\/[^\s\n]+)/);
     const titleM = block.match(/Title:\s*([^\n]+)/);
-    const dateM = block.match(/(\d{4}-\d{2}-\d{2})/);
+    const dateM = block.match(/Verified-date:\s*(\d{4}-\d{2}-\d{2})/);
     if (!urlM) continue;
     const url = urlM[1];
     if (seenUrls.has(url)) continue;
     seenUrls.add(url);
+
+    if (!dateM) continue; // Skip undated posts in fallback too
 
     const text = (titleM?.[1] || '') + ' ' + block;
     const s = NEG.test(text) ? 'neg' : POS.test(text) ? 'pos' : 'neu';
@@ -288,8 +323,8 @@ function fallbackParse(chunks, logs, res) {
     posts.push({
       p: detectPlatform(url),
       u: extractUsername(url, titleM?.[1]),
-      t: truncate(titleM?.[1] || '', 60),
-      d: dateM?.[1] || new Date().toISOString().slice(0, 10),
+      t: (titleM?.[1] || '').slice(0, 60),
+      d: dateM[1],
       s,
       l: /[\u4e00-\u9fff]/.test(text) ? '中文' : /[\u3040-\u30ff]/.test(text) ? '日语' : /[\u0e00-\u0e7f]/.test(text) ? '泰语' : '英语',
       url,
