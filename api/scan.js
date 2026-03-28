@@ -5,6 +5,8 @@ const QUERIES = [
   '"Roco Kingdom World" 2026 site:reddit.com OR site:youtube.com OR site:tiktok.com',
   '"Roco Kingdom World" review OR reaction OR controversy 2026',
   '洛克王国世界 海外 reaction global release 2026',
+  '"Roco Kingdom World" site:x.com OR site:twitter.com 2026',
+  '"Roco Kingdom" OR "洛克王国世界" site:threads.net OR site:taptap.io 2026',
 ];
 
 const TODAY = new Date().toISOString().slice(0, 10);
@@ -19,27 +21,27 @@ const SYS = `你是"洛克王国：世界"(Roco Kingdom: World)的海外舆情�
 ### 平台(p) — 严格按URL域名判断：
 x.com/twitter.com→"x", reddit.com→"reddit", youtube.com/youtu.be→"youtube", tiktok.com→"tiktok", threads.net→"threads", taptap.io/resetera.com/gamefaqs.gamespot.com→"forum", 其他所有→"media"
 
-### 来源名(u) — 关键规则：
-- X/Twitter: 从URL提取@用户名
-- Reddit: r/子版块名
-- YouTube: 从标题中提取频道名（通常在 " - " 或 " | " 后面），如果无法提取就用标题前10个字
-- TikTok: 从URL提取@用户名
-- 媒体: 从URL的域名提取网站品牌名（gamingonphone.com→GamingOnPhone, scmp.com→SCMP）
+### 来源名(u) — 严格使用提供的Author-hint字段：
+- 每条搜索结果附带了"Author-hint"字段，这是从URL精确提取的作者名
+- 直接使用Author-hint的值作为u字段
+- 如果没有Author-hint，再从标题或内容推断
 - 绝对不要输出"未知"、"Unknown"、"未知频道"这类占位符
 
 ### 日期(d) — 严格使用提供的Verified-date字段：
-- 每条搜索结果都附带了"Verified-date"字段，这是从Tavily API获取的发布日期
-- 直接使用Verified-date的值，不要自己推测日期
-- 如果Verified-date是"none"，再从URL-date-hint或文章内容中判断
-- 如果仍然无法确定，写"unknown"
+- 每条搜索结果都附带了"Verified-date"字段，这是从API和URL提取的验证日期
+- 必须直接使用Verified-date的值，不要自己推测或编造日期
+- 如果Verified-date是"none"，再从URL-date-hint或文章内容中提取明确日期
+- 如果仍然无法确定，写"unknown"，不要猜测
+
+### 语言(l) — 优先使用Lang-hint字段：
+- 如果搜索结果提供了"Lang-hint"字段，直接使用该值
+- 否则根据文章实际语言判断
+- 必须用中文标签：英语/中文/日语/泰语/越南语/印尼语/韩语
 
 ### 情绪(s) — 基于内容实际态度：
 - pos: 明确正面（喜爱/期待/推荐/赞美）
 - neg: 明确负面（批评/不满/抄袭指控/P2W吐槽/锁区不满）
 - neu: 中性（纯新闻/信息转发/无明显倾向）
-
-### 语言(l) — 必须用中文标签：
-英语/中文/日语/泰语/越南语/印尼语/韩语
 
 ### 摘要(t) — 60字以内中文，概括核心信息。
 
@@ -61,6 +63,32 @@ function detectPlatform(url) {
   return 'media';
 }
 
+// Known media brand mappings (hostname → display name)
+const BRANDS = {
+  'scmp.com': 'SCMP', 'yahoo.com': 'Yahoo', 'finance.yahoo.com': 'Yahoo Finance',
+  'gamingonphone.com': 'GamingOnPhone', 'gamerbraves.com': 'GamerBraves',
+  'gamefaqs.gamespot.com': 'GameFAQs', 'enduins.com': 'Enduins',
+  'pocketgamer.com': 'PocketGamer', 'toucharcade.com': 'TouchArcade',
+  'gamemonday.com': 'GameMonday', 'game-ded.com': 'Game-Ded',
+  'gachagame.net': 'GachaGame', 'harmonyoshub.com': 'HarmonyOSHub',
+  'seagm.com': 'SEAGM', 'daikama.com': 'Daikama', 'awnchina.cn': 'AWNChina',
+  'kotaku.com': 'Kotaku', 'ign.com': 'IGN', 'gamerant.com': 'GameRant',
+  'dualshockers.com': 'DualShockers', 'siliconera.com': 'Siliconera',
+  'mmorpg.com': 'MMORPG', 'massivelyop.com': 'MassivelyOP',
+  'mmobomb.com': 'MMOBomb', 'mein-mmo.de': 'Mein-MMO',
+  'resetera.com': 'ResetEra', 'nme.com': 'NME',
+  'theloadout.com': 'TheLoadout', 'pcinvasion.com': 'PCInvasion',
+};
+
+// Domain → language hint for post-processing validation
+const DOMAIN_LANG = {
+  'gamemonday.com': '泰语', 'game-ded.com': '泰语', 'sanook.com': '泰语',
+  'gachagame.net': '越南语', 'vietgame.asia': '越南语',
+  'duniagames.co.id': '印尼语', 'gamebrott.com': '印尼语',
+  'awnchina.cn': '中文', 'gamersky.com': '中文', '3dmgame.com': '中文',
+  'famitsu.com': '日语', '4gamer.net': '日语', 'automaton-media.com': '日语',
+};
+
 function extractUsername(url, title) {
   try {
     const u = new URL(url);
@@ -69,17 +97,17 @@ function extractUsername(url, title) {
       const m = u.pathname.match(/\/r\/([^/]+)/);
       return m ? 'r/' + m[1] : 'Reddit';
     }
-    // X/Twitter
+    // X/Twitter — also filter out common non-user paths
     if (u.hostname.includes('x.com') || u.hostname.includes('twitter.com')) {
       const m = u.pathname.match(/\/([^/]+)/);
-      return m && m[1] !== 'search' && m[1] !== 'hashtag' ? '@' + m[1] : 'X';
+      const skip = new Set(['search', 'hashtag', 'explore', 'i', 'settings', 'home']);
+      return m && !skip.has(m[1]) ? '@' + m[1] : 'X';
     }
-    // YouTube - try to extract channel from title pattern "Video Title - Channel Name"
+    // YouTube — title-based extraction (oEmbed called separately for better results)
     if (u.hostname.includes('youtube.com') || u.hostname.includes('youtu.be')) {
       if (title) {
-        const parts = title.split(/\s[-–|]\s/);
+        const parts = title.split(/\s[-–—|]\s/);
         if (parts.length > 1) return parts[parts.length - 1].trim().slice(0, 25);
-        return title.slice(0, 20);
       }
       return 'YouTube';
     }
@@ -88,20 +116,54 @@ function extractUsername(url, title) {
       const m = u.pathname.match(/@([^/]+)/);
       return m ? '@' + m[1] : 'TikTok';
     }
-    // Media - extract brand name from hostname
+    // Media — use brand mapping or derive from hostname
     const host = u.hostname.replace('www.', '');
-    // Known brand mappings
-    const brands = {
-      'scmp.com': 'SCMP', 'yahoo.com': 'Yahoo', 'finance.yahoo.com': 'Yahoo Finance',
-      'gamingonphone.com': 'GamingOnPhone', 'gamerbraves.com': 'GamerBraves',
-      'gamefaqs.gamespot.com': 'GameFAQs', 'enduins.com': 'Enduins',
-      'pocketgamer.com': 'PocketGamer', 'toucharcade.com': 'TouchArcade',
-    };
-    if (brands[host]) return brands[host];
-    // Fallback: capitalize first part of hostname
+    if (BRANDS[host]) return BRANDS[host];
     const name = host.split('.')[0];
     return name.charAt(0).toUpperCase() + name.slice(1);
   } catch { return 'Unknown'; }
+}
+
+// Fetch real YouTube channel name via free oEmbed API
+async function fetchYouTubeAuthor(url) {
+  try {
+    const res = await fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent(url)}&format=json`, {
+      signal: AbortSignal.timeout(3000),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.author_name || null;
+  } catch { return null; }
+}
+
+// Extract date from URL with multiple patterns
+function extractUrlDate(url) {
+  // Pattern: /2026/03/ or /2026/03/24/
+  let m = url.match(/\/(\d{4})\/(\d{2})(?:\/(\d{2}))?/);
+  if (m) return m[3] ? `${m[1]}-${m[2]}-${m[3]}` : `${m[1]}-${m[2]}-01`;
+  // Pattern: /2026-03-24/ or -2026-03-24
+  m = url.match(/[/-](\d{4}-\d{2}-\d{2})[/-]/);
+  if (m) return m[1];
+  // Pattern: /20260324/ (compact date in path)
+  m = url.match(/\/(\d{4})(\d{2})(\d{2})\//);
+  if (m) return `${m[1]}-${m[2]}-${m[3]}`;
+  return null;
+}
+
+// Detect language from domain hostname
+function detectLangFromDomain(url) {
+  try {
+    const host = new URL(url).hostname.replace('www.', '');
+    if (DOMAIN_LANG[host]) return DOMAIN_LANG[host];
+    // TLD-based hints
+    if (host.endsWith('.th')) return '泰语';
+    if (host.endsWith('.vn')) return '越南语';
+    if (host.endsWith('.jp')) return '日语';
+    if (host.endsWith('.kr')) return '韩语';
+    if (host.endsWith('.id') || host.endsWith('.co.id')) return '印尼语';
+    if (host.endsWith('.cn')) return '中文';
+    return null;
+  } catch { return null; }
 }
 
 export default async function handler(req, res) {
@@ -129,7 +191,7 @@ export default async function handler(req, res) {
             api_key: tavilyKey,
             query: q,
             search_depth: 'advanced',
-            max_results: 5,
+            max_results: 8,
             include_raw_content: false,
           }),
         });
@@ -146,6 +208,7 @@ export default async function handler(req, res) {
     // Deduplicate across all queries
     const seenUrls = new Set();
     const allFormatted = [];
+    const metadataMap = new Map(); // URL → { verifiedDate, urlDateHint, authorHint, langHint }
 
     for (const { q, results, error } of searchResults) {
       logs.push(`🔍 ${q}`);
@@ -161,10 +224,9 @@ export default async function handler(req, res) {
 
       for (const r of filtered) {
         // Build verified date from multiple sources
-        const urlDateMatch = r.url.match(/\/(\d{4})\/(\d{2})\//);
-        const urlDateHint = urlDateMatch ? `${urlDateMatch[1]}-${urlDateMatch[2]}` : null;
+        const urlDateHint = extractUrlDate(r.url);
         const tavilyDate = r.published_date || null;
-        // Validate Tavily date (reject future dates)
+        // Validate Tavily date (reject future dates and ancient dates)
         let verifiedDate = 'none';
         if (tavilyDate) {
           const d = new Date(tavilyDate);
@@ -173,16 +235,29 @@ export default async function handler(req, res) {
           }
         }
         if (verifiedDate === 'none' && urlDateHint) {
-          verifiedDate = urlDateHint + '-01'; // approximate
+          const d = new Date(urlDateHint);
+          if (!isNaN(d) && d <= new Date() && d >= new Date('2020-01-01')) {
+            verifiedDate = urlDateHint;
+          }
         }
+
+        // Detect language from domain as a hint
+        const langHint = detectLangFromDomain(r.url);
+        // Pre-extract username from URL
+        const authorHint = extractUsername(r.url, r.title);
 
         allFormatted.push([
           `Title: ${r.title}`,
           `URL: ${r.url}`,
           `Verified-date: ${verifiedDate}`,
           urlDateHint ? `URL-date-hint: ${urlDateHint}` : null,
-          `Snippet: ${(r.content || '').slice(0, 400)}`,
+          authorHint && authorHint !== 'Unknown' ? `Author-hint: ${authorHint}` : null,
+          langHint ? `Lang-hint: ${langHint}` : null,
+          `Snippet: ${(r.content || '').slice(0, 800)}`,
         ].filter(Boolean).join('\n'));
+
+        // Store metadata for post-processing cross-validation
+        metadataMap.set(r.url, { verifiedDate, urlDateHint, authorHint, langHint });
       }
     }
 
@@ -232,10 +307,19 @@ export default async function handler(req, res) {
       return fallbackParse(allFormatted, logs, res);
     }
 
-    const posts = (parsed.posts || [])
+    let posts = (parsed.posts || [])
       .filter(p => p.url?.startsWith('https://'))
-      .map(p => postProcess(p))
+      .map(p => postProcess(p, metadataMap))
       .filter(p => p.d); // Drop posts without verified date
+
+    // Resolve YouTube channel names via oEmbed (parallel, with timeout)
+    const ytPosts = posts.filter(p => p.p === 'youtube' && (p.u === 'YouTube' || !p.u));
+    if (ytPosts.length > 0) {
+      const ytResults = await Promise.all(ytPosts.map(p => fetchYouTubeAuthor(p.url)));
+      ytPosts.forEach((p, i) => { if (ytResults[i]) p.u = ytResults[i]; });
+      logs.push(`🎬 YouTube oEmbed: resolved ${ytResults.filter(Boolean).length}/${ytPosts.length} channel names`);
+    }
+
     logs.push(`🎉 DeepSeek: ${posts.length} posts, ${(parsed.issues || []).length} issues`);
 
     return res.status(200).json({
@@ -250,21 +334,39 @@ export default async function handler(req, res) {
   }
 }
 
-// Post-process: validate and fix LLM output
-function postProcess(p) {
-  // 1. Date validation
-  if (p.d && p.d !== 'unknown' && p.d !== 'none') {
-    const date = new Date(p.d);
-    const now = new Date();
-    const minDate = new Date('2020-01-01');
-    if (isNaN(date) || date > now || date < minDate) {
-      p.d = '';
+// Post-process: validate and fix LLM output using metadata from Tavily
+function postProcess(p, metadataMap) {
+  const meta = metadataMap?.get(p.url) || {};
+
+  // 1. Date — cross-validate LLM date against Tavily verified date
+  const llmDate = (p.d && p.d !== 'unknown' && p.d !== 'none') ? p.d : '';
+  const tavilyDate = (meta.verifiedDate && meta.verifiedDate !== 'none') ? meta.verifiedDate : '';
+
+  if (tavilyDate) {
+    // Tavily/URL date is our ground truth
+    if (llmDate) {
+      // If LLM date differs by more than 30 days from Tavily date, trust Tavily
+      const diff = Math.abs(new Date(llmDate) - new Date(tavilyDate)) / 864e5;
+      p.d = diff > 30 ? tavilyDate : llmDate;
+    } else {
+      p.d = tavilyDate;
     }
+  } else if (llmDate) {
+    p.d = llmDate;
   } else {
     p.d = '';
   }
 
-  // 2. Language normalization
+  // Validate final date is sane
+  if (p.d) {
+    const date = new Date(p.d);
+    const now = new Date();
+    if (isNaN(date) || date > now || date < new Date('2020-01-01')) {
+      p.d = '';
+    }
+  }
+
+  // 2. Language — normalize then cross-check with domain hint
   const langMap = {
     'en': '英语', 'english': '英语', 'eng': '英语',
     'zh': '中文', 'chinese': '中文', 'cn': '中文', 'zh-cn': '中文', 'zh-tw': '中文',
@@ -278,17 +380,32 @@ function postProcess(p) {
     const normalized = langMap[p.l.toLowerCase()];
     if (normalized) p.l = normalized;
   }
+  // If domain has a strong language signal and LLM said "英语", override
+  if (meta.langHint && (!p.l || p.l === '英语')) {
+    p.l = meta.langHint;
+  }
 
   // 3. Platform (always override with URL-based detection)
   if (p.url) p.p = detectPlatform(p.url);
 
-  // 4. Username (always override with URL-based extraction for reliability)
+  // 4. Username — for X/Reddit/TikTok, always use URL-extracted name (most reliable)
+  //    For YouTube, keep LLM name only if it looks specific; oEmbed resolves later
+  //    For media, use brand mapping
   const extracted = extractUsername(p.url, p.t);
-  if (extracted && extracted !== 'Unknown') {
-    // Keep LLM username only if it looks more specific than URL extraction
-    if (!p.u || p.u === 'Unknown' || p.u === 'unknown' || p.u === '未知' ||
-        p.u === '未知频道' || p.u === 'YouTube' || p.u === 'TikTok' || p.u === 'Reddit') {
-      p.u = extracted;
+  if (p.p === 'x' || p.p === 'reddit' || p.p === 'tiktok') {
+    // URL parsing is deterministic and reliable for these platforms
+    if (extracted && extracted !== 'Unknown') p.u = extracted;
+  } else if (p.p === 'youtube') {
+    // LLM username is unreliable for YouTube; use extracted unless it's generic
+    if (!p.u || p.u === 'Unknown' || p.u === 'unknown' || p.u === '未知' || p.u === '未知频道') {
+      p.u = (extracted && extracted !== 'YouTube') ? extracted : 'YouTube';
+    }
+  } else {
+    // Media/forum: prefer brand mapping over LLM
+    if (extracted && extracted !== 'Unknown') {
+      if (!p.u || p.u === 'Unknown' || p.u === 'unknown' || p.u === '未知') {
+        p.u = extracted;
+      }
     }
   }
 
@@ -320,13 +437,24 @@ function fallbackParse(formatted, logs, res) {
     const text = (titleM?.[1] || '') + ' ' + block;
     const s = NEG.test(text) ? 'neg' : POS.test(text) ? 'pos' : 'neu';
 
+    // Detect language: domain hint first, then Unicode script detection
+    const domainLang = detectLangFromDomain(url);
+    let lang = domainLang;
+    if (!lang) {
+      if (/[\u0e00-\u0e7f]/.test(text)) lang = '泰语';
+      else if (/[\u3040-\u30ff\u30a0-\u30ff]/.test(text)) lang = '日语';
+      else if (/[\uac00-\ud7af]/.test(text)) lang = '韩语';
+      else if (/[\u4e00-\u9fff]/.test(text) && !/[a-zA-Z]{20}/.test(text)) lang = '中文';
+      else lang = '英语';
+    }
+
     posts.push({
       p: detectPlatform(url),
       u: extractUsername(url, titleM?.[1]),
       t: (titleM?.[1] || '').slice(0, 60),
       d: dateM[1],
       s,
-      l: /[\u4e00-\u9fff]/.test(text) ? '中文' : /[\u3040-\u30ff]/.test(text) ? '日语' : /[\u0e00-\u0e7f]/.test(text) ? '泰语' : '英语',
+      l: lang,
       url,
     });
   }

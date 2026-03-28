@@ -2,7 +2,7 @@
 export const SEED_POSTS = [
   // === NEW: 最新海外动态 ===
   {p:'x',u:'@GamingonPhone',t:'[Official tweet] Beta nudity chaos goes viral — "chaotic but still promising".',d:'2026-03-24',s:'neu',l:'英语',url:'https://x.com/GamingonPhone/status/2036357525751411158'},
-  {p:'x',u:'@Rococo90933671',t:'Beta期间脱衣跑图事件源头推文，附截图，引发国际媒体跟进。',d:'2026-03-23',s:'neg',l:'中/英',url:'https://x.com/Rococo90933671/'},
+  {p:'x',u:'@Rococo90933671',t:'Beta期间脱衣跑图事件源头推文，附截图，引发国际媒体跟进。',d:'2026-03-23',s:'neg',l:'中文',url:'https://x.com/Rococo90933671/'},
   {p:'media',u:'GamingOnPhone',t:'[热点] Beta test goes viral: players strip to underwear. Tencent patched.',d:'2026-03-24',s:'neu',l:'英语',url:'https://gamingonphone.com/news/roco-kingdom-world-china-beta-turns-chaotic-for-unexpected-semi-nudity-as-players-run-around-undressed/'},
   {p:'media',u:'GameFAQs',t:'[转载] Beta turns chaotic — semi-nudity bug viral ahead of launch.',d:'2026-03-24',s:'neu',l:'英语',url:'https://gamefaqs.gamespot.com/news?id=222321'},
   {p:'media',u:'GameMonday(泰)',t:'[泰语] กลายเป็นไวรัล — 脱衣Bug登泰国媒体，仍看好前景。',d:'2026-03-25',s:'neu',l:'泰语',url:'https://www.gamemonday.com/roco-kingdom-world-3/'},
@@ -41,7 +41,7 @@ export const SEED_POSTS = [
   {p:'media',u:'GamingOnPhone',t:'[报道] 精灵MMORPG玩法带入中国市场，3月26日上线。',d:'2025-12-03',s:'pos',l:'英语',url:'https://gamingonphone.com/news/roco-kingdom-world-brings-its-creature-bonding-mmorpg-gameplay-to-china-on-march-26-2026'},
   {p:'media',u:'Enduins',t:'[报道] 确认中国发行日期，全球版本待定。',d:'2025-12-04',s:'neu',l:'英语',url:'https://www.enduins.com/news/tencents-roco-kingdom-world-launches-in-china-on-march-26-2026'},
   {p:'media',u:'Daikama',t:'[报道] 中国发行确认，全球扩展取决于国内表现。',d:'2025-12-04',s:'neu',l:'英语',url:'https://daikama.com/news/roco-kingdom-world-china-release-confirmed-global-launch-still-pending/'},
-  {p:'media',u:'awnchina.cn',t:'[报道] 15周年直播：全平台预约超2000万，不卖精灵。',d:'2025-12-05',s:'pos',l:'英语/中文',url:'https://awnchina.cn/tencents-morefun-studio-unveils-new-classic-ip-title-roco-kingdom-world-set-for-launch-on-march-26-2026/'},
+  {p:'media',u:'AWNChina',t:'[报道] 15周年直播：全平台预约超2000万，不卖精灵。',d:'2025-12-05',s:'pos',l:'中文',url:'https://awnchina.cn/tencents-morefun-studio-unveils-new-classic-ip-title-roco-kingdom-world-set-for-launch-on-march-26-2026/'},
   {p:'tiktok',u:'@kaerougaming',t:'全球发行什么时候？Tencent拜托！呼吁出海。',d:'2025-12-04',s:'pos',l:'英语',url:'https://www.tiktok.com/@kaerougaming/video/7579940174541475093'},
   {p:'reddit',u:'r/MonsterTamerWorld',t:'终于有日期——3月26日。仅限中国，希望有全球版。',d:'2025-12-03',s:'pos',l:'英语',url:'https://www.reddit.com/r/MonsterTamerWorld/comments/1pd39dm/'},
   {p:'reddit',u:'r/gachagaming',t:'仅限中国。锁区令人沮丧，为何不同步全球上线？',d:'2025-12-03',s:'neg',l:'英语',url:'https://www.reddit.com/r/gachagaming/comments/1pd3a7j/'},
