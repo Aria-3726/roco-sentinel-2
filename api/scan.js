@@ -177,6 +177,7 @@ export default async function handler(req, res) {
   if (!deepseekKey) return res.status(500).json({ error: 'DEEPSEEK_API_KEY not configured' });
 
   const logs = [];
+  const startTime = Date.now();
 
   try {
     // Step 1: Tavily search (all queries in parallel, advanced for better metadata)
@@ -188,8 +189,8 @@ export default async function handler(req, res) {
           body: JSON.stringify({
             api_key: tavilyKey,
             query: q,
-            search_depth: 'advanced',
-            max_results: 6,
+            search_depth: 'basic',
+            max_results: 5,
             include_raw_content: false,
           }),
         });
@@ -251,7 +252,7 @@ export default async function handler(req, res) {
           urlDateHint ? `URL-date-hint: ${urlDateHint}` : null,
           authorHint && authorHint !== 'Unknown' ? `Author-hint: ${authorHint}` : null,
           langHint ? `Lang-hint: ${langHint}` : null,
-          `Snippet: ${(r.content || '').slice(0, 600)}`,
+          `Snippet: ${(r.content || '').slice(0, 400)}`,
         ].filter(Boolean).join('\n'));
 
         // Store metadata for post-processing cross-validation
@@ -276,11 +277,11 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: 'deepseek-chat',
-        max_tokens: 4000,
+        max_tokens: 3000,
         temperature: 0.1,
         messages: [
           { role: 'system', content: SYS },
-          { role: 'user', content: allFormatted.join('\n---\n').slice(0, 20000) },
+          { role: 'user', content: allFormatted.join('\n---\n').slice(0, 12000) },
         ],
       }),
     });
@@ -310,12 +311,17 @@ export default async function handler(req, res) {
       .map(p => postProcess(p, metadataMap))
       .filter(p => p.d); // Drop posts without verified date
 
-    // Resolve YouTube channel names via oEmbed (parallel, with timeout)
-    const ytPosts = posts.filter(p => p.p === 'youtube' && (p.u === 'YouTube' || !p.u));
-    if (ytPosts.length > 0) {
-      const ytResults = await Promise.all(ytPosts.map(p => fetchYouTubeAuthor(p.url)));
-      ytPosts.forEach((p, i) => { if (ytResults[i]) p.u = ytResults[i]; });
-      logs.push(`🎬 YouTube oEmbed: resolved ${ytResults.filter(Boolean).length}/${ytPosts.length} channel names`);
+    // Resolve YouTube channel names via oEmbed (only if we have time budget)
+    const elapsed = Date.now() - startTime;
+    if (elapsed < 45000) {
+      const ytPosts = posts.filter(p => p.p === 'youtube' && (p.u === 'YouTube' || !p.u));
+      if (ytPosts.length > 0) {
+        const ytResults = await Promise.all(ytPosts.map(p => fetchYouTubeAuthor(p.url)));
+        ytPosts.forEach((p, i) => { if (ytResults[i]) p.u = ytResults[i]; });
+        logs.push(`🎬 YouTube oEmbed: resolved ${ytResults.filter(Boolean).length}/${ytPosts.length} channel names`);
+      }
+    } else {
+      logs.push(`⏱ 跳过YouTube oEmbed (已用${Math.round(elapsed/1000)}s)`);
     }
 
     logs.push(`🎉 DeepSeek: ${posts.length} posts, ${(parsed.issues || []).length} issues`);
