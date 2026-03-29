@@ -195,7 +195,7 @@ export default async function handler(req, res) {
 
   try {
     // Step 1: Tavily search (parallel; first query advanced for dates, rest basic for speed)
-    const searchPromises = QUERIES.map(async (q, idx) => {
+    const searchPromises = QUERIES.map(async (q) => {
       try {
         const searchRes = await fetch('https://api.tavily.com/search', {
           method: 'POST',
@@ -203,7 +203,7 @@ export default async function handler(req, res) {
           body: JSON.stringify({
             api_key: tavilyKey,
             query: q,
-            search_depth: idx === 0 ? 'advanced' : 'basic',
+            search_depth: 'advanced',
             max_results: 6,
             include_raw_content: false,
             days: 14,
@@ -412,9 +412,10 @@ function postProcess(p, metadataMap) {
   //    For YouTube, keep LLM name only if it looks specific; oEmbed resolves later
   //    For media, use brand mapping
   const extracted = extractUsername(p.url, p.t);
+  const genericNames = new Set(['Unknown', 'Instagram', 'Facebook', 'TikTok', 'Reddit', 'X']);
   if (p.p === 'x' || p.p === 'reddit' || p.p === 'tiktok' || p.p === 'instagram' || p.p === 'facebook') {
-    // URL parsing is deterministic and reliable for these platforms
-    if (extracted && extracted !== 'Unknown') p.u = extracted;
+    // URL parsing is reliable for these platforms, but only override if we got a real username (not generic)
+    if (extracted && !genericNames.has(extracted)) p.u = extracted;
   } else if (p.p === 'youtube') {
     // LLM username is unreliable for YouTube; use extracted unless it's generic
     if (!p.u || p.u === 'Unknown' || p.u === 'unknown' || p.u === '未知' || p.u === '未知频道') {
