@@ -1,7 +1,52 @@
 [
-  {"title":"⚠️ 上线日海外声量断崖","sev":"critical","desc":"3/26上线当天英文YouTube/TikTok/Reddit新增为零。泰语少量报道，SEAGM已上线充值页。英文核心社区完全沉寂。","plats":["全平台"],"tip":"尽快释放全球化信号，否则海外热度快速衰减"},
-  {"title":"PV 抄袭争议（原神/哈利波特）","sev":"critical","desc":"日本博主指出PV中卡牌设计疑似哈利波特、原神愚人众图标。ResetEra/Reddit也有宝可梦相似度讨论。","plats":["X","Reddit","ResetEra"],"tip":"准备设计溯源声明 + IP原创性说明"},
-  {"title":"Beta脱衣Bug病毒式传播","sev":"warning","desc":"GamingOnPhone、GameFAQs、泰国GameMonday等海外媒体报道Beta脱衣跑图事件。官方已修复。","plats":["媒体","X","泰国媒体"],"tip":"事件已修复，监控是否被二次炒作"},
-  {"title":"锁区不满——仅限中国上线","sev":"warning","desc":"多家媒体强调无全球发行计划。Reddit、TikTok博主喊话Tencent出海。TapTap国际版问\"when coming USA\"。","plats":["Reddit","TikTok","TapTap Global"],"tip":"建议发布全球化路线图或时间窗口"},
-  {"title":"宝可梦法律风险联想","sev":"watch","desc":"ResetEra用户提到Nintendo vs Palworld诉讼，质疑咕噜球机制面临法律风险。","plats":["ResetEra","论坛"],"tip":"关注Nintendo诉讼动态，评估机制差异化"}
+  {
+    "title": "⚠️ 上线日海外声量断崖",
+    "sev": "critical",
+    "desc": "3/26上线后英文YouTube/TikTok/Reddit新增依然稀少。仅有36Kr英文版和少数游戏库更新。英文核心社区活跃度远低于预期。",
+    "plats": [
+      "全平台"
+    ],
+    "tip": "尽快释放全球化信号或内容创作者合作，否则海外热度持续衰减"
+  },
+  {
+    "title": "PV 抄袭争议（原神/哈利波特）",
+    "sev": "critical",
+    "desc": "日本博主指出PV中卡牌设计疑似哈利波特、原神愚人众图标。Reddit也有宝可梦相似度讨论。上线后议题热度有所下降但未完全消退。",
+    "plats": [
+      "X",
+      "Reddit",
+      "ResetEra"
+    ],
+    "tip": "准备设计溯源声明 + IP原创性说明"
+  },
+  {
+    "title": "锁区不满——海外玩家需加速器",
+    "sev": "warning",
+    "desc": "日本玩家启动提示\"此地區暫未開放\"。网易UU等发布鎖區突破指南，反映海外实际需求。TapTap国际版持续有人问全球版何时上线。",
+    "plats": [
+      "日本",
+      "TapTap Global",
+      "Reddit"
+    ],
+    "tip": "建议发布全球化路线图或时间窗口"
+  },
+  {
+    "title": "商业模式获海外正面关注",
+    "sev": "watch",
+    "desc": "36Kr英文版和多家媒体强调\"不卖精灵不卖数值靠时装盈利\"。KeepTrackOfMyGames也标注400+精灵免费捉。海外对公平商业模式态度积极。",
+    "plats": [
+      "媒体"
+    ],
+    "tip": "可将\"无P2W\"作为全球化宣传核心卖点"
+  },
+  {
+    "title": "宝可梦法律风险联想",
+    "sev": "watch",
+    "desc": "ResetEra用户提到Nintendo vs Palworld诉讼，质疑咕噜球机制面临法律风险。上线后暂无新增讨论。",
+    "plats": [
+      "ResetEra",
+      "论坛"
+    ],
+    "tip": "关注Nintendo诉讼动态，评估机制差异化"
+  }
 ]
