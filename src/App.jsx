@@ -98,7 +98,10 @@ export default function App() {
     setScanning(true); setLogs([]); setLogOpen(true);
     log("🚀 调用 /api/scan ...");
     try {
-      const res = await fetch("/api/scan", { method: "POST", headers: { "Content-Type": "application/json" } });
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 170000);
+      const res = await fetch("/api/scan", { method: "POST", headers: { "Content-Type": "application/json" }, signal: controller.signal });
+      clearTimeout(timeout);
       if (!res.ok) { log("❌ 服务器错误: " + res.status + " (可能超时，请重试)"); setScanning(false); return; }
       const text = await res.text();
       let data;

@@ -194,8 +194,8 @@ export default async function handler(req, res) {
   const startTime = Date.now();
 
   try {
-    // Step 1: Tavily search (all queries in parallel, advanced for better metadata)
-    const searchPromises = QUERIES.map(async (q) => {
+    // Step 1: Tavily search (parallel; first query advanced for dates, rest basic for speed)
+    const searchPromises = QUERIES.map(async (q, idx) => {
       try {
         const searchRes = await fetch('https://api.tavily.com/search', {
           method: 'POST',
@@ -203,8 +203,8 @@ export default async function handler(req, res) {
           body: JSON.stringify({
             api_key: tavilyKey,
             query: q,
-            search_depth: 'advanced',
-            max_results: 8,
+            search_depth: idx === 0 ? 'advanced' : 'basic',
+            max_results: 6,
             include_raw_content: false,
             days: 14,
           }),
@@ -296,7 +296,7 @@ export default async function handler(req, res) {
         temperature: 0.1,
         messages: [
           { role: 'system', content: SYS },
-          { role: 'user', content: allFormatted.join('\n---\n').slice(0, 16000) },
+          { role: 'user', content: allFormatted.join('\n---\n').slice(0, 10000) },
         ],
       }),
     });
