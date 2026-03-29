@@ -564,8 +564,7 @@
     "d": "2026-03-28",
     "s": "pos",
     "l": "泰语",
-    "url": "https://www.mustplay.in.th/content/page/69c77a7c76c4608e7b32c56c",
-    "_new": true
+    "url": "https://www.mustplay.in.th/content/page/69c77a7c76c4608e7b32c56c"
   },
   {
     "p": "forum",
@@ -574,7 +573,36 @@
     "d": "2024-08-21",
     "s": "pos",
     "l": "中文",
-    "url": "https://www.taptap.io/app/33743140",
+    "url": "https://www.taptap.io/app/33743140"
+  },
+  {
+    "p": "media",
+    "u": "MobileGamer(巴西)",
+    "t": "[英/葡] 第二轮Beta开启：PC/移动端互通，精灵增至351只。无抽卡，所有精灵免费捕捉。",
+    "d": "2025-03-29",
+    "s": "pos",
+    "l": "中文",
+    "url": "https://www.mobilegamer.com.br/en/2025/03/news-about-roco-kingdom-begins-new-beta-test-with-pc-and-mobile-integration-in-china.html",
+    "_new": true
+  },
+  {
+    "p": "media",
+    "u": "GamingOnPhone",
+    "t": "[报道] 首次Beta测试8月19日开启。开放世界RPG融合宝可梦收集+原神探索。",
+    "d": "2024-08-11",
+    "s": "pos",
+    "l": "中文",
+    "url": "https://gamingonphone.com/news/tencent-games-exploration-rpg-roco-kingdom-to-begin-its-first-beta-test-on-august-19-2024-in-china/",
+    "_new": true
+  },
+  {
+    "p": "media",
+    "u": "Next2P",
+    "t": "[报道] 腾讯宣布探索MMORPG洛克王国首次Beta。14年历史IP，跨媒体发展。",
+    "d": "2024-08-12",
+    "s": "pos",
+    "l": "中文",
+    "url": "https://www.next2p.com/article/tencent-games-announces-first-beta-test-for-roco-kingdom.html",
     "_new": true
   }
 ]
