@@ -39,6 +39,7 @@ export default function App() {
   const posts = postsData;
   const issues = issuesData;
   const [filter, setFilter] = useState("all");
+  const [langFilter, setLangFilter] = useState("all");
 
   const lastScanText = useMemo(() => {
     if (!meta.lastScan) return '未知';
@@ -58,7 +59,8 @@ export default function App() {
   const langMap = {}; posts.forEach(x => { const l=x.l||'未知'; langMap[l]=(langMap[l]||0)+1; });
   const langData = Object.entries(langMap).map(([k,v]) => ({ name:k, value:v, color:LC[k]||"#78909c" })).sort((a,b) => b.value-a.value);
   const allPlats = ["all", ...Object.keys(platMap)];
-  const list = (filter==="all" ? posts : posts.filter(x => x.p===filter)).sort((a,b) => (b.d||"0").localeCompare(a.d||"0"));
+  const allLangs = ["all", ...Object.keys(langMap)];
+  const list = posts.filter(x => (filter==="all" || x.p===filter) && (langFilter==="all" || x.l===langFilter)).sort((a,b) => (b.d||"0").localeCompare(a.d||"0"));
 
   const dailyMap = {};
   posts.forEach(x => { if(!x.d) return; if(!dailyMap[x.d]) dailyMap[x.d]={date:x.d,total:0,pos:0,neg:0,neu:0}; dailyMap[x.d].total++; dailyMap[x.d][x.s]++; });
@@ -232,18 +234,37 @@ export default function App() {
 
         {/* ═══ 动态流 ═══ */}
         <Card style={{ marginBottom:18 }}>
-          <CardHeader icon="🔗" title="动态流" sub={`${posts.length}条 · 全部附原始链接`} />
-          <div style={{ display:'flex', gap:5, padding:'10px 18px 0', flexWrap:'wrap' }}>
-            {allPlats.map(pp => {
-              const cnt = pp==='all'?posts.length:posts.filter(x=>x.p===pp).length;
-              const active = filter===pp;
-              return <button key={pp} onClick={()=>setFilter(pp)} style={{
-                padding:'4px 12px', borderRadius:20, fontSize:11, fontWeight:600, cursor:'pointer',
-                border:`1.5px solid ${active?T.accent:'transparent'}`,
-                background:active?'#e3f2fd':'#f5f7fa', color:active?T.accent:T.t3,
-                fontFamily:'inherit', transition:'all 0.2s'
-              }}>{pp==='all'?'全部':(PN[pp]||pp)} ({cnt})</button>;
-            })}
+          <CardHeader icon="🔗" title="动态流" sub={`${list.length}/${posts.length}条 · 全部附原始链接`} />
+          <div style={{ padding:'10px 18px 0', display:'flex', flexDirection:'column', gap:6 }}>
+            {/* 平台筛选 */}
+            <div style={{ display:'flex', gap:5, flexWrap:'wrap', alignItems:'center' }}>
+              <span style={{ fontSize:10, color:T.t3, fontWeight:600, marginRight:2 }}>📱 平台</span>
+              {allPlats.map(pp => {
+                const cnt = pp==='all'?posts.length:posts.filter(x=>x.p===pp).length;
+                const active = filter===pp;
+                return <button key={pp} onClick={()=>setFilter(pp)} style={{
+                  padding:'4px 12px', borderRadius:20, fontSize:11, fontWeight:600, cursor:'pointer',
+                  border:`1.5px solid ${active?T.accent:'transparent'}`,
+                  background:active?'#e3f2fd':'#f5f7fa', color:active?T.accent:T.t3,
+                  fontFamily:'inherit', transition:'all 0.2s'
+                }}>{pp==='all'?'全部':(PN[pp]||pp)} ({cnt})</button>;
+              })}
+            </div>
+            {/* 语种筛选 */}
+            <div style={{ display:'flex', gap:5, flexWrap:'wrap', alignItems:'center' }}>
+              <span style={{ fontSize:10, color:T.t3, fontWeight:600, marginRight:2 }}>🌐 语种</span>
+              {allLangs.map(ll => {
+                const cnt = ll==='all'?posts.length:posts.filter(x=>x.l===ll).length;
+                const active = langFilter===ll;
+                const clr = LC[ll] || '#5c6bc0';
+                return <button key={ll} onClick={()=>setLangFilter(ll)} style={{
+                  padding:'4px 12px', borderRadius:20, fontSize:11, fontWeight:600, cursor:'pointer',
+                  border:`1.5px solid ${active?clr:'transparent'}`,
+                  background:active?(clr+'18'):'#f5f7fa', color:active?clr:T.t3,
+                  fontFamily:'inherit', transition:'all 0.2s'
+                }}>{ll==='all'?'全部':ll} ({cnt})</button>;
+              })}
+            </div>
           </div>
           <div style={{ maxHeight:520, overflowY:'auto', padding:'10px 18px 16px', display:'flex', flexDirection:'column', gap:8 }}>
             {list.map((f,i) => (
