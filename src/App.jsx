@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
+import { ResponsiveContainer, Tooltip, BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid, Legend } from "recharts";
 import postsData from "./data/posts.json";
 import issuesData from "./data/issues.json";
 import meta from "./data/meta.json";
@@ -65,6 +65,25 @@ export default function App() {
   const dailyMap = {};
   posts.forEach(x => { if(!x.d) return; if(!dailyMap[x.d]) dailyMap[x.d]={date:x.d,total:0,pos:0,neg:0,neu:0}; dailyMap[x.d].total++; dailyMap[x.d][x.s]++; });
   const dailyData = Object.values(dailyMap).sort((a,b) => a.date.localeCompare(b.date)).map(d => ({ name:d.date.slice(5), ...d }));
+
+  // 每日声量 (帖子数 + 播放量 + 互动量)
+  const volumeMap = {};
+  posts.forEach(x => {
+    if (!x.d) return;
+    if (!volumeMap[x.d]) volumeMap[x.d] = { date:x.d, posts:0, views:0, likes:0, comments:0, engagement:0 };
+    const v = volumeMap[x.d];
+    v.posts++;
+    if (x.stats) {
+      v.views += (x.stats.views || 0);
+      v.likes += (x.stats.likes || 0);
+      v.comments += (x.stats.comments || 0);
+    }
+    v.engagement = v.views + v.likes * 10 + v.comments * 20; // 加权声量
+  });
+  const volumeData = Object.values(volumeMap).sort((a,b) => a.date.localeCompare(b.date)).map(d => ({ name:d.date.slice(5), ...d }));
+  const totalViews = posts.reduce((s,p) => s + (p.stats?.views||0), 0);
+  const totalLikes = posts.reduce((s,p) => s + (p.stats?.likes||0), 0);
+  const totalComments = posts.reduce((s,p) => s + (p.stats?.comments||0), 0);
 
   /* ─── 通用组件 ─── */
   const Card = ({ children, style }) => (
@@ -132,9 +151,10 @@ export default function App() {
       <div style={{ maxWidth:1360, margin:'0 auto', padding:'0 24px' }}>
 
         {/* ═══ KPI Cards ═══ */}
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:14, marginBottom:18 }}>
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:14, marginBottom:18 }}>
           {[
             { label:'已采集帖子', val:posts.length, icon:'📊', color:T.accent, bg:'#e3f2fd' },
+            { label:'总播放量', val:totalViews>=1e6?(totalViews/1e6).toFixed(1)+'M':totalViews>=1e3?(totalViews/1e3).toFixed(1)+'K':totalViews, icon:'👁', color:'#7c4dff', bg:'#ede7f6' },
             { label:'正面率', val:Math.round(posN/posts.length*100)+'%', icon:'😊', color:C.pos, bg:'#e8f5e9' },
             { label:'负面率', val:Math.round(negN/posts.length*100)+'%', icon:'😟', color:C.neg, bg:'#ffebee' },
             { label:'活跃议题', val:issues.length, icon:'🔥', color:'#f57f17', bg:'#fff8e1' },
@@ -232,6 +252,41 @@ export default function App() {
           </Card>
         </div>
 
+        {/* ═══ 每日声量变化 (全宽) ═══ */}
+        <Card style={{ marginBottom:18 }}>
+          <CardHeader icon="📢" title="每日声量变化" sub={`播放量 + 互动量 · ${volumeData.length}个活跃日`} />
+          <div style={{ padding:'6px 18px 0', display:'flex', gap:16, flexWrap:'wrap' }}>
+            <span style={{ fontSize:10, color:T.t2, display:'flex', alignItems:'center', gap:4 }}><span style={{ width:10, height:10, borderRadius:2, background:'#42a5f5' }}/> 播放量</span>
+            <span style={{ fontSize:10, color:T.t2, display:'flex', alignItems:'center', gap:4 }}><span style={{ width:10, height:10, borderRadius:2, background:'#66bb6a' }}/> 点赞</span>
+            <span style={{ fontSize:10, color:T.t2, display:'flex', alignItems:'center', gap:4 }}><span style={{ width:10, height:10, borderRadius:2, background:'#ffb74d' }}/> 评论</span>
+            <span style={{ fontSize:10, color:T.t2, display:'flex', alignItems:'center', gap:4 }}><span style={{ width:10, height:3, borderRadius:2, background:'#e53935' }}/> 帖子数</span>
+          </div>
+          <div style={{ padding:'8px 16px 16px', height:260 }}>
+            <ResponsiveContainer>
+              <AreaChart data={volumeData}>
+                <defs>
+                  <linearGradient id="gViews" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#42a5f5" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#42a5f5" stopOpacity={0}/>
+                  </linearGradient>
+                  <linearGradient id="gLikes" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#66bb6a" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#66bb6a" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke={T.borderLight} vertical={false} />
+                <XAxis dataKey="name" tick={{ fill:T.t3, fontSize:10 }} axisLine={{ stroke:T.border }} tickLine={false} angle={-35} textAnchor="end" height={50} />
+                <YAxis yAxisId="left" tick={{ fill:T.t3, fontSize:10 }} axisLine={false} tickLine={false} width={50} tickFormatter={v => v>=1e3?(v/1e3).toFixed(0)+'K':v} />
+                <YAxis yAxisId="right" orientation="right" tick={{ fill:T.t3, fontSize:10 }} axisLine={false} tickLine={false} width={30} />
+                <Tooltip contentStyle={{ background:'#fff', border:`1px solid ${T.border}`, borderRadius:8, fontSize:11, color:T.t1, boxShadow:T.shadow }} formatter={(v,name) => [name==='播放量'?(v>=1e3?(v/1e3).toFixed(1)+'K':v):v, name]} />
+                <Area yAxisId="left" type="monotone" dataKey="views" name="播放量" stroke="#42a5f5" strokeWidth={2} fill="url(#gViews)" />
+                <Area yAxisId="left" type="monotone" dataKey="likes" name="点赞" stroke="#66bb6a" strokeWidth={2} fill="url(#gLikes)" />
+                <Bar yAxisId="right" dataKey="comments" name="评论" fill="#ffb74d" radius={[3,3,0,0]} barSize={14} />
+                <Bar yAxisId="right" dataKey="posts" name="帖子数" fill="#e5393580" radius={[3,3,0,0]} barSize={8} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </Card>
         {/* ═══ 动态流 ═══ */}
         <Card style={{ marginBottom:18 }}>
           <CardHeader icon="🔗" title="动态流" sub={`${list.length}/${posts.length}条 · 全部附原始链接`} />
