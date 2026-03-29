@@ -31,6 +31,11 @@ export default function App() {
   const sentData = [{ name: "正面", value: posN, color: C.pos }, { name: "中性", value: neuN, color: C.neu }, { name: "负面", value: negN, color: C.neg }].filter(x => x.value > 0);
   const platMap = {}; posts.forEach(x => { platMap[x.p] = (platMap[x.p] || 0) + 1; });
   const platData = Object.entries(platMap).map(([k, v]) => ({ name: PN[k] || k, value: v, color: C[k] || "#64748b" })).sort((a, b) => b.value - a.value);
+
+  // Language distribution
+  const LC = { '英语':'#60a5fa', '中文':'#f87171', '日语':'#f472b6', '泰语':'#fbbf24', '印尼语':'#34d399', '越南语':'#a78bfa', '韩语':'#22d3ee', '西班牙语':'#fb923c', '德语':'#64748b' };
+  const langMap = {}; posts.forEach(x => { const l = x.l || '未知'; langMap[l] = (langMap[l] || 0) + 1; });
+  const langData = Object.entries(langMap).map(([k, v]) => ({ name: k, value: v, color: LC[k] || "#64748b" })).sort((a, b) => b.value - a.value);
   const allPlats = ["all", ...Object.keys(platMap)];
   const list = (filter === "all" ? posts : posts.filter(x => x.p === filter)).sort((a, b) => (b.d || "0").localeCompare(a.d || "0"));
 
@@ -144,6 +149,26 @@ export default function App() {
                 return (
                   <div key={i} style={{ display:"flex", alignItems:"center", gap:8 }}>
                     <span style={{ fontSize:10, color:t2, width:62, textAlign:"right", flexShrink:0, fontWeight:500 }}>{d.name}</span>
+                    <div style={{ flex:1, height:14, background:bg, borderRadius:3, overflow:"hidden", position:"relative" }}>
+                      <div style={{ height:"100%", width:barPct+"%", background:d.color, borderRadius:3, minWidth:2, transition:"width 0.5s ease" }}/>
+                    </div>
+                    <span style={{ fontSize:11, fontWeight:700, color:d.color, fontFamily:"monospace", width:28, textAlign:"right", flexShrink:0 }}>{d.value}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* 语种分布 — 横向柱状图 */}
+          <div style={{ background:sf, border:"1px solid "+bd, borderRadius:12, overflow:"hidden", flex:1 }}>
+            <div style={{ padding:"12px 16px", borderBottom:"1px solid "+bd, fontWeight:600, fontSize:13 }}>🌐 语种分布 <span style={{ fontSize:11, fontWeight:400, color:t3 }}>({langData.length}种语言)</span></div>
+            <div style={{ padding:"10px 16px", display:"flex", flexDirection:"column", gap:6 }}>
+              {langData.map((d,i) => {
+                const maxVal = langData[0]?.value || 1;
+                const barPct = Math.round(d.value/maxVal*100);
+                return (
+                  <div key={i} style={{ display:"flex", alignItems:"center", gap:8 }}>
+                    <span style={{ fontSize:10, color:t2, width:52, textAlign:"right", flexShrink:0, fontWeight:500 }}>{d.name}</span>
                     <div style={{ flex:1, height:14, background:bg, borderRadius:3, overflow:"hidden", position:"relative" }}>
                       <div style={{ height:"100%", width:barPct+"%", background:d.color, borderRadius:3, minWidth:2, transition:"width 0.5s ease" }}/>
                     </div>
