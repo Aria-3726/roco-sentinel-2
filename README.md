@@ -1,46 +1,36 @@
-# 🛰️ Roco Kingdom: World — 海外舆情监控面板
+# 🛡️ Roco Sentinel v2
 
-洛克王国：世界 海外舆情实时监控 Dashboard，覆盖 YouTube / TikTok / Reddit / X / 海外媒体，支持英/日/泰/越/印尼语。
+**洛克王国：世界 (Roco Kingdom: World)** 海外舆情监控面板。
 
-## 功能
+## 架构
 
-- **50 条预加载验证数据** — 全部附原始链接
-- **实时扫描** — 调用 Anthropic API + Web Search 搜索最新海外舆情
-- **5 个议题追踪** — AI 自动识别核心争议
-- **情绪分析** — 正面/中性/负面自动分类
-- **每日增长图表** — 堆叠柱状图展示舆情变化
-- **多平台筛选** — 按平台过滤动态流
-
-## 部署到 Vercel
-
-### 1. 推送到 GitHub
-
-```bash
-git init
-git add .
-git commit -m "init: roco sentinel"
-git remote add origin https://github.com/你的用户名/roco-sentinel.git
-git push -u origin main
+```
+WorkBuddy Skill (搜索+分析+后处理)
+        ↓  生成 JSON 数据
+  src/data/posts.json
+  src/data/issues.json
+  src/data/meta.json
+        ↓  git push → 自动部署
+  Vercel 纯静态站 (所有人看到同一份数据)
 ```
 
-### 2. 部署到 Vercel
+## 与 v1 的区别
 
-1. 打开 [vercel.com](https://vercel.com)，用 GitHub 登录
-2. 点击 **"Add New Project"** → 选择 `roco-sentinel` 仓库
-3. Framework Preset 选择 **Vite**
-4. 点击 **Deploy**
+| | v1 | v2 |
+|---|---|---|
+| 数据生成 | Vercel Serverless + Tavily + DeepSeek | WorkBuddy Skill |
+| 数据存储 | localStorage (每人不同) | GitHub JSON (所有人一致) |
+| 部署方式 | 前端 + API function | 纯静态站 |
+| 需要 API Key | ✅ (Tavily + DeepSeek) | ❌ 零配置 |
 
-### 3. 配置 API Key（启用扫描功能）
+## 更新数据
 
-1. 进入 Vercel Dashboard → 你的项目 → **Settings** → **Environment Variables**
-2. 添加：
-   - Name: `ANTHROPIC_API_KEY`
-   - Value: `sk-ant-xxxxx`（你的 Anthropic API Key）
-3. 点击 Save → **Redeploy** 项目
+在 WorkBuddy 中说：
+```
+扫描洛克王国舆情
+```
 
-### 4. 分享链接
-
-部署完成后会得到一个 `https://roco-sentinel-xxx.vercel.app` 的链接，直接分享给任何人即可访问。
+Skill 会自动搜索 → 分析 → 更新 JSON → git push → Vercel 自动部署。
 
 ## 本地开发
 
@@ -49,31 +39,8 @@ npm install
 npm run dev
 ```
 
-需要扫描功能的话，创建 `.env` 文件：
-```
-ANTHROPIC_API_KEY=sk-ant-xxxxx
-```
-
-## 项目结构
-
-```
-roco-sentinel/
-├── api/
-│   └── scan.js          # Vercel Serverless Function (Anthropic API)
-├── src/
-│   ├── App.jsx          # 主面板组件
-│   ├── data.js          # 50条预加载验证数据
-│   └── main.jsx         # React 入口
-├── index.html           # HTML 入口
-├── package.json
-├── vite.config.js
-├── vercel.json          # Vercel 路由配置
-└── .env.example         # 环境变量模板
-```
-
 ## 技术栈
 
-- **前端**: React 18 + Recharts + Vite
-- **后端**: Vercel Serverless Functions
-- **AI**: Anthropic Claude API + Web Search
-- **持久化**: localStorage
+- React 18 + Vite + Recharts (前端)
+- WorkBuddy Skill (数据采集)
+- Vercel (静态部署)

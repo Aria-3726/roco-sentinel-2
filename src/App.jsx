@@ -1,131 +1,28 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useMemo } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
-import { SEED_POSTS, SEED_ISSUES } from "./data.js";
+import postsData from "./data/posts.json";
+import issuesData from "./data/issues.json";
+import meta from "./data/meta.json";
 
+// 配置常量
 const C = { pos:'#34d399', neg:'#f87171', neu:'#64748b', x:'#60a5fa', reddit:'#fbbf24', youtube:'#f87171', tiktok:'#f472b6', instagram:'#e879f9', facebook:'#60a5fa', media:'#a78bfa', forum:'#22d3ee', threads:'#22d3ee' };
 const PN = { x:'𝕏', reddit:'Reddit', youtube:'YouTube', tiktok:'TikTok', instagram:'Instagram', facebook:'Facebook', media:'媒体', forum:'论坛', threads:'Threads' };
 const SN = { pos:'正面', neg:'负面', neu:'中性' };
 const bg='#0a0c10', sf='#12151c', bd='#252b3b', bdH='#3a4560', t1='#e4e8f1', t2='#8e99b3', t3='#5a6580';
 
 export default function App() {
-  const [posts, setPosts] = useState(SEED_POSTS);
-  const [issues, setIssues] = useState(SEED_ISSUES);
-  const [scanning, setScanning] = useState(false);
-  const [logs, setLogs] = useState([]);
-  const [logOpen, setLogOpen] = useState(false);
+  const posts = postsData;
+  const issues = issuesData;
   const [filter, setFilter] = useState("all");
-  const [scanN, setScanN] = useState(0);
-  const [cd, setCd] = useState("");
-  const ref = useRef(null);
 
-  // Load from localStorage + clean bad data using URL-based corrections
-  useEffect(() => {
+  // 格式化上次扫描时间
+  const lastScanText = useMemo(() => {
+    if (!meta.lastScan) return '未知';
     try {
-      const saved = localStorage.getItem("roco-sentinel-data");
-      if (saved) {
-        const d = JSON.parse(saved);
-        if (d.posts?.length > 0) {
-          const langMap = { en:'英语', english:'英语', zh:'中文', chinese:'中文', ja:'日语', japanese:'日语', th:'泰语', thai:'泰语', vi:'越南语', id:'印尼语', ko:'韩语' };
-          // Platform detection from URL
-          const detectPlat = (url) => {
-            if (!url) return 'media';
-            if (url.includes('x.com') || url.includes('twitter.com')) return 'x';
-            if (url.includes('reddit.com')) return 'reddit';
-            if (url.includes('youtube.com') || url.includes('youtu.be')) return 'youtube';
-            if (url.includes('tiktok.com')) return 'tiktok';
-            if (url.includes('instagram.com')) return 'instagram';
-            if (url.includes('facebook.com') || url.includes('fb.com') || url.includes('fb.watch')) return 'facebook';
-            if (url.includes('threads.net')) return 'threads';
-            if (url.includes('taptap.io') || url.includes('resetera.com') || url.includes('gamefaqs.')) return 'forum';
-            return 'media';
-          };
-          // Username extraction from URL
-          const extractUser = (url) => {
-            try {
-              const u = new URL(url);
-              if (u.hostname.includes('reddit.com')) { const m = u.pathname.match(/\/r\/([^/]+)/); return m ? 'r/'+m[1] : null; }
-              if (u.hostname.includes('x.com') || u.hostname.includes('twitter.com')) { const m = u.pathname.match(/\/([^/]+)/); return m && !['search','hashtag','explore','i','settings','home'].includes(m[1]) ? '@'+m[1] : null; }
-              if (u.hostname.includes('tiktok.com')) { const m = u.pathname.match(/@([^/]+)/); return m ? '@'+m[1] : null; }
-              if (u.hostname.includes('instagram.com')) { const m = u.pathname.match(/^\/([^/]+)/); return m && !['p','reel','reels','stories','explore','accounts'].includes(m[1]) ? '@'+m[1] : null; }
-              if (u.hostname.includes('facebook.com') || u.hostname.includes('fb.com')) { const m = u.pathname.match(/^\/([^/]+)/); return m && !['watch','reel','groups','pages','events','marketplace','profile.php','share','sharer'].includes(m[1]) ? m[1] : null; }
-              return null;
-            } catch { return null; }
-          };
-          const cleaned = d.posts.map(p => {
-            // Fix language
-            if (p.l && langMap[p.l.toLowerCase()]) p.l = langMap[p.l.toLowerCase()];
-            // Fix bad dates
-            if (p.d === 'unknown' || p.d === 'none' || p.d === 'null') p.d = '';
-            if (p.d) { const dt = new Date(p.d); if (isNaN(dt) || dt > new Date() || dt < new Date('2020-01-01')) p.d = ''; }
-            // Fix platform from URL
-            if (p.url) p.p = detectPlat(p.url);
-            // Fix username from URL for reliable platforms
-            if (p.url && (p.p === 'x' || p.p === 'reddit' || p.p === 'tiktok' || p.p === 'instagram' || p.p === 'facebook')) {
-              const u = extractUser(p.url);
-              if (u) p.u = u;
-            }
-            // Fix bad usernames
-            if (p.u === '未知频道' || p.u === '未知' || p.u === 'Unknown') p.u = p.p === 'youtube' ? 'YouTube' : p.p;
-            return p;
-          }).filter(p => p._new ? p.d : true);
-          setPosts(cleaned);
-          setIssues(d.issues || SEED_ISSUES);
-          setScanN(d.n || 0);
-          localStorage.setItem("roco-sentinel-data", JSON.stringify({ posts: cleaned, issues: d.issues || SEED_ISSUES, n: d.n || 0 }));
-        }
-      }
-    } catch(e) { /* no saved data */ }
+      const d = new Date(meta.lastScan);
+      return d.toLocaleString('zh-CN', { month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit', hour12:false });
+    } catch { return meta.lastScan; }
   }, []);
-
-  // Countdown
-  useEffect(() => {
-    const tick = () => {
-      const ms = Math.max(0, new Date("2026-03-26T00:00:00+08:00") - Date.now());
-      const dd = Math.floor(ms / 864e5);
-      const hh = String(Math.floor((ms % 864e5) / 36e5)).padStart(2, "0");
-      const mm = String(Math.floor((ms % 36e5) / 6e4)).padStart(2, "0");
-      const ss = String(Math.floor((ms % 6e4) / 1e3)).padStart(2, "0");
-      setCd(dd + "天 " + hh + ":" + mm + ":" + ss);
-    };
-    tick(); const iv = setInterval(tick, 1000); return () => clearInterval(iv);
-  }, []);
-
-  useEffect(() => { ref.current?.scrollIntoView({ behavior: "smooth" }); }, [logs]);
-
-  function log(m) { setLogs(p => [...p, { time: new Date().toLocaleTimeString("en", { hour12: false }), msg: m }]); }
-
-  async function scan() {
-    setScanning(true); setLogs([]); setLogOpen(true);
-    log("🚀 调用 /api/scan ...");
-    try {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 170000);
-      const res = await fetch("/api/scan", { method: "POST", headers: { "Content-Type": "application/json" }, signal: controller.signal });
-      clearTimeout(timeout);
-      if (!res.ok) { log("❌ 服务器错误: " + res.status + " (可能超时，请重试)"); setScanning(false); return; }
-      const text = await res.text();
-      let data;
-      try { data = JSON.parse(text); } catch { log("❌ 返回数据解析失败（可能超时），请重试"); setScanning(false); return; }
-      (data.logs || []).forEach(l => log(l));
-      const urls = new Set(posts.map(p => p.url));
-      const merged = [...posts];
-      let added = 0;
-      (data.posts || []).forEach(p => {
-        if (p.url && !urls.has(p.url)) { merged.push({ ...p, _new: true }); urls.add(p.url); added++; }
-      });
-      const ni = data.issues?.length > 0 ? data.issues : issues;
-      const n = scanN + 1;
-      setPosts(merged); setIssues(ni); setScanN(n);
-      localStorage.setItem("roco-sentinel-data", JSON.stringify({ posts: merged, issues: ni, n }));
-      log("🎉 新增 " + added + " 条，总计 " + merged.length);
-    } catch(e) { log("❌ " + e.message); }
-    setScanning(false);
-  }
-
-  function reset() {
-    localStorage.removeItem("roco-sentinel-data");
-    setPosts(SEED_POSTS); setIssues(SEED_ISSUES); setScanN(0); setLogs([]);
-  }
 
   // Computed
   const posN = posts.filter(x => x.s === "pos").length;
@@ -143,7 +40,7 @@ export default function App() {
   const dailyData = Object.values(dailyMap).sort((a, b) => a.date.localeCompare(b.date)).map(d => ({ name: d.date.slice(5), ...d }));
 
   const Badge = ({ type, children }) => {
-    const m = { pos:[C.pos,"rgba(52,211,153,.1)"], neg:[C.neg,"rgba(248,113,113,.1)"], neu:[C.neu,"rgba(100,116,139,.12)"], critical:[C.neg,"rgba(248,113,113,.1)"], warning:["#fbbf24","rgba(251,191,36,.1)"], watch:[C.x,"rgba(96,165,250,.1)"], verified:[C.pos,"rgba(52,211,153,.1)"] };
+    const m = { pos:[C.pos,"rgba(52,211,153,.1)"], neg:[C.neg,"rgba(248,113,113,.1)"], neu:[C.neu,"rgba(100,116,139,.12)"], critical:[C.neg,"rgba(248,113,113,.1)"], warning:["#fbbf24","rgba(251,191,36,.1)"], watch:[C.x,"rgba(96,165,250,.1)"] };
     const [fg, bgc] = m[type] || [t3, "rgba(100,116,139,.1)"];
     return <span style={{ fontSize:10, fontWeight:700, padding:"2px 6px", borderRadius:3, color:fg, background:bgc, whiteSpace:"nowrap" }}>{children}</span>;
   };
@@ -161,16 +58,15 @@ export default function App() {
           </div>
         </div>
         <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap" }}>
-          <div style={{ background:sf, border:"1px solid "+bd, borderRadius:7, padding:"4px 10px", fontSize:11.5, fontFamily:"monospace", color:"#fbbf24", fontWeight:600 }}>{"⏱ "+cd}</div>
-          <button onClick={scan} disabled={scanning} style={{ background:scanning?"#181c27":"linear-gradient(135deg,#60a5fa,#a78bfa)", border:"none", borderRadius:7, padding:"7px 16px", color:"#fff", fontWeight:600, fontSize:11.5, cursor:scanning?"wait":"pointer", opacity:scanning?.6:1, fontFamily:"inherit" }}>{scanning?"⏳ 扫描中...":"🔄 扫描更新"}</button>
-          <button onClick={reset} style={{ background:"transparent", border:"1px solid "+bd, borderRadius:7, padding:"6px 10px", color:t3, fontSize:10.5, cursor:"pointer", fontFamily:"inherit" }}>重置</button>
+          <div style={{ background:sf, border:"1px solid "+bd, borderRadius:7, padding:"4px 10px", fontSize:11, color:t3 }}>
+            📡 上次更新: {lastScanText} {meta.scanCount > 0 && <span>· 已扫描{meta.scanCount}次</span>}
+          </div>
         </div>
       </div>
 
       {/* Methodology */}
       <div style={{ background:sf, border:"1px solid "+bd, borderRadius:9, padding:"9px 14px", marginBottom:14, fontSize:10.5, color:t2, lineHeight:1.6 }}>
-        <strong style={{ color:t1 }}>ℹ️ 数据说明</strong> · 预加载 {SEED_POSTS.length} 条验证帖子。「扫描更新」调用 Anthropic API + Web Search 搜索新数据。
-        {scanN > 0 && <span style={{ color:t3 }}> · 已扫描{scanN}次</span>}
+        <strong style={{ color:t1 }}>ℹ️ 数据说明</strong> · 共 {posts.length} 条海外平台验证帖子，全部附原始链接。数据由 WorkBuddy Skill 自动采集并推送更新。
       </div>
 
       {/* KPI */}
@@ -187,20 +83,6 @@ export default function App() {
           </div>
         ))}
       </div>
-
-      {/* Scan Log */}
-      {logOpen && logs.length > 0 && (
-        <div style={{ background:sf, border:"1px solid "+bd, borderRadius:9, marginBottom:14, overflow:"hidden" }}>
-          <div style={{ display:"flex", justifyContent:"space-between", padding:"7px 14px", borderBottom:"1px solid "+bd }}>
-            <span style={{ fontSize:11.5, fontWeight:600, color:t2 }}>📡 扫描日志</span>
-            <button onClick={() => setLogOpen(false)} style={{ background:"none", border:"none", color:t3, cursor:"pointer", fontSize:10, fontFamily:"inherit" }}>收起 ▲</button>
-          </div>
-          <div style={{ maxHeight:140, overflowY:"auto", padding:"6px 14px", fontFamily:"monospace", fontSize:10.5, lineHeight:1.8 }}>
-            {logs.map((l,i) => <div key={i} style={{ color:l.msg.startsWith("❌")?C.neg:l.msg.startsWith("✅")||l.msg.startsWith("🎉")?C.pos:t2 }}><span style={{ color:t3, marginRight:6 }}>{l.time}</span>{l.msg}</div>)}
-            <div ref={ref} />
-          </div>
-        </div>
-      )}
 
       {/* Issues + Charts */}
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:14, marginBottom:14 }}>
@@ -294,7 +176,7 @@ export default function App() {
       </div>
 
       <div style={{ textAlign:"center", padding:"12px 0", fontSize:9.5, color:t3 }}>
-        Roco Kingdom: World Overseas Sentinel · {posts.length}条海外验证数据 · 覆盖英/日/泰/越/印尼语
+        Roco Kingdom: World Overseas Sentinel · {posts.length}条海外验证数据 · 覆盖英/日/泰/越/印尼语 · Powered by WorkBuddy Skill
       </div>
     </div>
   );
