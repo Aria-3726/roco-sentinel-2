@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
+import { ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
 import postsData from "./data/posts.json";
 import issuesData from "./data/issues.json";
 import meta from "./data/meta.json";
@@ -107,22 +107,50 @@ export default function App() {
         </div>
 
         <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+          {/* 情绪分布 — 横向进度条 + 大号百分比 */}
           <div style={{ background:sf, border:"1px solid "+bd, borderRadius:12, overflow:"hidden", flex:1 }}>
-            <div style={{ padding:"12px 16px", borderBottom:"1px solid "+bd, fontWeight:600, fontSize:13 }}>🟢 情绪分布 ({posts.length}条)</div>
-            <div style={{ padding:"8px 14px", display:"flex", alignItems:"center", gap:16 }}>
-              <div style={{ width:120, height:120 }}><ResponsiveContainer><PieChart><Pie data={sentData} cx="50%" cy="50%" innerRadius={25} outerRadius={48} dataKey="value" stroke="none">{sentData.map((d,i)=><Cell key={i} fill={d.color}/>)}</Pie><Tooltip contentStyle={{ background:"#181c27", border:"1px solid "+bd, borderRadius:6, fontSize:10, color:t1 }} formatter={(v,n)=>[v+"条",n]} /></PieChart></ResponsiveContainer></div>
-              <div style={{ display:"flex", flexDirection:"column", gap:7 }}>
-                {sentData.map((d,i)=><div key={i} style={{ display:"flex", alignItems:"center", gap:6 }}><span style={{ width:8, height:8, borderRadius:2, background:d.color }}/><span style={{ fontSize:11, color:t2 }}>{d.name}</span><span style={{ fontSize:12, fontWeight:700, color:d.color, fontFamily:"monospace" }}>{d.value}</span><span style={{ fontSize:10, color:t3 }}>({Math.round(d.value/posts.length*100)}%)</span></div>)}
-              </div>
+            <div style={{ padding:"12px 16px", borderBottom:"1px solid "+bd, fontWeight:600, fontSize:13 }}>🟢 情绪分布 <span style={{ fontSize:11, fontWeight:400, color:t3 }}>({posts.length}条)</span></div>
+            <div style={{ padding:"14px 16px", display:"flex", flexDirection:"column", gap:12 }}>
+              {sentData.map((d,i) => {
+                const pct = Math.round(d.value/posts.length*100);
+                return (
+                  <div key={i}>
+                    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"baseline", marginBottom:5 }}>
+                      <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+                        <span style={{ width:8, height:8, borderRadius:2, background:d.color, flexShrink:0 }}/>
+                        <span style={{ fontSize:12, fontWeight:600, color:t1 }}>{d.name}</span>
+                      </div>
+                      <div style={{ display:"flex", alignItems:"baseline", gap:4 }}>
+                        <span style={{ fontSize:20, fontWeight:700, color:d.color, fontFamily:"monospace" }}>{pct}%</span>
+                        <span style={{ fontSize:10, color:t3 }}>({d.value}条)</span>
+                      </div>
+                    </div>
+                    <div style={{ height:6, background:bg, borderRadius:3, overflow:"hidden" }}>
+                      <div style={{ height:"100%", width:pct+"%", background:d.color, borderRadius:3, transition:"width 0.5s ease" }}/>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
+
+          {/* 渠道分布 — 横向柱状图 */}
           <div style={{ background:sf, border:"1px solid "+bd, borderRadius:12, overflow:"hidden", flex:1 }}>
-            <div style={{ padding:"12px 16px", borderBottom:"1px solid "+bd, fontWeight:600, fontSize:13 }}>🔵 渠道分布</div>
-            <div style={{ padding:"8px 14px", display:"flex", alignItems:"center", gap:16 }}>
-              <div style={{ width:120, height:120 }}><ResponsiveContainer><PieChart><Pie data={platData} cx="50%" cy="50%" innerRadius={25} outerRadius={48} dataKey="value" stroke="none">{platData.map((d,i)=><Cell key={i} fill={d.color}/>)}</Pie><Tooltip contentStyle={{ background:"#181c27", border:"1px solid "+bd, borderRadius:6, fontSize:10, color:t1 }} formatter={(v,n)=>[v+"条",n]} /></PieChart></ResponsiveContainer></div>
-              <div style={{ display:"flex", flexDirection:"column", gap:5 }}>
-                {platData.map((d,i)=><div key={i} style={{ display:"flex", alignItems:"center", gap:5 }}><span style={{ width:8, height:8, borderRadius:2, background:d.color }}/><span style={{ fontSize:10.5, color:t2 }}>{d.name}</span><span style={{ fontSize:11, fontWeight:700, color:d.color, fontFamily:"monospace" }}>{d.value}</span></div>)}
-              </div>
+            <div style={{ padding:"12px 16px", borderBottom:"1px solid "+bd, fontWeight:600, fontSize:13 }}>🔵 渠道分布 <span style={{ fontSize:11, fontWeight:400, color:t3 }}>({Object.keys(platMap).length}个平台)</span></div>
+            <div style={{ padding:"10px 16px", display:"flex", flexDirection:"column", gap:6 }}>
+              {platData.map((d,i) => {
+                const maxVal = platData[0]?.value || 1;
+                const barPct = Math.round(d.value/maxVal*100);
+                return (
+                  <div key={i} style={{ display:"flex", alignItems:"center", gap:8 }}>
+                    <span style={{ fontSize:10, color:t2, width:62, textAlign:"right", flexShrink:0, fontWeight:500 }}>{d.name}</span>
+                    <div style={{ flex:1, height:14, background:bg, borderRadius:3, overflow:"hidden", position:"relative" }}>
+                      <div style={{ height:"100%", width:barPct+"%", background:d.color, borderRadius:3, minWidth:2, transition:"width 0.5s ease" }}/>
+                    </div>
+                    <span style={{ fontSize:11, fontWeight:700, color:d.color, fontFamily:"monospace", width:28, textAlign:"right", flexShrink:0 }}>{d.value}</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
