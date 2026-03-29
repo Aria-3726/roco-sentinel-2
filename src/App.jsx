@@ -283,6 +283,13 @@ export default function App() {
                 <div style={{ display:'flex', alignItems:'center', gap:6, flexWrap:'wrap' }}>
                   <Badge type={f.s}>{SN[f.s]||f.s}</Badge>
                   {f.l && <span style={{ fontSize:9.5, padding:'2px 8px', borderRadius:20, background:'#e8eaf6', color:'#5c6bc0', fontWeight:500 }}>{f.l}</span>}
+                  {f.stats && (f.stats.views > 0 || f.stats.likes > 0 || f.stats.comments > 0) && (
+                    <span style={{ display:'inline-flex', gap:8, fontSize:10, color:T.t3, marginLeft:4 }}>
+                      {f.stats.views > 0 && <span title="播放量/浏览量">👁 {f.stats.views>=1e6?(f.stats.views/1e6).toFixed(1)+'M':f.stats.views>=1e3?(f.stats.views/1e3).toFixed(1)+'K':f.stats.views}</span>}
+                      {f.stats.likes > 0 && <span title="点赞/Upvotes">👍 {f.stats.likes>=1e3?(f.stats.likes/1e3).toFixed(1)+'K':f.stats.likes}</span>}
+                      {f.stats.comments > 0 && <span title="评论数">💬 {f.stats.comments}</span>}
+                    </span>
+                  )}
                   <a href={f.url} target="_blank" rel="noopener noreferrer" style={{
                     marginLeft:'auto', fontSize:10.5, color:T.accent, textDecoration:'none',
                     background:'#e3f2fd', padding:'3px 10px', borderRadius:20, fontWeight:600
