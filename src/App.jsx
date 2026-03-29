@@ -151,12 +151,10 @@ export default function App() {
       <div style={{ maxWidth:1360, margin:'0 auto', padding:'0 24px' }}>
 
         {/* ═══ KPI Cards ═══ */}
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:14, marginBottom:18 }}>
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:14, marginBottom:18 }}>
           {[
             { label:'已采集帖子', val:posts.length, icon:'📊', color:T.accent, bg:'#e3f2fd' },
             { label:'总播放量', val:totalViews>=1e6?(totalViews/1e6).toFixed(1)+'M':totalViews>=1e3?(totalViews/1e3).toFixed(1)+'K':totalViews, icon:'👁', color:'#7c4dff', bg:'#ede7f6' },
-            { label:'正面率', val:Math.round(posN/posts.length*100)+'%', icon:'😊', color:C.pos, bg:'#e8f5e9' },
-            { label:'负面率', val:Math.round(negN/posts.length*100)+'%', icon:'😟', color:C.neg, bg:'#ffebee' },
             { label:'活跃议题', val:issues.length, icon:'🔥', color:'#f57f17', bg:'#fff8e1' },
           ].map((k,i) => (
             <Card key={i} style={{ padding:'16px 18px', borderLeft:`4px solid ${k.color}` }}>
@@ -331,6 +329,16 @@ export default function App() {
                 <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:5 }}>
                   <span style={{ fontSize:10, fontWeight:700, padding:'2px 8px', borderRadius:20, background:(C[f.p]||'#78909c')+'18', color:C[f.p]||T.t2 }}>{PN[f.p]||f.p}</span>
                   <span style={{ fontSize:12, fontWeight:600, color:T.t2 }}>{f.u}</span>
+                  {f.author?.followers > 0 && (
+                    <span style={{ fontSize:9, padding:'2px 7px', borderRadius:20, background:'#fff3e0', color:'#e65100', fontWeight:600 }} title={f.author.followerLabel==='成员'?'论坛成员数':'订阅/粉丝数'}>
+                      {f.author.followerLabel==='成员'?'👥':'🔔'} {f.author.followers>=1e6?(f.author.followers/1e6).toFixed(1)+'M':f.author.followers>=1e3?(f.author.followers/1e3).toFixed(1)+'K':f.author.followers}
+                    </span>
+                  )}
+                  {f.author?.postCount >= 2 && (
+                    <span style={{ fontSize:9, padding:'2px 7px', borderRadius:20, background:'#e8f5e9', color:'#2e7d32', fontWeight:700 }} title={`该博主共出现${f.author.postCount}次`}>
+                      🔄 频繁×{f.author.postCount}
+                    </span>
+                  )}
                   {f._new && <span style={{ fontSize:9, fontWeight:700, color:'#fff', background:T.accent, padding:'1px 7px', borderRadius:20 }}>NEW</span>}
                   <span style={{ fontSize:10, color:f.d?T.t3:'#f57f17', marginLeft:'auto' }}>{f.d || '日期未知'}</span>
                 </div>
