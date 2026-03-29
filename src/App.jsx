@@ -4,18 +4,42 @@ import postsData from "./data/posts.json";
 import issuesData from "./data/issues.json";
 import meta from "./data/meta.json";
 
-// 配置常量
-const C = { pos:'#34d399', neg:'#f87171', neu:'#64748b', x:'#60a5fa', reddit:'#fbbf24', youtube:'#f87171', tiktok:'#f472b6', instagram:'#e879f9', facebook:'#60a5fa', media:'#a78bfa', forum:'#22d3ee', threads:'#22d3ee' };
+/* ─── 洛克王国画风配色 ─── */
+const C = {
+  pos:'#43a047', neg:'#e53935', neu:'#78909c',
+  x:'#1d9bf0', reddit:'#ff6d00', youtube:'#ff0000', tiktok:'#e040fb', instagram:'#e91e63',
+  facebook:'#1877f2', media:'#7c4dff', forum:'#00bcd4', threads:'#424242'
+};
 const PN = { x:'𝕏', reddit:'Reddit', youtube:'YouTube', tiktok:'TikTok', instagram:'Instagram', facebook:'Facebook', media:'媒体', forum:'论坛', threads:'Threads' };
 const SN = { pos:'正面', neg:'负面', neu:'中性' };
-const bg='#0a0c10', sf='#12151c', bd='#252b3b', bdH='#3a4560', t1='#e4e8f1', t2='#8e99b3', t3='#5a6580';
+const LC = { '英语':'#1d9bf0', '中文':'#e53935', '日语':'#e040fb', '泰语':'#ff9800', '印尼语':'#43a047', '越南语':'#7c4dff', '韩语':'#00bcd4', '西班牙语':'#ff6d00', '德语':'#78909c' };
+
+/* ─── 全局样式 token ─── */
+const T = {
+  bg: '#f0f7ff',            // 淡天蓝背景
+  card: '#ffffff',          // 白色卡片
+  cardAlt: '#f8fbff',       // 浅蓝卡片
+  border: '#d6e4f0',        // 淡蓝灰边框
+  borderLight: '#e8f0fe',
+  hero: 'linear-gradient(135deg, #42a5f5 0%, #7e57c2 50%, #66bb6a 100%)', // 天蓝→紫→绿
+  accent: '#42a5f5',        // 天蓝主色
+  accent2: '#66bb6a',       // 草绿辅色
+  accent3: '#ffb74d',       // 暖橙点缀
+  t1: '#1a237e',            // 深蓝文字
+  t2: '#546e7a',            // 灰蓝二级文字
+  t3: '#90a4ae',            // 浅灰三级
+  radius: 16,
+  radiusSm: 10,
+  shadow: '0 2px 12px rgba(66,165,245,0.08)',
+  shadowHover: '0 4px 20px rgba(66,165,245,0.15)',
+  font: "'Noto Sans SC', system-ui, -apple-system, sans-serif",
+};
 
 export default function App() {
   const posts = postsData;
   const issues = issuesData;
   const [filter, setFilter] = useState("all");
 
-  // 格式化上次扫描时间
   const lastScanText = useMemo(() => {
     if (!meta.lastScan) return '未知';
     try {
@@ -28,208 +52,230 @@ export default function App() {
   const posN = posts.filter(x => x.s === "pos").length;
   const negN = posts.filter(x => x.s === "neg").length;
   const neuN = posts.filter(x => x.s === "neu").length;
-  const sentData = [{ name: "正面", value: posN, color: C.pos }, { name: "中性", value: neuN, color: C.neu }, { name: "负面", value: negN, color: C.neg }].filter(x => x.value > 0);
-  const platMap = {}; posts.forEach(x => { platMap[x.p] = (platMap[x.p] || 0) + 1; });
-  const platData = Object.entries(platMap).map(([k, v]) => ({ name: PN[k] || k, value: v, color: C[k] || "#64748b" })).sort((a, b) => b.value - a.value);
-
-  // Language distribution
-  const LC = { '英语':'#60a5fa', '中文':'#f87171', '日语':'#f472b6', '泰语':'#fbbf24', '印尼语':'#34d399', '越南语':'#a78bfa', '韩语':'#22d3ee', '西班牙语':'#fb923c', '德语':'#64748b' };
-  const langMap = {}; posts.forEach(x => { const l = x.l || '未知'; langMap[l] = (langMap[l] || 0) + 1; });
-  const langData = Object.entries(langMap).map(([k, v]) => ({ name: k, value: v, color: LC[k] || "#64748b" })).sort((a, b) => b.value - a.value);
+  const sentData = [{ name:"正面", value:posN, color:C.pos }, { name:"中性", value:neuN, color:C.neu }, { name:"负面", value:negN, color:C.neg }].filter(x => x.value > 0);
+  const platMap = {}; posts.forEach(x => { platMap[x.p] = (platMap[x.p]||0)+1; });
+  const platData = Object.entries(platMap).map(([k,v]) => ({ name:PN[k]||k, value:v, color:C[k]||"#78909c" })).sort((a,b) => b.value-a.value);
+  const langMap = {}; posts.forEach(x => { const l=x.l||'未知'; langMap[l]=(langMap[l]||0)+1; });
+  const langData = Object.entries(langMap).map(([k,v]) => ({ name:k, value:v, color:LC[k]||"#78909c" })).sort((a,b) => b.value-a.value);
   const allPlats = ["all", ...Object.keys(platMap)];
-  const list = (filter === "all" ? posts : posts.filter(x => x.p === filter)).sort((a, b) => (b.d || "0").localeCompare(a.d || "0"));
+  const list = (filter==="all" ? posts : posts.filter(x => x.p===filter)).sort((a,b) => (b.d||"0").localeCompare(a.d||"0"));
 
-  // Daily growth
   const dailyMap = {};
-  posts.forEach(x => { if (!x.d) return; if (!dailyMap[x.d]) dailyMap[x.d] = { date: x.d, total: 0, pos: 0, neg: 0, neu: 0 }; dailyMap[x.d].total++; dailyMap[x.d][x.s]++; });
-  const dailyData = Object.values(dailyMap).sort((a, b) => a.date.localeCompare(b.date)).map(d => ({ name: d.date.slice(5), ...d }));
+  posts.forEach(x => { if(!x.d) return; if(!dailyMap[x.d]) dailyMap[x.d]={date:x.d,total:0,pos:0,neg:0,neu:0}; dailyMap[x.d].total++; dailyMap[x.d][x.s]++; });
+  const dailyData = Object.values(dailyMap).sort((a,b) => a.date.localeCompare(b.date)).map(d => ({ name:d.date.slice(5), ...d }));
 
+  /* ─── 通用组件 ─── */
+  const Card = ({ children, style }) => (
+    <div style={{ background:T.card, border:`1px solid ${T.border}`, borderRadius:T.radius, boxShadow:T.shadow, overflow:'hidden', ...style }}>{children}</div>
+  );
+  const CardHeader = ({ icon, title, sub }) => (
+    <div style={{ padding:'14px 18px', borderBottom:`1px solid ${T.borderLight}`, display:'flex', alignItems:'center', gap:8 }}>
+      <span style={{ fontSize:16 }}>{icon}</span>
+      <span style={{ fontWeight:700, fontSize:14, color:T.t1 }}>{title}</span>
+      {sub && <span style={{ fontSize:11, color:T.t3, fontWeight:400 }}>{sub}</span>}
+    </div>
+  );
   const Badge = ({ type, children }) => {
-    const m = { pos:[C.pos,"rgba(52,211,153,.1)"], neg:[C.neg,"rgba(248,113,113,.1)"], neu:[C.neu,"rgba(100,116,139,.12)"], critical:[C.neg,"rgba(248,113,113,.1)"], warning:["#fbbf24","rgba(251,191,36,.1)"], watch:[C.x,"rgba(96,165,250,.1)"] };
-    const [fg, bgc] = m[type] || [t3, "rgba(100,116,139,.1)"];
-    return <span style={{ fontSize:10, fontWeight:700, padding:"2px 6px", borderRadius:3, color:fg, background:bgc, whiteSpace:"nowrap" }}>{children}</span>;
+    const m = {
+      pos:[C.pos,'#e8f5e9'], neg:[C.neg,'#ffebee'], neu:[C.neu,'#eceff1'],
+      critical:[C.neg,'#ffebee'], warning:['#f57f17','#fff8e1'], watch:[T.accent,'#e3f2fd']
+    };
+    const [fg, bgc] = m[type] || [T.t3, '#f5f5f5'];
+    return <span style={{ fontSize:10, fontWeight:700, padding:'2px 8px', borderRadius:20, color:fg, background:bgc, whiteSpace:'nowrap' }}>{children}</span>;
   };
+  const HBar = ({ data, labelWidth=56 }) => (
+    <div style={{ display:'flex', flexDirection:'column', gap:5 }}>
+      {data.map((d,i) => {
+        const maxVal = data[0]?.value || 1;
+        const pct = Math.round(d.value/maxVal*100);
+        return (
+          <div key={i} style={{ display:'flex', alignItems:'center', gap:8 }}>
+            <span style={{ fontSize:11, color:T.t2, width:labelWidth, textAlign:'right', flexShrink:0, fontWeight:500 }}>{d.name}</span>
+            <div style={{ flex:1, height:18, background:T.bg, borderRadius:20, overflow:'hidden' }}>
+              <div style={{ height:'100%', width:pct+'%', background:`linear-gradient(90deg, ${d.color}, ${d.color}cc)`, borderRadius:20, minWidth:4, transition:'width 0.6s ease' }}/>
+            </div>
+            <span style={{ fontSize:12, fontWeight:700, color:d.color, fontFamily:'monospace', width:30, textAlign:'right', flexShrink:0 }}>{d.value}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
 
   return (
-    <div style={{ minHeight:"100vh", background:bg, color:t1, fontFamily:"system-ui,-apple-system,'Noto Sans SC',sans-serif", padding:"0 20px 40px", maxWidth:1400, margin:"0 auto" }}>
+    <div style={{ minHeight:'100vh', background:T.bg, color:T.t1, fontFamily:T.font, paddingBottom:40 }}>
 
-      {/* Header */}
-      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 0", borderBottom:"1px solid "+bd, marginBottom:16, flexWrap:"wrap", gap:10 }}>
-        <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-          <div style={{ width:36, height:36, borderRadius:9, background:"linear-gradient(135deg,#60a5fa,#a78bfa)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:800, fontSize:13, color:"#fff", fontFamily:"monospace" }}>RK</div>
-          <div>
-            <div style={{ fontWeight:700, fontSize:14 }}>ROCO KINGDOM: WORLD 实时舆情监控</div>
-            <div style={{ fontSize:10.5, color:t3 }}>覆盖英/日/泰/越/印尼语 · YouTube / TikTok / Reddit / X / 海外媒体</div>
+      {/* ═══ Hero Header ═══ */}
+      <div style={{ background:T.hero, padding:'28px 0 24px', marginBottom:20 }}>
+        <div style={{ maxWidth:1360, margin:'0 auto', padding:'0 24px' }}>
+          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:12 }}>
+            <div style={{ display:'flex', alignItems:'center', gap:14 }}>
+              <div style={{ width:48, height:48, borderRadius:14, background:'rgba(255,255,255,0.2)', backdropFilter:'blur(8px)', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:900, fontSize:18, color:'#fff', fontFamily:'monospace', border:'2px solid rgba(255,255,255,0.3)' }}>RK</div>
+              <div>
+                <div style={{ fontWeight:800, fontSize:20, color:'#fff', letterSpacing:0.5 }}>洛克王国: 世界</div>
+                <div style={{ fontSize:12, color:'rgba(255,255,255,0.8)', marginTop:2 }}>海外舆情实时监控 · Overseas Sentinel</div>
+              </div>
+            </div>
+            <div style={{ display:'flex', alignItems:'center', gap:10, flexWrap:'wrap' }}>
+              <div style={{ background:'rgba(255,255,255,0.15)', backdropFilter:'blur(8px)', border:'1px solid rgba(255,255,255,0.2)', borderRadius:20, padding:'6px 14px', fontSize:11.5, color:'#fff', fontWeight:500 }}>
+                📡 {lastScanText} 更新 {meta.scanCount > 0 && <span>· 第{meta.scanCount}次扫描</span>}
+              </div>
+              <div style={{ background:'rgba(255,255,255,0.15)', backdropFilter:'blur(8px)', border:'1px solid rgba(255,255,255,0.2)', borderRadius:20, padding:'6px 14px', fontSize:11.5, color:'#fff' }}>
+                🌏 覆盖 英/日/泰/越/印尼/西 6种语言
+              </div>
+            </div>
           </div>
         </div>
-        <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap" }}>
-          <div style={{ background:sf, border:"1px solid "+bd, borderRadius:7, padding:"4px 10px", fontSize:11, color:t3 }}>
-            📡 上次更新: {lastScanText} {meta.scanCount > 0 && <span>· 已扫描{meta.scanCount}次</span>}
-          </div>
-        </div>
       </div>
 
-      {/* Methodology */}
-      <div style={{ background:sf, border:"1px solid "+bd, borderRadius:9, padding:"9px 14px", marginBottom:14, fontSize:10.5, color:t2, lineHeight:1.6 }}>
-        <strong style={{ color:t1 }}>ℹ️ 数据说明</strong> · 共 {posts.length} 条海外平台验证帖子，全部附原始链接。数据由 WorkBuddy Skill 自动采集并推送更新。
-      </div>
+      <div style={{ maxWidth:1360, margin:'0 auto', padding:'0 24px' }}>
 
-      {/* KPI */}
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:12, marginBottom:14 }}>
-        {[
-          { label:"已采集帖子", val:posts.length, color:"#60a5fa" },
-          { label:"正面率", val:(posts.length?Math.round(posN/posts.length*100):0)+"%", color:C.pos },
-          { label:"负面率", val:(posts.length?Math.round(negN/posts.length*100):0)+"%", color:C.neg },
-          { label:"活跃议题", val:issues.length, color:"#fbbf24" },
-        ].map((k,i) => (
-          <div key={i} style={{ background:sf, border:"1px solid "+bd, borderRadius:12, padding:"13px 15px" }}>
-            <div style={{ fontSize:9.5, color:t3, textTransform:"uppercase", letterSpacing:1, fontWeight:600, marginBottom:5 }}>{k.label}</div>
-            <div style={{ fontFamily:"monospace", fontSize:24, fontWeight:700, color:k.color }}>{k.val}</div>
-          </div>
-        ))}
-      </div>
-
-      {/* Issues + Charts */}
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:14, marginBottom:14 }}>
-        <div style={{ background:sf, border:"1px solid "+bd, borderRadius:12, overflow:"hidden" }}>
-          <div style={{ padding:"12px 16px", borderBottom:"1px solid "+bd, fontWeight:600, fontSize:13 }}>🔴 核心议题追踪 ({issues.length})</div>
-          <div style={{ padding:12, maxHeight:380, overflowY:"auto" }}>
-            {issues.map((a,i) => {
-              const sevC = a.sev==="critical"?C.neg:a.sev==="warning"?"#fbbf24":"#60a5fa";
-              return (
-                <div key={i} style={{ background:bg, border:"1px solid "+bd, borderRadius:8, padding:11, marginBottom:i<issues.length-1?9:0, borderLeft:"3px solid "+sevC }}>
-                  <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:5, flexWrap:"wrap" }}>
-                    <Badge type={a.sev}>{a.sev==="critical"?"⚡需响应":a.sev==="warning"?"👁关注":"📌背景"}</Badge>
-                    {(a.plats||[]).map((p,j)=><span key={j} style={{ fontSize:9, fontWeight:600, padding:"1px 5px", borderRadius:3, background:"#181c27", color:t2 }}>{p}</span>)}
-                  </div>
-                  <div style={{ fontSize:12.5, fontWeight:600, marginBottom:3 }}>{a.title}</div>
-                  <div style={{ fontSize:10.5, color:t2, lineHeight:1.5, marginBottom:5 }}>{a.desc}</div>
-                  {a.tip && <div style={{ fontSize:10, color:"#fbbf24", fontStyle:"italic" }}>💡 {a.tip}</div>}
+        {/* ═══ KPI Cards ═══ */}
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:14, marginBottom:18 }}>
+          {[
+            { label:'已采集帖子', val:posts.length, icon:'📊', color:T.accent, bg:'#e3f2fd' },
+            { label:'正面率', val:Math.round(posN/posts.length*100)+'%', icon:'😊', color:C.pos, bg:'#e8f5e9' },
+            { label:'负面率', val:Math.round(negN/posts.length*100)+'%', icon:'😟', color:C.neg, bg:'#ffebee' },
+            { label:'活跃议题', val:issues.length, icon:'🔥', color:'#f57f17', bg:'#fff8e1' },
+          ].map((k,i) => (
+            <Card key={i} style={{ padding:'16px 18px', borderLeft:`4px solid ${k.color}` }}>
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+                <div>
+                  <div style={{ fontSize:10, color:T.t3, textTransform:'uppercase', letterSpacing:1.5, fontWeight:600, marginBottom:6 }}>{k.label}</div>
+                  <div style={{ fontFamily:'monospace', fontSize:28, fontWeight:800, color:k.color }}>{k.val}</div>
                 </div>
-              );
-            })}
-          </div>
+                <div style={{ width:42, height:42, borderRadius:12, background:k.bg, display:'flex', alignItems:'center', justifyContent:'center', fontSize:20 }}>{k.icon}</div>
+              </div>
+            </Card>
+          ))}
         </div>
 
-        <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
-          {/* 情绪分布 — 横向进度条 + 大号百分比 */}
-          <div style={{ background:sf, border:"1px solid "+bd, borderRadius:12, overflow:"hidden", flex:1 }}>
-            <div style={{ padding:"12px 16px", borderBottom:"1px solid "+bd, fontWeight:600, fontSize:13 }}>🟢 情绪分布 <span style={{ fontSize:11, fontWeight:400, color:t3 }}>({posts.length}条)</span></div>
-            <div style={{ padding:"14px 16px", display:"flex", flexDirection:"column", gap:12 }}>
+        {/* ═══ 三栏分布图: 情绪 + 渠道 + 语种 ═══ */}
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:14, marginBottom:18 }}>
+          {/* 情绪分布 */}
+          <Card>
+            <CardHeader icon="🎭" title="情绪分布" sub={`${posts.length}条`} />
+            <div style={{ padding:'16px 18px', display:'flex', flexDirection:'column', gap:14 }}>
               {sentData.map((d,i) => {
                 const pct = Math.round(d.value/posts.length*100);
                 return (
                   <div key={i}>
-                    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"baseline", marginBottom:5 }}>
-                      <div style={{ display:"flex", alignItems:"center", gap:6 }}>
-                        <span style={{ width:8, height:8, borderRadius:2, background:d.color, flexShrink:0 }}/>
-                        <span style={{ fontSize:12, fontWeight:600, color:t1 }}>{d.name}</span>
-                      </div>
-                      <div style={{ display:"flex", alignItems:"baseline", gap:4 }}>
-                        <span style={{ fontSize:20, fontWeight:700, color:d.color, fontFamily:"monospace" }}>{pct}%</span>
-                        <span style={{ fontSize:10, color:t3 }}>({d.value}条)</span>
+                    <div style={{ display:'flex', justifyContent:'space-between', alignItems:'baseline', marginBottom:6 }}>
+                      <span style={{ fontSize:13, fontWeight:600, color:T.t1 }}>{d.name}</span>
+                      <div style={{ display:'flex', alignItems:'baseline', gap:4 }}>
+                        <span style={{ fontSize:22, fontWeight:800, color:d.color, fontFamily:'monospace' }}>{pct}%</span>
+                        <span style={{ fontSize:10, color:T.t3 }}>({d.value})</span>
                       </div>
                     </div>
-                    <div style={{ height:6, background:bg, borderRadius:3, overflow:"hidden" }}>
-                      <div style={{ height:"100%", width:pct+"%", background:d.color, borderRadius:3, transition:"width 0.5s ease" }}/>
+                    <div style={{ height:8, background:T.bg, borderRadius:20, overflow:'hidden' }}>
+                      <div style={{ height:'100%', width:pct+'%', background:`linear-gradient(90deg, ${d.color}, ${d.color}aa)`, borderRadius:20, transition:'width 0.6s ease' }}/>
                     </div>
                   </div>
                 );
               })}
             </div>
-          </div>
+          </Card>
 
-          {/* 渠道分布 — 横向柱状图 */}
-          <div style={{ background:sf, border:"1px solid "+bd, borderRadius:12, overflow:"hidden", flex:1 }}>
-            <div style={{ padding:"12px 16px", borderBottom:"1px solid "+bd, fontWeight:600, fontSize:13 }}>🔵 渠道分布 <span style={{ fontSize:11, fontWeight:400, color:t3 }}>({Object.keys(platMap).length}个平台)</span></div>
-            <div style={{ padding:"10px 16px", display:"flex", flexDirection:"column", gap:6 }}>
-              {platData.map((d,i) => {
-                const maxVal = platData[0]?.value || 1;
-                const barPct = Math.round(d.value/maxVal*100);
+          {/* 渠道分布 */}
+          <Card>
+            <CardHeader icon="📱" title="渠道分布" sub={`${Object.keys(platMap).length}个平台`} />
+            <div style={{ padding:'12px 18px' }}><HBar data={platData} labelWidth={62} /></div>
+          </Card>
+
+          {/* 语种分布 */}
+          <Card>
+            <CardHeader icon="🌐" title="语种分布" sub={`${langData.length}种语言`} />
+            <div style={{ padding:'12px 18px' }}><HBar data={langData} labelWidth={52} /></div>
+          </Card>
+        </div>
+
+        {/* ═══ 核心议题 + 每日趋势 ═══ */}
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14, marginBottom:18 }}>
+          {/* 核心议题 */}
+          <Card>
+            <CardHeader icon="🚨" title="核心议题追踪" sub={`${issues.length}个`} />
+            <div style={{ padding:14, maxHeight:440, overflowY:'auto' }}>
+              {issues.map((a,i) => {
+                const sevC = a.sev==='critical'?C.neg:a.sev==='warning'?'#f57f17':T.accent;
                 return (
-                  <div key={i} style={{ display:"flex", alignItems:"center", gap:8 }}>
-                    <span style={{ fontSize:10, color:t2, width:62, textAlign:"right", flexShrink:0, fontWeight:500 }}>{d.name}</span>
-                    <div style={{ flex:1, height:14, background:bg, borderRadius:3, overflow:"hidden", position:"relative" }}>
-                      <div style={{ height:"100%", width:barPct+"%", background:d.color, borderRadius:3, minWidth:2, transition:"width 0.5s ease" }}/>
+                  <div key={i} style={{ background:T.cardAlt, border:`1px solid ${T.borderLight}`, borderRadius:T.radiusSm, padding:13, marginBottom:i<issues.length-1?10:0, borderLeft:`4px solid ${sevC}` }}>
+                    <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:6, flexWrap:'wrap' }}>
+                      <Badge type={a.sev}>{a.sev==='critical'?'⚡ 需响应':a.sev==='warning'?'👁 关注':'📌 背景'}</Badge>
+                      {(a.plats||[]).map((p,j)=><span key={j} style={{ fontSize:9, fontWeight:600, padding:'2px 6px', borderRadius:20, background:'#e8eaf6', color:'#3f51b5' }}>{p}</span>)}
                     </div>
-                    <span style={{ fontSize:11, fontWeight:700, color:d.color, fontFamily:"monospace", width:28, textAlign:"right", flexShrink:0 }}>{d.value}</span>
+                    <div style={{ fontSize:13, fontWeight:700, color:T.t1, marginBottom:4 }}>{a.title}</div>
+                    <div style={{ fontSize:11, color:T.t2, lineHeight:1.6, marginBottom:6 }}>{a.desc}</div>
+                    {a.tip && <div style={{ fontSize:10.5, color:'#f57f17', fontWeight:500, background:'#fff8e1', padding:'4px 8px', borderRadius:6, display:'inline-block' }}>💡 {a.tip}</div>}
                   </div>
                 );
               })}
             </div>
-          </div>
+          </Card>
 
-          {/* 语种分布 — 横向柱状图 */}
-          <div style={{ background:sf, border:"1px solid "+bd, borderRadius:12, overflow:"hidden", flex:1 }}>
-            <div style={{ padding:"12px 16px", borderBottom:"1px solid "+bd, fontWeight:600, fontSize:13 }}>🌐 语种分布 <span style={{ fontSize:11, fontWeight:400, color:t3 }}>({langData.length}种语言)</span></div>
-            <div style={{ padding:"10px 16px", display:"flex", flexDirection:"column", gap:6 }}>
-              {langData.map((d,i) => {
-                const maxVal = langData[0]?.value || 1;
-                const barPct = Math.round(d.value/maxVal*100);
-                return (
-                  <div key={i} style={{ display:"flex", alignItems:"center", gap:8 }}>
-                    <span style={{ fontSize:10, color:t2, width:52, textAlign:"right", flexShrink:0, fontWeight:500 }}>{d.name}</span>
-                    <div style={{ flex:1, height:14, background:bg, borderRadius:3, overflow:"hidden", position:"relative" }}>
-                      <div style={{ height:"100%", width:barPct+"%", background:d.color, borderRadius:3, minWidth:2, transition:"width 0.5s ease" }}/>
-                    </div>
-                    <span style={{ fontSize:11, fontWeight:700, color:d.color, fontFamily:"monospace", width:28, textAlign:"right", flexShrink:0 }}>{d.value}</span>
-                  </div>
-                );
-              })}
+          {/* 每日趋势 */}
+          <Card>
+            <CardHeader icon="📈" title="舆情每日趋势" sub={`${dailyData.length}个活跃日`} />
+            <div style={{ padding:'12px 16px', height:420 }}>
+              <ResponsiveContainer>
+                <BarChart data={dailyData} barGap={1} barCategoryGap="18%">
+                  <CartesianGrid strokeDasharray="3 3" stroke={T.borderLight} vertical={false} />
+                  <XAxis dataKey="name" tick={{ fill:T.t3, fontSize:10 }} axisLine={{ stroke:T.border }} tickLine={false} angle={-35} textAnchor="end" height={50} />
+                  <YAxis tick={{ fill:T.t3, fontSize:10 }} axisLine={false} tickLine={false} allowDecimals={false} width={28} />
+                  <Tooltip contentStyle={{ background:'#fff', border:`1px solid ${T.border}`, borderRadius:8, fontSize:11, color:T.t1, boxShadow:T.shadow }} />
+                  <Bar dataKey="pos" name="正面" stackId="a" fill={C.pos} radius={[0,0,0,0]} />
+                  <Bar dataKey="neu" name="中性" stackId="a" fill={C.neu} />
+                  <Bar dataKey="neg" name="负面" stackId="a" fill={C.neg} radius={[3,3,0,0]} />
+                </BarChart>
+              </ResponsiveContainer>
             </div>
+          </Card>
+        </div>
+
+        {/* ═══ 动态流 ═══ */}
+        <Card style={{ marginBottom:18 }}>
+          <CardHeader icon="🔗" title="动态流" sub={`${posts.length}条 · 全部附原始链接`} />
+          <div style={{ display:'flex', gap:5, padding:'10px 18px 0', flexWrap:'wrap' }}>
+            {allPlats.map(pp => {
+              const cnt = pp==='all'?posts.length:posts.filter(x=>x.p===pp).length;
+              const active = filter===pp;
+              return <button key={pp} onClick={()=>setFilter(pp)} style={{
+                padding:'4px 12px', borderRadius:20, fontSize:11, fontWeight:600, cursor:'pointer',
+                border:`1.5px solid ${active?T.accent:'transparent'}`,
+                background:active?'#e3f2fd':'#f5f7fa', color:active?T.accent:T.t3,
+                fontFamily:'inherit', transition:'all 0.2s'
+              }}>{pp==='all'?'全部':(PN[pp]||pp)} ({cnt})</button>;
+            })}
           </div>
-        </div>
-      </div>
-
-      {/* Daily Growth Chart */}
-      <div style={{ background:sf, border:"1px solid "+bd, borderRadius:12, overflow:"hidden", marginBottom:14 }}>
-        <div style={{ padding:"12px 16px", borderBottom:"1px solid "+bd, fontWeight:600, fontSize:13 }}>📊 舆情每日增长 <span style={{ fontSize:11, fontWeight:400, color:t3 }}>({dailyData.length}个活跃日)</span></div>
-        <div style={{ padding:"12px 16px", height:260 }}>
-          <ResponsiveContainer>
-            <BarChart data={dailyData} barGap={1} barCategoryGap="20%">
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e2333" vertical={false} />
-              <XAxis dataKey="name" tick={{ fill:t3, fontSize:10 }} axisLine={{ stroke:bd }} tickLine={false} angle={-35} textAnchor="end" height={50} />
-              <YAxis tick={{ fill:t3, fontSize:10 }} axisLine={false} tickLine={false} allowDecimals={false} width={28} />
-              <Tooltip contentStyle={{ background:"#181c27", border:"1px solid "+bd, borderRadius:6, fontSize:11, color:t1 }} />
-              <Bar dataKey="pos" name="正面" stackId="a" fill="#34d399" />
-              <Bar dataKey="neu" name="中性" stackId="a" fill="#64748b" />
-              <Bar dataKey="neg" name="负面" stackId="a" fill="#f87171" radius={[2,2,0,0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      {/* Feed */}
-      <div style={{ background:sf, border:"1px solid "+bd, borderRadius:12, overflow:"hidden", marginBottom:14 }}>
-        <div style={{ padding:"12px 16px", borderBottom:"1px solid "+bd, fontWeight:600, fontSize:13 }}>🔗 动态流 <span style={{ fontSize:11, fontWeight:400, color:t3 }}>{posts.length}条 · 全部附原始链接</span></div>
-        <div style={{ display:"flex", gap:4, padding:"8px 14px 0", flexWrap:"wrap" }}>
-          {allPlats.map(pp => {
-            const cnt = pp==="all"?posts.length:posts.filter(x=>x.p===pp).length;
-            return <button key={pp} onClick={()=>setFilter(pp)} style={{ padding:"3px 9px", borderRadius:4, fontSize:10.5, fontWeight:600, cursor:"pointer", border:"1px solid "+(filter===pp?"#60a5fa":"transparent"), background:filter===pp?"rgba(96,165,250,.1)":"transparent", color:filter===pp?"#60a5fa":t3, fontFamily:"inherit" }}>{pp==="all"?"全部":(PN[pp]||pp)} ({cnt})</button>;
-          })}
-        </div>
-        <div style={{ maxHeight:500, overflowY:"auto", padding:"8px 14px 12px", display:"flex", flexDirection:"column", gap:7 }}>
-          {list.map((f,i) => (
-            <div key={i} style={{ background:bg, border:"1px solid "+(f._new?bdH:bd), borderRadius:7, padding:"9px 11px", borderLeft:f._new?"3px solid #60a5fa":"3px solid transparent" }}>
-              <div style={{ display:"flex", alignItems:"center", gap:5, marginBottom:4 }}>
-                <span style={{ fontSize:10, fontWeight:700, padding:"2px 5px", borderRadius:3, background:(C[f.p]||"#64748b")+"1e", color:C[f.p]||t2 }}>{PN[f.p]||f.p}</span>
-                <span style={{ fontSize:11.5, fontWeight:500, color:t2 }}>{f.u}</span>
-                {f._new && <span style={{ fontSize:9, fontWeight:700, color:"#60a5fa", background:"rgba(96,165,250,.1)", padding:"1px 5px", borderRadius:3 }}>NEW</span>}
-                <span style={{ fontSize:10, color:f.d?t3:'#fbbf24', marginLeft:"auto" }}>{f.d || '日期未知'}</span>
+          <div style={{ maxHeight:520, overflowY:'auto', padding:'10px 18px 16px', display:'flex', flexDirection:'column', gap:8 }}>
+            {list.map((f,i) => (
+              <div key={i} style={{
+                background:f._new?'#f3f8ff':T.cardAlt, border:`1px solid ${f._new?'#bbdefb':T.borderLight}`,
+                borderRadius:T.radiusSm, padding:'11px 14px', borderLeft:f._new?`4px solid ${T.accent}`:'4px solid transparent',
+                transition:'box-shadow 0.2s'
+              }}>
+                <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:5 }}>
+                  <span style={{ fontSize:10, fontWeight:700, padding:'2px 8px', borderRadius:20, background:(C[f.p]||'#78909c')+'18', color:C[f.p]||T.t2 }}>{PN[f.p]||f.p}</span>
+                  <span style={{ fontSize:12, fontWeight:600, color:T.t2 }}>{f.u}</span>
+                  {f._new && <span style={{ fontSize:9, fontWeight:700, color:'#fff', background:T.accent, padding:'1px 7px', borderRadius:20 }}>NEW</span>}
+                  <span style={{ fontSize:10, color:f.d?T.t3:'#f57f17', marginLeft:'auto' }}>{f.d || '日期未知'}</span>
+                </div>
+                <div style={{ fontSize:13, color:T.t1, lineHeight:1.6, marginBottom:6 }}>{f.t}</div>
+                <div style={{ display:'flex', alignItems:'center', gap:6, flexWrap:'wrap' }}>
+                  <Badge type={f.s}>{SN[f.s]||f.s}</Badge>
+                  {f.l && <span style={{ fontSize:9.5, padding:'2px 8px', borderRadius:20, background:'#e8eaf6', color:'#5c6bc0', fontWeight:500 }}>{f.l}</span>}
+                  <a href={f.url} target="_blank" rel="noopener noreferrer" style={{
+                    marginLeft:'auto', fontSize:10.5, color:T.accent, textDecoration:'none',
+                    background:'#e3f2fd', padding:'3px 10px', borderRadius:20, fontWeight:600
+                  }}>🔗 来源</a>
+                </div>
               </div>
-              <div style={{ fontSize:12.5, color:t1, lineHeight:1.5, marginBottom:5 }}>{f.t}</div>
-              <div style={{ display:"flex", alignItems:"center", gap:5, flexWrap:"wrap" }}>
-                <Badge type={f.s}>{SN[f.s]||f.s}</Badge>
-                {f.l && <span style={{ fontSize:9.5, padding:"1px 5px", borderRadius:3, background:"#181c27", color:t3 }}>{f.l}</span>}
-                <a href={f.url} target="_blank" rel="noopener noreferrer" style={{ marginLeft:"auto", fontSize:10, color:"#60a5fa", textDecoration:"none", background:"rgba(96,165,250,.08)", padding:"2px 7px", borderRadius:3, fontWeight:500 }}>🔗 来源</a>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+            ))}
+          </div>
+        </Card>
 
-      <div style={{ textAlign:"center", padding:"12px 0", fontSize:9.5, color:t3 }}>
-        Roco Kingdom: World Overseas Sentinel · {posts.length}条海外验证数据 · 覆盖英/日/泰/越/印尼语 · Powered by WorkBuddy Skill
+        {/* ═══ Footer ═══ */}
+        <div style={{ textAlign:'center', padding:'16px 0', fontSize:10, color:T.t3 }}>
+          🌟 洛克王国: 世界 Overseas Sentinel · {posts.length}条海外验证数据 · Powered by WorkBuddy Skill
+        </div>
       </div>
     </div>
   );
