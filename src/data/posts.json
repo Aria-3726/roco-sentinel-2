@@ -1362,7 +1362,6 @@
     "s": "pos",
     "l": "中文",
     "url": "https://www.reddit.com/r/adeptless/comments/1s3swy2/roco_kingdom_world_official_release_gameplay/",
-    "_new": true,
     "stats": {
       "views": 0,
       "likes": 1,
@@ -1381,7 +1380,6 @@
     "s": "pos",
     "l": "中文",
     "url": "https://www.reddit.com/r/MonsterTamerWorld/comments/1f2ir87/roco_kingdom_gameplay_information/",
-    "_new": true,
     "stats": {
       "views": 0,
       "likes": 7,
@@ -1401,7 +1399,6 @@
     "s": "pos",
     "l": "中文",
     "url": "https://www.youtube.com/watch?v=_vTaohZ_dPM",
-    "_new": true,
     "stats": {
       "views": 161,
       "likes": 7,
@@ -1419,7 +1416,6 @@
     "s": "pos",
     "l": "中文",
     "url": "https://www.youtube.com/watch?v=ogUdtCfSVxA",
-    "_new": true,
     "stats": {
       "views": 3568,
       "likes": 51,
@@ -1436,8 +1432,7 @@
     "d": "2026-03-26",
     "s": "pos",
     "l": "中文",
-    "url": "https://www.instagram.com/p/DR3er3eGHFh/",
-    "_new": true
+    "url": "https://www.instagram.com/p/DR3er3eGHFh/"
   },
   {
     "p": "instagram",
@@ -1446,8 +1441,7 @@
     "d": "2025-12-04",
     "s": "pos",
     "l": "英语",
-    "url": "https://www.instagram.com/p/DR1SXUbk7pc/",
-    "_new": true
+    "url": "https://www.instagram.com/p/DR1SXUbk7pc/"
   },
   {
     "p": "youtube",
@@ -1457,7 +1451,6 @@
     "s": "pos",
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=EIWFHL6Dz7M",
-    "_new": true,
     "stats": {
       "views": 407,
       "likes": 14,
@@ -1476,7 +1469,6 @@
     "s": "pos",
     "l": "中文",
     "url": "https://www.facebook.com/gamerbraves/posts/tencents-roco-kingdom-world-launches-march-26-2026-/1381928403945460/",
-    "_new": true,
     "author": {
       "postCount": 2
     }
@@ -1489,7 +1481,6 @@
     "s": "neu",
     "l": "中文",
     "url": "https://www.lagofast.com/en/blog/download-roco-kingdom-world-cn/",
-    "_new": true,
     "author": {
       "postCount": 2
     }
@@ -1502,7 +1493,6 @@
     "s": "pos",
     "l": "中文",
     "url": "https://www.reddit.com/r/MonsterTamerWorld/comments/1s40qnq/roco_kingdom_world_list_of_monsters/",
-    "_new": true,
     "stats": {
       "views": 0,
       "likes": 14,
@@ -1521,8 +1511,7 @@
     "d": "2026-03-26",
     "s": "neu",
     "l": "中文",
-    "url": "https://roco-kingdom-mobile.en.uptodown.com/android",
-    "_new": true
+    "url": "https://roco-kingdom-mobile.en.uptodown.com/android"
   },
   {
     "p": "youtube",
@@ -1532,7 +1521,6 @@
     "s": "neu",
     "l": "中文",
     "url": "https://www.youtube.com/shorts/jlPzet60LyU",
-    "_new": true,
     "stats": {
       "views": 1868,
       "likes": 36,
@@ -1542,5 +1530,45 @@
       "followers": 415000,
       "postCount": 2
     }
+  },
+  {
+    "p": "media",
+    "u": "Kultur(日)",
+    "t": "[日语] テンセントのポケモン風RPG「ロコキングダム」中国で正式サービス開始。無ガチャが評価される。",
+    "d": "2026-03-26",
+    "s": "pos",
+    "l": "日语",
+    "url": "https://kultur.jp/roco-kingdom-world-china-launch/",
+    "_new": true
+  },
+  {
+    "p": "media",
+    "u": "神ゲー攻略(日)",
+    "t": "[日語] 配信日情報まとめ。海外版2025年予定も具体日未定。ポケモン風オープンワールドとして紹介。",
+    "d": "2025-12-12",
+    "s": "neu",
+    "l": "日语",
+    "url": "https://kamigame.jp/game/107673/",
+    "_new": true
+  },
+  {
+    "p": "media",
+    "u": "Gildor's Forums",
+    "t": "[UE4逆向] UE Viewer已支持洛克王国世界资产解包，社区持续更新对抗定制加密。",
+    "d": "2026-03-24",
+    "s": "neu",
+    "l": "中文",
+    "url": "https://www.gildor.org/smf/index.php?topic=9182.0",
+    "_new": true
+  },
+  {
+    "p": "media",
+    "u": "NewsGlobeNow",
+    "t": "[数据] 上线13小时新增1500万用户，登顶iOS畅销榜Top3，预注册6000万。",
+    "d": "2026-03-27",
+    "s": "pos",
+    "l": "中文",
+    "url": "https://www.newsglobenow.com/new298957.html",
+    "_new": true
   }
 ]

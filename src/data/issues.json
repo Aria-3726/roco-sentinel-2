@@ -2,43 +2,50 @@
   {
     "title": "⬆️ 锁区不满持续发酵——海外玩家求全球版",
     "sev": "critical",
-    "desc": "共21条相关帖子，涉及7个平台。日本/美国玩家实测遇到\"地区未开放\"提示，网易UU、HiCN、LagoFast等多家加速器发布绕过指南。Reddit r/gachagaming、r/MonsterTamerWorld持续有人问全球版何时上线。TapTap国际版8.3分但无法下载。最新帖子: 2026-03-27。信号持续强化⬆️",
-    "plats": ["Reddit", "TapTap Global", "媒体", "YouTube", "TikTok"],
-    "tip": "建议尽快发布全球化路线图或时间窗口，海外玩家需求真实且强烈"
+    "desc": "共23条相关帖子，涉及8个平台(+2新帖)。新增日本神ゲー攻略收录但标注\"海外版未定\"；Kultur.jp日本读者评论\"希望来日本\"。Reddit/TapTap/YouTube/TikTok持续有人问全球版。LagoFast等3家加速器发布绕过指南。信号持续强化⬆️ 最新: 2026-03-28",
+    "plats": ["Reddit", "TapTap Global", "媒体", "YouTube", "TikTok", "日语媒体"],
+    "tip": "日本玩家关注度正在上升，建议优先考虑日/东南亚区域测试或公布全球化路线图"
   },
   {
     "title": "⬆️ 宝可梦对比成海外核心叙事——法律风险联想",
     "sev": "warning",
-    "desc": "共20条相关帖子。YouTube大量视频直接以\"Palworld Mobile\"\"Pokemon MMO\"为标题吸引流量(Dramic、Capital Gamer7、Gryver等)。ResetEra讨论Nintendo可能起诉。TikTok/Reddit也有宝可梦相似度讨论。最新帖子: 2026-03-28。作为流量密码持续被使用⬆️",
-    "plats": ["YouTube", "TikTok", "Reddit", "ResetEra"],
-    "tip": "短期可借势\"Pokemon-like\"标签吸引关注，长期需准备IP差异化声明以应对法律风险"
+    "desc": "共22条相关帖子。YouTube大量视频以\"Palworld Mobile\"\"Pokemon MMO\"为标题(Dramic、Capital Gamer7等)。日本Kultur.jp读者评论称\"不像帕鲁那样露骨模仿\"但仍有争议。日语神ゲー攻略直接定位为\"ポケモン風\"。ResetEra/TikTok持续讨论。信号持续强化⬆️ 最新: 2026-03-28",
+    "plats": ["YouTube", "TikTok", "Reddit", "ResetEra", "日语媒体"],
+    "tip": "日本市场对此尤其敏感，全球化前需准备IP差异化声明和法务风控预案"
+  },
+  {
+    "title": "🆕 上线数据亮眼——13小时1500万用户+iOS畅销Top3",
+    "sev": "watch",
+    "desc": "共3条相关帖子。NewsGlobeNow报道上线13小时新增1500万用户、iOS畅销Top3。36Kr英文版深度分析\"预注册超6000万、iOS畅销前十\"。信号: 新发现🆕 最新: 2026-03-27",
+    "plats": ["媒体"],
+    "tip": "可主动向海外媒体提供上线数据PR稿，强化产品热度叙事以推动全球化预期"
   },
   {
     "title": "➡️ PV抄袭争议（原神/哈利波特）热度下降",
-    "sev": "warning",
-    "desc": "共5条相关帖子(2条neg)。日本博主@chibi0108指出PV卡牌设计疑似原神愚人众图标。Reddit r/Genshin_Impact有1条讨论。但最新帖子停留在2026-03-23，上线后6天无新增，信号趋于稳定➡️",
+    "sev": "watch",
+    "desc": "共5条相关帖子(2条neg)。日本博主@chibi0108指出PV卡牌设计疑似原神图标。Reddit r/Genshin_Impact有1条讨论。最新帖子停留在2026-03-23，上线后7天无新增，信号趋于稳定➡️",
     "plats": ["X", "Reddit"],
-    "tip": "议题热度自然消退中，但若有新PV/更新需提前审查设计元素避免二次发酵"
+    "tip": "议题热度自然消退中，若有新PV/更新需提前审查设计元素避免二次发酵"
   },
   {
-    "title": "⬇️ Beta脱衣Bug事件基本平息",
+    "title": "⬇️ Beta脱衣Bug事件已平息",
     "sev": "watch",
-    "desc": "共5条相关帖子(4条中性)。GamingOnPhone、GameFAQs、泰国GameMonday曾报道。官方已修复，最新帖子停留在2026-03-25，上线后无新增讨论。信号明显减弱⬇️",
+    "desc": "共5条相关帖子(4条中性)。GamingOnPhone、GameFAQs、泰国GameMonday曾报道。官方已修复，最新帖子停留在2026-03-25，上线后5天无新增。信号明显减弱⬇️",
     "plats": ["媒体", "X"],
-    "tip": "事件已平息，继续保持监控即可，无需主动响应"
+    "tip": "事件已平息，继续保持监控即可"
   },
   {
-    "title": "⬆️ \"不卖精灵\"商业模式获海外积极认可",
+    "title": "⬆️ \"不卖精灵\"商业模式获海外+日本积极认可",
     "sev": "watch",
-    "desc": "共9条相关帖子(5条正面)。36Kr英文版深度报道\"不卖精灵不卖数值靠时装盈利\"。MobileGamer强调\"无抽卡\"。但Reddit r/gachagaming和r/MonsterTamerWorld仍有P2W隐忧(3条neg)。最新帖子: 2026-03-27⬆️",
-    "plats": ["媒体", "Reddit", "论坛"],
-    "tip": "可将\"400+精灵免费捉、无P2W\"作为全球化宣传核心卖点，持续释放公平性信号"
+    "desc": "共11条相关帖子(+2新)。Kultur.jp日本读者特别赞赏\"ガチャなし(无抽卡)\"。36Kr英文版深度报道\"不卖精灵靠时装盈利\"。MobileGamer/LagoFast强调\"无P2W\"。但Reddit仍有P2W隐忧(3条neg)。最新: 2026-03-27⬆️",
+    "plats": ["媒体", "Reddit", "论坛", "日语媒体"],
+    "tip": "\"无抽卡\"是全球化核心卖点，日本市场可重点围绕此差异化进行宣传"
   },
   {
-    "title": "🆕 海外YouTube创作者自发产出内容",
+    "title": "🆕 UE4逆向社区已支持资产解包——IP安全隐患",
     "sev": "watch",
-    "desc": "共43条YouTube帖子(占总数38%)，覆盖英/越/日/西/中/印尼6种语言。上线后3天(3/26-3/28)集中爆发25+条新视频。Gaming Mobile、Pollingo、Adeptless等频道持续更新gameplay系列。信号: 新发现🆕",
-    "plats": ["YouTube"],
-    "tip": "可主动联系活跃创作者提供素材/提前体验资格，将自发流量转化为官方合作"
+    "desc": "共1条帖子。Gildor's Forums(UE Viewer官方论坛)已更新洛克王国世界解包工具，支持资产提取。2026-03-24最新更新对抗定制加密。信号: 新发现🆕",
+    "plats": ["论坛"],
+    "tip": "关注UE4逆向社区动态，评估资产泄露对IP保护的影响，考虑加固加密方案"
   }
 ]
