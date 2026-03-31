@@ -12,7 +12,7 @@ const C = {
 };
 const PN = { x:'𝕏', reddit:'Reddit', youtube:'YouTube', tiktok:'TikTok', instagram:'Instagram', facebook:'Facebook', media:'媒体', forum:'论坛', threads:'Threads' };
 const SN = { pos:'正面', neg:'负面', neu:'中性' };
-const LC = { '英语':'#1d9bf0', '中文':'#e53935', '日语':'#e040fb', '泰语':'#ff9800', '印尼语':'#43a047', '越南语':'#7c4dff', '韩语':'#00bcd4', '西班牙语':'#ff6d00', '德语':'#78909c' };
+const LC = { '英语':'#1d9bf0', '中文':'#e53935', '日语':'#e040fb', '泰语':'#ff9800', '印尼语':'#43a047', '越南语':'#7c4dff', '韩语':'#00bcd4', '西班牙语':'#ff6d00', '德语':'#78909c', '葡萄牙语':'#2e7d32', '法语':'#5c6bc0', '意大利语':'#00897b', '阿拉伯语':'#6d4c41', '土耳其语':'#c62828', '俄语':'#1565c0' };
 
 /* ─── 全局样式 token ─── */
 const T = {
@@ -141,7 +141,7 @@ export default function App() {
                 📡 {lastScanText} 更新 {meta.scanCount > 0 && <span>· 第{meta.scanCount}次扫描</span>}
               </div>
               <div style={{ background:'rgba(255,255,255,0.15)', backdropFilter:'blur(8px)', border:'1px solid rgba(255,255,255,0.2)', borderRadius:20, padding:'6px 14px', fontSize:11.5, color:'#fff' }}>
-                🌏 覆盖 英/日/泰/越/印尼/西 6种语言
+                🌏 覆盖 英/日/韩/泰/越/印尼/西/葡/法/德/意/阿/土/俄 {new Set(posts.map(p=>p.l).filter(Boolean)).size}种语言
               </div>
             </div>
           </div>
