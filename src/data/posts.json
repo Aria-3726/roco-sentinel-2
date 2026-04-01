@@ -2145,8 +2145,7 @@
     "d": "2026-03-27",
     "s": "neu",
     "l": "中文",
-    "url": "https://uu.163.com/blog/roco-kingdom-unable-play-net.html",
-    "_new": true
+    "url": "https://uu.163.com/blog/roco-kingdom-unable-play-net.html"
   },
   {
     "p": "media",
@@ -2155,8 +2154,7 @@
     "d": "2026-03-27",
     "s": "neu",
     "l": "中文",
-    "url": "https://uu.163.com/blog/roco-kingdom-not-support-net.html",
-    "_new": true
+    "url": "https://uu.163.com/blog/roco-kingdom-not-support-net.html"
   },
   {
     "p": "media",
@@ -2165,8 +2163,7 @@
     "d": "2026-03-27",
     "s": "neu",
     "l": "繁体中文",
-    "url": "https://uu.163.com/cht/blog/roco-kingdom-unable-play-net.html",
-    "_new": true
+    "url": "https://uu.163.com/cht/blog/roco-kingdom-unable-play-net.html"
   },
   {
     "p": "media",
@@ -2175,7 +2172,282 @@
     "d": "2026-03-31",
     "s": "neu",
     "l": "中文",
-    "url": "https://uu.163.com/blog/roco-kingdom-unable-to-enter-net.html",
+    "url": "https://uu.163.com/blog/roco-kingdom-unable-to-enter-net.html"
+  },
+  {
+    "p": "x",
+    "u": "@LuisAlvertoAlv6",
+    "t": "【Roco Kingdom 】 The beta reached the top spot on Bilibili China... Roco Kingdom...",
+    "d": "2026-03-31",
+    "s": "neu",
+    "l": "英语",
+    "url": "https://x.com/LuisAlvertoAlv6/status/2039061521561530740",
+    "stats": {
+      "likes": 1
+    },
+    "_new": true
+  },
+  {
+    "p": "x",
+    "u": "@MxltYRVt2qbz8Cp",
+    "t": "I'm Chinese, and I have extra accounts for Roco Kingdom. If anyone wants to play...",
+    "d": "2026-03-31",
+    "s": "neu",
+    "l": "英语",
+    "url": "https://x.com/MxltYRVt2qbz8Cp/status/2039023091997937889",
+    "stats": {
+      "likes": 1
+    },
+    "_new": true
+  },
+  {
+    "p": "x",
+    "u": "@IrpanXgame",
+    "t": "Berburu & Menangkap Monster!! Roco Kingdom: World - Gameplay Mobile (Android/iOS...",
+    "d": "2026-03-31",
+    "s": "pos",
+    "l": "印尼语",
+    "url": "https://x.com/IrpanXgame/status/2038946437854359669",
+    "_new": true
+  },
+  {
+    "p": "youtube",
+    "u": "SacredAlmighty",
+    "t": "英语YouTuber称洛克王国世界是\"最好的新开放世界宝可梦体验\"",
+    "d": "2026-03-30",
+    "s": "pos",
+    "l": "中文",
+    "url": "https://www.youtube.com/watch?v=kVJVCaVoR4E",
+    "_new": true
+  },
+  {
+    "p": "youtube",
+    "u": "Pollingo",
+    "t": "Pollingo介绍洛克王国世界——比肩宝可梦的新作，西班牙语评测",
+    "d": "2026-03-29",
+    "s": "neu",
+    "l": "西班牙语",
+    "url": "https://www.youtube.com/watch?v=oK3IvbwzHy0",
+    "_new": true
+  },
+  {
+    "p": "youtube",
+    "u": "Review Game",
+    "t": "越南博主Review Game发布洛克王国世界宠物Tier List攻略",
+    "d": "2026-03-30",
+    "s": "neu",
+    "l": "越南语",
+    "url": "https://www.youtube.com/watch?v=X8F_HBx-xY4",
+    "_new": true
+  },
+  {
+    "p": "youtube",
+    "u": "Broccoli Gaming Channel",
+    "t": "🔴 ROCO KINGDOM: WORLD gameplay - walkthrough part 3 android ",
+    "d": "2026-03-31",
+    "s": "neu",
+    "l": "英语",
+    "url": "https://www.youtube.com/watch?v=NG-wH0z9FLs",
+    "_new": true
+  },
+  {
+    "p": "youtube",
+    "u": "Broccoli Gaming Channel",
+    "t": "ROCO KINGDOM: WORLD gameplay - walkthrough part 2 android iO",
+    "d": "2026-03-29",
+    "s": "neu",
+    "l": "英语",
+    "url": "https://www.youtube.com/watch?v=KFIZ7g23U8k",
+    "_new": true
+  },
+  {
+    "p": "youtube",
+    "u": "覇権ゲーム探しの旅",
+    "t": "日本YouTuber实机体验洛克王国世界——\"中国的宝可梦人气作\"",
+    "d": "2026-03-26",
+    "s": "pos",
+    "l": "日语",
+    "url": "https://www.youtube.com/watch?v=UVpmMgMAdZ8",
+    "_new": true
+  },
+  {
+    "p": "youtube",
+    "u": "新游喷喷",
+    "t": "中文YouTuber新游喷喷评测：\"能玩但无意义内容太多，玩力竭了\"",
+    "d": "2026-03-28",
+    "s": "neg",
+    "l": "中文",
+    "url": "https://www.youtube.com/watch?v=Z2WFAq-j71w",
+    "_new": true
+  },
+  {
+    "p": "youtube",
+    "u": "Gaming Mobile",
+    "t": "早期测试gameplay视频——洛克王国被称为\"Like Pokemon\"",
+    "d": "2024-08-20",
+    "s": "neu",
+    "l": "英语",
+    "url": "https://www.youtube.com/watch?v=Dr4um2PPqCk",
+    "_new": true
+  },
+  {
+    "p": "youtube",
+    "u": "Solo Pro",
+    "t": "\"新Palworld风格游戏来了!\" 英语YouTuber评测洛克王国世界",
+    "d": "2026-03-30",
+    "s": "pos",
+    "l": "中文",
+    "url": "https://www.youtube.com/watch?v=acd6R-cY5cI",
+    "_new": true
+  },
+  {
+    "p": "reddit",
+    "u": "r/MobileGaming",
+    "t": "洛克王国世界是否是开放世界宠物捕捉MMO的救星？玩家讨论",
+    "d": "2026-03-30",
+    "s": "neu",
+    "l": "中文",
+    "url": "https://www.reddit.com/r/MobileGaming/comments/1s6x55v/roco_kingdom_world_is_this_the_openworld_creature/",
+    "_new": true
+  },
+  {
+    "p": "reddit",
+    "u": "r/MonsterTamerWorld",
+    "t": "洛克王国世界官方PV发布，怪物驯养社区关注",
+    "d": "2026-03-30",
+    "s": "neu",
+    "l": "中文",
+    "url": "https://www.reddit.com/r/MonsterTamerWorld/comments/1s7n70p/roco_kingdom_offical_pv/",
+    "_new": true
+  },
+  {
+    "p": "reddit",
+    "u": "r/gachagaming",
+    "t": "洛克王国世界终于确定上线日期，gachagaming社区讨论期待值",
+    "d": "2025-12-04",
+    "s": "neu",
+    "l": "中文",
+    "url": "https://www.reddit.com/r/gachagaming/comments/1pd3a7j/roco_kingdom_world_finally_has_a_release_date/",
+    "_new": true
+  },
+  {
+    "p": "reddit",
+    "u": "r/MonsterTamerWorld",
+    "t": "洛克王国世界确定发布日期，怪物驯养玩家关注",
+    "d": "2025-12-04",
+    "s": "neu",
+    "l": "中文",
+    "url": "https://www.reddit.com/r/MonsterTamerWorld/comments/1pd39dm/roco_kingdom_world_finally_has_a_release_date/",
+    "_new": true
+  },
+  {
+    "p": "reddit",
+    "u": "r/MonsterTamerWorld",
+    "t": "洛克王国手游讨论帖——画面不错但有宝可梦既视感",
+    "d": "2025-10-23",
+    "s": "neu",
+    "l": "中文",
+    "url": "https://www.reddit.com/r/MonsterTamerWorld/comments/1oj58rw/roco_kingdom/",
+    "_new": true
+  },
+  {
+    "p": "reddit",
+    "u": "r/gachagaming",
+    "t": "洛克王国世界官方PV分享到gachagaming板块",
+    "d": "2026-03-30",
+    "s": "neu",
+    "l": "英语",
+    "url": "https://www.reddit.com/r/gachagaming/comments/1s7ngz4/roco_kingdom_offical_pv/",
+    "_new": true
+  },
+  {
+    "p": "reddit",
+    "u": "r/gachagaming",
+    "t": "洛克王国早期讨论帖——Tencent的宝可梦风格手游",
+    "d": "2024-02-01",
+    "s": "neu",
+    "l": "中文",
+    "url": "https://www.reddit.com/r/gachagaming/comments/re0tsh/roco_kingdom/",
+    "_new": true
+  },
+  {
+    "p": "youtube",
+    "u": "YouTube",
+    "t": "roco /poco kingdom ( pokemon game for tencent) - YouTube",
+    "d": "",
+    "s": "neu",
+    "l": "英语",
+    "url": "https://www.youtube.com/watch?v=7rvRV1iZ-SI",
+    "_new": true
+  },
+  {
+    "p": "youtube",
+    "u": "YouTube",
+    "t": "ROCO KINGDOM WORLD: Better than Pokémon? Getting Started ...",
+    "d": "",
+    "s": "neu",
+    "l": "英语",
+    "url": "https://www.youtube.com/watch?v=s_VT6jyuHy4",
+    "_new": true
+  },
+  {
+    "p": "instagram",
+    "u": "@adeptlesss",
+    "t": "洛克王国世界官方发布gameplay展示，400+精灵免费捉、跨平台联机",
+    "d": "2026-03-26",
+    "s": "neu",
+    "l": "中文",
+    "url": "https://www.instagram.com/p/DWU_IThE3Fm/",
+    "_new": true
+  },
+  {
+    "p": "facebook",
+    "u": "GamerBraves",
+    "t": "腾讯洛克王国世界3月26日上线，GamerBraves报道",
+    "d": "2026-03-26",
+    "s": "neu",
+    "l": "中文",
+    "url": "https://www.facebook.com/gamerbraves/posts/tencents-roco-kingdom-world-launches-march-26-2026-in-china-/1381928403945460/",
+    "_new": true
+  },
+  {
+    "p": "media",
+    "u": "Fandom Wiki",
+    "t": "洛克王国系列Fandom Wiki百科条目已建立",
+    "d": "",
+    "s": "neu",
+    "l": "中文",
+    "url": "https://roco.fandom.com/wiki/Roco_Kingdom_(game)",
+    "_new": true
+  },
+  {
+    "p": "media",
+    "u": "Fandom Wiki",
+    "t": "洛克王国世界Fandom Wiki条目，含完整游戏信息",
+    "d": "",
+    "s": "neu",
+    "l": "中文",
+    "url": "https://roco.fandom.com/wiki/Roco_Kingdom_(Mobile_game)",
+    "_new": true
+  },
+  {
+    "p": "forum",
+    "u": "ResetEra",
+    "t": "ResetEra讨论洛克王国——\"原神风格怪物收集\"引发兴趣",
+    "d": "2024-08-11",
+    "s": "neu",
+    "l": "中文",
+    "url": "https://www.resetera.com/threads/roco-kingdom-mobile-genshin-like-monster-collector-by-morefun-studio-tencent.529252/",
+    "_new": true
+  },
+  {
+    "p": "facebook",
+    "u": "@adeptlesss",
+    "t": "洛克王国世界官方发布gameplay视频及跨平台介绍",
+    "d": "2026-03-26",
+    "s": "neu",
+    "l": "中文",
+    "url": "https://www.facebook.com/adeptlesss/posts/roco-kingdom-world-official-release-gameplay-android-iosgame-roco-kingdom-worldg/879889305067439/",
     "_new": true
   }
 ]
