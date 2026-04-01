@@ -120,7 +120,7 @@
     "url": "https://x.com/DramicGaming/status/1996188648329679106"
   },
   {
-    "p": "forum",
+    "p": "taptap",
     "u": "TapTap Global",
     "t": "User: \"Do you know when this game coming USA?\" — 反映全球需求。",
     "d": "2025-02-11",
@@ -718,12 +718,12 @@
     "url": "https://www.mustplay.in.th/content/page/69c77a7c76c4608e7b32c56c"
   },
   {
-    "p": "forum",
+    "p": "taptap",
     "u": "TapTap Global",
     "t": "国际版预注册页面。8.3/10评分(36评)。玩家赞画面音乐，但担忧P2W和无法下载。",
     "d": "2024-08-21",
     "s": "pos",
-    "l": "中文",
+    "l": "英语",
     "url": "https://www.taptap.io/app/33743140",
     "author": {
       "postCount": 2
@@ -2067,8 +2067,7 @@
     "d": "2026-03-27",
     "s": "neu",
     "l": "葡萄牙语",
-    "url": "https://x.com/CanalDoHollow/status/2037329400748745065",
-    "_new": true
+    "url": "https://x.com/CanalDoHollow/status/2037329400748745065"
   },
   {
     "p": "x",
@@ -2080,8 +2079,7 @@
     "url": "https://x.com/mobilegamerbr/status/2036874010890305636",
     "stats": {
       "likes": 1
-    },
-    "_new": true
+    }
   },
   {
     "p": "x",
@@ -2093,7 +2091,56 @@
     "url": "https://x.com/japahttv/status/2036688859837223086",
     "stats": {
       "likes": 2
-    },
+    }
+  },
+  {
+    "p": "media",
+    "u": "Kotaku",
+    "t": "Kotaku正式收录洛克王国世界游戏页面，标注\"无抽卡无售宠\"，400+精灵免费捉，50+小时剧情内容。",
+    "d": "2026-03-29",
+    "s": "neu",
+    "l": "英语",
+    "url": "https://kotaku.com/games/roco-kingdom-world",
+    "_new": true
+  },
+  {
+    "p": "media",
+    "u": "GearUP Booster",
+    "t": "海外加速器GearUP发布英文教程：教海外玩家连接洛克王国世界国服，指出需中国手机号验证、官方暂无国际服计划。",
+    "d": "2026-03-31",
+    "s": "neu",
+    "l": "英语",
+    "url": "https://www.gearupbooster.com/blog/play-roco-kingdom-world-china-server-guide.html",
+    "_new": true
+  },
+  {
+    "p": "media",
+    "u": "GearUP Booster",
+    "t": "[越南语版] GearUP发布越南语海外连接教程，标志东南亚玩家群体对洛克王国的关注正在扩大。",
+    "d": "2026-03-31",
+    "s": "neu",
+    "l": "越南语",
+    "url": "https://www.gearupbooster.com/vi/blog/play-roco-kingdom-world-china-server-guide.html",
+    "_new": true
+  },
+  {
+    "p": "media",
+    "u": "GearUP Booster",
+    "t": "[韩语版] GearUP发布韩语海外连接教程，韩国玩家可通过加速器连接国服，体验开放世界精灵游戏。",
+    "d": "2026-03-31",
+    "s": "neu",
+    "l": "韩语",
+    "url": "https://www.gearupbooster.com/ko/blog/play-roco-kingdom-world-china-server-guide.html",
+    "_new": true
+  },
+  {
+    "p": "taptap",
+    "u": "Pollingo YT",
+    "t": "[TapTap国际版评价] \"技术层面无懈可击：音乐、画面、优化、设计，希望尽快全球发行且不要P2W。\"评分8.3/10。",
+    "d": "2026-03-27",
+    "s": "pos",
+    "l": "英语",
+    "url": "https://www.taptap.io/app/33743140/review",
     "_new": true
   }
 ]
