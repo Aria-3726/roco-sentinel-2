@@ -1,1 +1,17 @@
-{"lastScan": "2026-04-13T11:35:00+08:00", "lastScanHuman": "2026-04-13 11:35 (含 API 补扫)", "totalPosts": 292, "scanCount": 22, "dataSource": {"webSearch": true, "tavily": true, "youtube": true, "grokX": true}, "apiCosts": {"grokX USD": 0.48}, "notes": "第22次扫描 - 首次全API覆盖(Tavily+YouTube+Grok X)，新增32条(24X推文+4YouTube+4Tavily)"}
+{
+  "lastScan": "2026-04-13T12:05:00+08:00",
+  "lastScanHuman": "2026-04-13 12:05 自动化日扫",
+  "totalPosts": 292,
+  "scanCount": 23,
+  "dataSource": {
+    "webSearch": true,
+    "tavily": true,
+    "youtube": true,
+    "grokX": true
+  },
+  "apiCosts": {
+    "grokX USD": 0.58
+  },
+  "notes": "第23次扫描(自动化) - 全API覆盖，无新增帖子(距上次<30min)，更新stats+议题",
+  "scanBy": "automation"
+}

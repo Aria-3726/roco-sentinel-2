@@ -1,84 +1,51 @@
 [
   {
-    "id": "I-001",
-    "title": "锁区不满+加速器生态扩大",
-    "severity": "critical",
-    "trend": "up",
-    "posts": 38,
-    "sources": [
-      "reddit",
-      "youtube",
-      "twitter"
-    ],
-    "summary": "非中国玠家反馈无法直接玩，需要购买加速器，部分用户抱怨延迟/无法登入"
+    "title": "锁区不满持续发酵+加速器生态",
+    "sev": "critical",
+    "desc": "共38条相关帖子，覆盖X/Reddit/YouTube/媒体，最新帖子2026-04-13。海外玩家持续反馈无法直接玩，需购买加速器(QuickFox/GearUP/UU等)。巴西玩家@alma_penosa表达强烈不满。信号强化 ⬆️",
+    "plats": ["x", "reddit", "youtube", "media"],
+    "tip": "建议加速推进全球发行时间表公布，至少释放'正在规划国际版'的官方信号以安抚海外社区"
   },
   {
-    "id": "I-002",
-    "title": "Niko Partners 行业数据背书",
-    "severity": "critical",
-    "trend": "new",
-    "posts": 3,
-    "sources": [
-      "linkedin",
-      "nikopartners"
-    ],
-    "summary": "权威第三方数据机构连续发布重量级分析，游戏已升级为投资圈关注标的"
+    "title": "Niko Partners等权威机构持续背书",
+    "sev": "warning",
+    "desc": "共5条相关帖子。Niko Partners发布LinkedIn深度分析+直播追踪报告，确认洛克RPG直播Top10/920万观众/TapTap 6.6分。@nikopartnersinc推文扩散中。信号强化 ⬆️",
+    "plats": ["media", "x", "substack"],
+    "tip": "可主动联系Niko Partners等分析师提供更多数据支持，借势提升国际品牌认知"
   },
   {
-    "id": "I-003",
-    "title": "X/Twitter 讨论量暴增 - 真实玠家反馈",
-    "severity": "warning",
-    "trend": "up",
-    "posts": 24,
-    "sources": [
-      "twitter"
-    ],
-    "summary": "首次 Grok API 全量抜取：24条新推文，包含多语礽(中/英/日/葡萄语)，核心话题:破防(老玠情态)、异色精灵难获、沉迷、找搭子"
+    "title": "X平台中文玩家热度持续高涨",
+    "sev": "warning",
+    "desc": "共120+条X推文，最新2026-04-13。中文玩家分享沉迷体验、找搭子、同人创作。@Qxxxnnm宝可梦老粉'破防'帖引发共鸣。@GameTeahouse发布'栖居式叙事策略'深度分析。信号稳定 ➡️",
+    "plats": ["x"],
+    "tip": "可借助KOL二创内容做社区运营，鼓励UGC产出并官方转发优质内容"
   },
   {
-    "id": "I-004",
-    "title": "YouTube 教程/GAMEPLAY 视频增长",
-    "severity": "warning",
-    "trend": "up",
-    "posts": 39,
-    "sources": [
-      "youtube"
-    ],
-    "summary": "中英双语教程视频大量出现(开荒指南/walkthrough)，国际玠家在 YouTube 上产出 UGC 内容"
+    "title": "YouTube多语种教程/Gameplay视频增长",
+    "sev": "warning",
+    "desc": "共64条YouTube视频，覆盖英/西/越/日/印尼/中6种语言。Broccoli Gaming已更新到Part 12(持续产出)。Gaming Mobile频道41.5万粉5条视频。信号稳定 ➡️",
+    "plats": ["youtube"],
+    "tip": "可考虑与高频产出的海外YouTuber建立官方合作关系，提供素材包和抢先体验资格"
   },
   {
-    "id": "I-005",
-    "title": "同人创作/UGC 生态爆发(X平台)",
-    "severity": "info",
-    "trend": "up",
-    "posts": 15,
-    "sources": [
-      "twitter",
-      "instagram"
-    ],
-    "summary": "日语/英语同人创作增加，包括绘图、MAD视频等"
+    "title": "日语社区关注度持续增长",
+    "sev": "watch",
+    "desc": "共10条相关帖子(X+YouTube+媒体)，最新2026-04-13。@SqyLost37连续多日分享游戏截图(罗小黑联动期待/二代御三家)。@social_game_lab直播洛克王国。INSIDE.jp/Kultur等媒体已报道。信号强化 ⬆️",
+    "plats": ["x", "youtube", "media"],
+    "tip": "日本是潜在重要市场，建议优先考虑日语本地化并在日本游戏媒体做定向PR"
   },
   {
-    "id": "I-006",
-    "title": "商业模式获权威媒体正面评价",
-    "severity": "info",
-    "trend": "stable",
-    "posts": 25,
-    "sources": [
-      "media"
-    ],
-    "summary": "不抽卡不卖数值的模式获 Niko Partners/WangYouHub 等权威媒体高度认可"
+    "title": "同人创作/UGC生态持续活跃",
+    "sev": "watch",
+    "desc": "共18条相关帖子。精灵同人画(@ximchy2/@PinkuMochi_owo)、截图分享(@LLynn74807)、福瑞同人(@Maoshubaobao 3563赞)等。繁中/日语/英语多语种创作。信号稳定 ➡️",
+    "plats": ["x", "instagram"],
+    "tip": "可开设官方二创频道或举办海外同人创作大赛，激活社区创作热情"
   },
   {
-    "id": "I-007",
-    "title": "日语区玠家社区形成",
-    "severity": "info",
-    "trend": "up",
-    "posts": 8,
-    "sources": [
-      "twitter",
-      "youtube"
-    ],
-    "summary": "日语内容创作者开始关注并产出内容(直播、推文、绘图)"
+    "title": "商业模式获广泛正面认可",
+    "sev": "watch",
+    "desc": "共25条相关帖子。'不抽卡不卖数值'模式获Niko Partners/WangYouHub/Kotaku等权威媒体高度认可。TapTap国际版8.3分。@Nohomework0好奇运营模式引发讨论。信号稳定 ➡️",
+    "plats": ["media", "taptap", "x"],
+    "tip": "商业模式是核心差异化卖点，全球发行时应作为营销重点突出宣传"
   }
 ]
