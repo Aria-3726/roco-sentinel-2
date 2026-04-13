@@ -1,1 +1,1 @@
-{"lastScan": "2026-04-13T11:07:00.000000+08:00", "scanCount": 21, "totalPosts": 260, "scanBy": "aria", "version": "2.0"}
+{"lastScan": "2026-04-13T11:35:00+08:00", "lastScanHuman": "2026-04-13 11:35 (含 API 补扫)", "totalPosts": 292, "scanCount": 22, "dataSource": {"webSearch": true, "tavily": true, "youtube": true, "grokX": true}, "apiCosts": {"grokX USD": 0.48}, "notes": "第22次扫描 - 首次全API覆盖(Tavily+YouTube+Grok X)，新增32条(24X推文+4YouTube+4Tavily)"}

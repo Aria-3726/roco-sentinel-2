@@ -1,1 +1,84 @@
-[{"title": "⬆️ 锁区不满+加速器生态持续扩大", "sev": "critical", "desc": "共47条相关帖子(+3新)。4月8日@Ivy25519650在日本实测\"地区未推出\"并推荐QuickFox，4月7日@JameLi53588分享海外下载失败自救。GearUP发布英文延迟修复指南(3/31)。6家加速器(GearUP/LagoFast/QuickFox/网易UU/iTopVPN/Lets)持续投放。r/MonsterTamerWorld出现寻找玩家社群帖(4/7)。最新: 2026-04-08 ⬆️", "plats": ["X", "Reddit", "媒体", "TapTap Global"], "tip": "海外自建生态+加速器完整链条已成熟——全球化时间表公布迫在眉睫，否则灰色市场将固化"}, {"title": "🆕 Niko Partners行业数据背书(重磅信号)", "sev": "critical", "desc": "共3条相关帖子(全新议题)。Niko Partners连续发布两篇重量级分析：(1)LinkedIn文章(4/9)确认首日1500万+预注册6000万+直播排名Top 8+Evergreen策略；(2)直播追踪报告(4/7)披露虎牙/斗鱼/B站合计920万观众+TapTap 6.6分+WeGame 83.6%好评。第三方权威数据机构入场意味着洛克王国已进入投资圈视野。最新: 2026-04-09 🆕", "plats": ["LinkedIn", "媒体"], "tip": "Niko Partners作为游戏行业最权威的数据机构之一入场背书——建议准备英文投资者关系材料(IR kit)，主动对接海外分析师"}, {"title": "⬆️ 同人创作/UGC生态爆发(X平台集中)", "sev": "warning", "desc": "共11条相关帖子(+3新)。4月8日单日出现@ximchy2(可丽希亚)、@PinkuMochi_owo(厉毒小萝)、@LLynn74807(繁中文画作)等多名创作者自发产出。涵盖角色二创、游戏截图、同人画。日/中/繁中三语参与。@Aidiyina称\"消除愤怒与悲伤\"体现治愈系口碑传播。最新: 2026-04-08 ⬆️", "plats": ["X"], "tip": "同人创作爆发是IP活力的核心指标——建议官方设立同人创作激励计划、开放素材包、举办创作大赛"}, {"title": "⬆️ X平台讨论量显著增长+多语种扩展", "sev": "warning", "desc": "共115条X帖子(+18新)。本轮新增18条X推文，英语(@deweibs/@emofishkiller安利)、日语(@fuwafuwa1492961/@SqyLost37异色兔子)、繁体中文(@LLynn74807)全面活跃。日语玩家分享gameplay截图成为常态。X平台从华人圈向国际社区深度扩展。治愈感成为核心传播卖点。最新: 2026-04-08 ⬆️", "plats": ["X"], "tip": "日语+繁中+英语三语社区同时活跃——建议分语种社区运营，日语社区可优先突破"}, {"title": "⬆️ Reddit/YouTube英语社区持续壮大", "sev": "warning", "desc": "共91条相关帖子(+12新)。r/MonsterTamerWorld连续3帖(精灵互动/战斗画面/寻找社群)，Reddit从围观转向深度参与。YouTube新增西班牙语抓龙教程(首次)、Day10长线直播、walkthrough第9期、搞笑bug合集、氪金评测(3202播放)。内容形态多元化。最新: 2026-04-07 ⬆️", "plats": ["Reddit", "YouTube", "Instagram"], "tip": "西班牙语内容首次出现+Reddit社群组建需求——多语种社区管理和官方Discord开设窗口期"}, {"title": "⬆️ 商业模式获权威媒体正面评价", "sev": "warning", "desc": "共20条相关帖子(+2新)。WangYouHub深度评测(3/28)强烈推荐，称\"重塑二游生态\"。Niko Partners确认外观驱动消费模式。花旗报告、36Kr Europe上线评测均持正面态度。商业模式的不抽卡/不卖数值策略获得媒体广泛认可。最新: 2026-04-09 ⬆️", "plats": ["媒体", "Substack", "X"], "tip": "商业模式差异化优势已被媒体广泛报道——全球化时可重点强调'No gacha, no P2W'作为核心卖点"}, {"title": "➡️ 正面口碑主导(43%正/7%负)，治愈感成核心卖点", "sev": "watch", "desc": "260条帖子中正面112条(43%)、中性132条(51%)、负面19条(7%)。本轮新增3条全为正面(100%)。多人表达\"沉迷\"\"治愈\"\"消除愤怒与悲伤\"。负面仅锁区和氪金吐槽。治愈系游戏体验成为玩家自发传播核心卖点。最新: 2026-04-13 ➡️", "plats": ["X", "YouTube", "Reddit", "媒体"], "tip": "治愈感是差异化核心——全球化营销可围绕'digital sanctuary'概念，对标动森/星露谷受众"}]
+[
+  {
+    "id": "I-001",
+    "title": "锁区不满+加速器生态扩大",
+    "severity": "critical",
+    "trend": "up",
+    "posts": 38,
+    "sources": [
+      "reddit",
+      "youtube",
+      "twitter"
+    ],
+    "summary": "非中国玠家反馈无法直接玩，需要购买加速器，部分用户抱怨延迟/无法登入"
+  },
+  {
+    "id": "I-002",
+    "title": "Niko Partners 行业数据背书",
+    "severity": "critical",
+    "trend": "new",
+    "posts": 3,
+    "sources": [
+      "linkedin",
+      "nikopartners"
+    ],
+    "summary": "权威第三方数据机构连续发布重量级分析，游戏已升级为投资圈关注标的"
+  },
+  {
+    "id": "I-003",
+    "title": "X/Twitter 讨论量暴增 - 真实玠家反馈",
+    "severity": "warning",
+    "trend": "up",
+    "posts": 24,
+    "sources": [
+      "twitter"
+    ],
+    "summary": "首次 Grok API 全量抜取：24条新推文，包含多语礽(中/英/日/葡萄语)，核心话题:破防(老玠情态)、异色精灵难获、沉迷、找搭子"
+  },
+  {
+    "id": "I-004",
+    "title": "YouTube 教程/GAMEPLAY 视频增长",
+    "severity": "warning",
+    "trend": "up",
+    "posts": 39,
+    "sources": [
+      "youtube"
+    ],
+    "summary": "中英双语教程视频大量出现(开荒指南/walkthrough)，国际玠家在 YouTube 上产出 UGC 内容"
+  },
+  {
+    "id": "I-005",
+    "title": "同人创作/UGC 生态爆发(X平台)",
+    "severity": "info",
+    "trend": "up",
+    "posts": 15,
+    "sources": [
+      "twitter",
+      "instagram"
+    ],
+    "summary": "日语/英语同人创作增加，包括绘图、MAD视频等"
+  },
+  {
+    "id": "I-006",
+    "title": "商业模式获权威媒体正面评价",
+    "severity": "info",
+    "trend": "stable",
+    "posts": 25,
+    "sources": [
+      "media"
+    ],
+    "summary": "不抽卡不卖数值的模式获 Niko Partners/WangYouHub 等权威媒体高度认可"
+  },
+  {
+    "id": "I-007",
+    "title": "日语区玠家社区形成",
+    "severity": "info",
+    "trend": "up",
+    "posts": 8,
+    "sources": [
+      "twitter",
+      "youtube"
+    ],
+    "summary": "日语内容创作者开始关注并产出内容(直播、推文、绘图)"
+  }
+]
