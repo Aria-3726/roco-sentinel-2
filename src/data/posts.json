@@ -1,6 +1,443 @@
 [
   {
     "p": "media",
+    "u": "BigGo Finance",
+    "t": "腾讯双「世界」对比：洛克王国世界爆火vs王者世界开局遇冷",
+    "d": "2026-04-15",
+    "s": "neu",
+    "l": "英语",
+    "url": "https://finance.biggo.com/news/g30msJ0BNZYCTTDvDGug",
+    "_new": true
+  },
+  {
+    "p": "media",
+    "u": "GamingOnPhone",
+    "t": "腾讯洛克王国世界3月26日上线，宠物收集MMORPG游戏详解",
+    "d": "2025-12-04",
+    "s": "neu",
+    "l": "英语",
+    "url": "https://gamingonphone.com/news/roco-kingdom-world-brings-its-creature-bonding-mmorpg-gameplay-to-china-on-march-26-2026/",
+    "_new": true,
+    "author": {
+      "postCount": 5
+    }
+  },
+  {
+    "p": "threads",
+    "u": "@celozaga",
+    "t": "洛克王国世界确认3月26日中国发售，展示最新玩法预告",
+    "d": "2025-12-03",
+    "s": "pos",
+    "l": "英语",
+    "url": "https://www.threads.com/@celozaga/post/DR0TAS8ElQJ/video-its-official-roco-kingdom-world-the-pokemon-like-game-from-tencent-will-be",
+    "_new": true,
+    "author": {
+      "postCount": 3
+    }
+  },
+  {
+    "p": "media",
+    "u": "BBG News",
+    "t": "洛克王国世界Beta测试因脱衣BUG走红，官方已修复玩家表示遗憾",
+    "d": "2026-03-20",
+    "s": "neu",
+    "l": "英语",
+    "url": "https://bbg-news.com/roco-kingdom-world-china-beta-turns-chaotic-for-unexpected-semi-nudity-as-players-run-around-undressed/",
+    "_new": true
+  },
+  {
+    "p": "media",
+    "u": "Medal.tv",
+    "t": "Medal.tv收录洛克王国世界为可录制游戏，介绍游戏核心特色",
+    "d": "2026-04-01",
+    "s": "neu",
+    "l": "英语",
+    "url": "https://medal.tv/tr/games/roco-kingdom-world",
+    "_new": true
+  },
+  {
+    "p": "forum",
+    "u": "巴哈姆特/YellowBall",
+    "t": "[繁中心得]抓宠游戏顶级教科书，对比宝可梦朱全面「抄越」",
+    "d": "2026-04-20",
+    "s": "pos",
+    "l": "繁体中文",
+    "url": "https://forum.gamer.com.tw/C.php?bsn=73534&snA=21",
+    "_new": true
+  },
+  {
+    "p": "media",
+    "u": "VGOver",
+    "t": "[繁中评测]不玩PVP也夯！洛克王国世界推图抓宠上头停不下来",
+    "d": "2026-04-18",
+    "s": "pos",
+    "l": "繁体中文",
+    "url": "https://www.vgover.com/zh-tw/news/209687",
+    "_new": true
+  },
+  {
+    "p": "media",
+    "u": "桃浦镇英文官网",
+    "t": "洛克王国线下快闪活动登陆TOP中央公园，4月4日-5月5日",
+    "d": "2026-04-04",
+    "s": "pos",
+    "l": "英语",
+    "url": "https://english.shpt.gov.cn/news/news/3672.shtml",
+    "_new": true
+  },
+  {
+    "p": "reddit",
+    "u": "r/MonsterTamerWorld",
+    "t": "海外玩家称洛克王国或成全球首款超越宝可梦的捉宠游戏",
+    "d": "2026-04-10",
+    "s": "pos",
+    "l": "英语",
+    "url": "https://www.reddit.com/r/MonsterTamerWorld/comments/1sodtgn/a_cn_monster_catching_gameroco_kingdom_world/",
+    "_new": true,
+    "stats": {
+      "views": 0,
+      "likes": 49,
+      "comments": 28
+    },
+    "author": {
+      "followers": 12043,
+      "followerLabel": "成员",
+      "postCount": 12
+    }
+  },
+  {
+    "p": "reddit",
+    "u": "r/RocoKingdomGame",
+    "t": "洛克王国世界4月30日更新公告：王国引擎大型改版",
+    "d": "2026-04-30",
+    "s": "neu",
+    "l": "英语",
+    "url": "https://www.reddit.com/r/RocoKingdomGame/comments/1sz0uvp/update_annoucement_april_30_2026/",
+    "_new": true,
+    "stats": {
+      "views": 0,
+      "likes": 3,
+      "comments": 4
+    },
+    "author": {
+      "followers": 114,
+      "followerLabel": "成员"
+    }
+  },
+  {
+    "p": "reddit",
+    "u": "r/Wechat",
+    "t": "海外玩家求助：注册微信太难，只想玩洛克王国世界",
+    "d": "2026-04-22",
+    "s": "neg",
+    "l": "英语",
+    "url": "https://www.reddit.com/r/Wechat/comments/1sczm7i/i_just_want_to_be_able_to_play_roco_kingdom_world/",
+    "_new": true,
+    "stats": {
+      "views": 0,
+      "likes": 1,
+      "comments": 22
+    },
+    "author": {
+      "followers": 42051,
+      "followerLabel": "成员"
+    }
+  },
+  {
+    "p": "youtube",
+    "u": "William",
+    "t": "海外教程：如何在中国以外地区玩洛克王国世界(2026年)",
+    "d": "2026-04-26",
+    "s": "neu",
+    "l": "英语",
+    "url": "https://www.youtube.com/watch?v=9to3GTLdAYw",
+    "_new": true,
+    "stats": {
+      "views": 132,
+      "likes": 3,
+      "comments": 0
+    },
+    "author": {
+      "followers": 4
+    }
+  },
+  {
+    "p": "youtube",
+    "u": "walkthrough系列",
+    "t": "洛克王国世界英语实况Part 25 - 安卓iOS游玩",
+    "d": "2026-05-01",
+    "s": "neu",
+    "l": "英语",
+    "url": "https://www.youtube.com/watch?v=azN6ClBj7_M",
+    "_new": true,
+    "stats": {
+      "views": 72,
+      "likes": 0,
+      "comments": 1
+    },
+    "author": {
+      "followers": 8200,
+      "postCount": 2
+    }
+  },
+  {
+    "p": "youtube",
+    "u": "walkthrough系列",
+    "t": "星霜花在哪？洛克王国世界英语攻略Part 24",
+    "d": "2026-04-28",
+    "s": "neu",
+    "l": "英语",
+    "url": "https://www.youtube.com/watch?v=wElCovlbjCo",
+    "_new": true,
+    "stats": {
+      "views": 33,
+      "likes": 0,
+      "comments": 0
+    },
+    "author": {
+      "followers": 8200,
+      "postCount": 2
+    }
+  },
+  {
+    "p": "youtube",
+    "u": "Hidden Mechanics",
+    "t": "99%玩家不知道！洛克王国世界隐藏机制大揭秘",
+    "d": "2026-04-30",
+    "s": "pos",
+    "l": "英语",
+    "url": "https://www.youtube.com/watch?v=etGgP8sFRJc",
+    "_new": true,
+    "stats": {
+      "views": 29,
+      "likes": 2,
+      "comments": 0
+    },
+    "author": {
+      "followers": 10
+    }
+  },
+  {
+    "p": "youtube",
+    "u": "Roco Kingdom Channel",
+    "t": "洛克王国世界开放世界探索实机演示",
+    "d": "2026-04-20",
+    "s": "pos",
+    "l": "英语",
+    "url": "https://www.youtube.com/watch?v=vz7aJGoyzxc",
+    "_new": true,
+    "stats": {
+      "views": 160,
+      "likes": 0,
+      "comments": 0
+    },
+    "author": {
+      "followers": 789
+    }
+  },
+  {
+    "p": "youtube",
+    "u": "kaM_3mSQxXg",
+    "t": "安卓开放世界捉宠？洛克王国首次体验评测",
+    "d": "2026-04-25",
+    "s": "pos",
+    "l": "英语",
+    "url": "https://www.youtube.com/watch?v=kaM_3mSQxXg",
+    "_new": true,
+    "stats": {
+      "views": 78,
+      "likes": 2,
+      "comments": 0
+    },
+    "author": {
+      "followers": 5170
+    }
+  },
+  {
+    "p": "youtube",
+    "u": "The Journey Begins",
+    "t": "洛克王国世界英语实况Part 1：初始精灵选择与捕捉教学",
+    "d": "2026-04-18",
+    "s": "pos",
+    "l": "英语",
+    "url": "https://www.youtube.com/watch?v=xBkeUGsQ1Xw",
+    "_new": true,
+    "stats": {
+      "views": 46,
+      "likes": 0,
+      "comments": 1
+    },
+    "author": {
+      "followers": 56
+    }
+  },
+  {
+    "p": "store",
+    "u": "Uptodown",
+    "t": "洛克王国世界上架Uptodown海外下载平台(PC+Android)",
+    "d": "2026-04-15",
+    "s": "neu",
+    "l": "英语",
+    "url": "https://roco-kingdom.en.uptodown.com/windows",
+    "_new": true,
+    "author": {
+      "postCount": 2
+    }
+  },
+  {
+    "p": "x",
+    "u": "@roggbrot",
+    "t": "分享洛克王国世界精灵图鉴，展示游戏内宠物设计",
+    "d": "2026-05-05",
+    "s": "neu",
+    "l": "英语",
+    "url": "https://x.com/roggbrot/status/2051762628519981162",
+    "_new": true
+  },
+  {
+    "p": "x",
+    "u": "@beanbeanbeannie",
+    "t": "今天才发现洛克王国，精灵设计太完美了",
+    "d": "2026-05-05",
+    "s": "pos",
+    "l": "英语",
+    "url": "https://x.com/beanbeanbeannie/status/2051526115269767619",
+    "_new": true,
+    "author": {
+      "postCount": 2
+    }
+  },
+  {
+    "p": "x",
+    "u": "@beanbeanbeannie",
+    "t": "迫不及待等洛克王国世界全球版上线，画面太好看了",
+    "d": "2026-05-05",
+    "s": "pos",
+    "l": "英语",
+    "url": "https://x.com/beanbeanbeannie/status/2051525357325402292",
+    "_new": true,
+    "author": {
+      "postCount": 2
+    }
+  },
+  {
+    "p": "x",
+    "u": "@emofishkiller",
+    "t": "鸣潮左下角就是洛克王国世界，中国版宝可梦",
+    "d": "2026-05-04",
+    "s": "neu",
+    "l": "英语",
+    "url": "https://x.com/emofishkiller/status/2051188537865998347",
+    "_new": true,
+    "author": {
+      "postCount": 2
+    }
+  },
+  {
+    "p": "x",
+    "u": "@hacushi_",
+    "t": "[葡语]我也很想玩洛克王国",
+    "d": "2026-05-03",
+    "s": "pos",
+    "l": "葡萄牙语",
+    "url": "https://x.com/hacushi_/status/2051029496346591687",
+    "_new": true
+  },
+  {
+    "p": "x",
+    "u": "@FanSL_Art",
+    "t": "这些精灵来自洛克王国！类似宝可梦，即将开放全球服",
+    "d": "2026-05-03",
+    "s": "pos",
+    "l": "英语",
+    "url": "https://x.com/FanSL_Art/status/2050853068951138400",
+    "_new": true
+  },
+  {
+    "p": "x",
+    "u": "@dropthefuel",
+    "t": "[葡语]今年最期待两款全球版游戏之一就是洛克王国",
+    "d": "2026-05-03",
+    "s": "pos",
+    "l": "葡萄牙语",
+    "url": "https://x.com/dropthefuel/status/2050784877448970322",
+    "_new": true
+  },
+  {
+    "p": "x",
+    "u": "@Gacharevenueall",
+    "t": "2026年4月手游营收榜：洛克王国世界进入榜单(约$52M)",
+    "d": "2026-05-02",
+    "s": "pos",
+    "l": "英语",
+    "url": "https://x.com/Gacharevenueall/status/2050670499349328080",
+    "_new": true
+  },
+  {
+    "p": "x",
+    "u": "@3xHLaINBxx92434",
+    "t": "推荐帕鲁世界和洛克王国世界，可完全替代宝可梦",
+    "d": "2026-05-02",
+    "s": "pos",
+    "l": "英语",
+    "url": "https://x.com/3xHLaINBxx92434/status/2050590619203145990",
+    "_new": true
+  },
+  {
+    "p": "x",
+    "u": "@observer0334",
+    "t": "洛克王国世界几乎确定是抄袭宝可梦的中国游戏",
+    "d": "2026-04-29",
+    "s": "neg",
+    "l": "英语",
+    "url": "https://x.com/observer0334/status/2049581941561884878",
+    "_new": true
+  },
+  {
+    "p": "x",
+    "u": "@BurstGale",
+    "t": "完全不知道洛克王国是什么，看起来像宝可梦山寨",
+    "d": "2026-04-29",
+    "s": "neg",
+    "l": "英语",
+    "url": "https://x.com/BurstGale/status/2049545033519706557",
+    "_new": true
+  },
+  {
+    "p": "x",
+    "u": "@KuchibeniSigure",
+    "t": "分享洛克王国世界官方战斗预告片，打标签推广",
+    "d": "2026-04-29",
+    "s": "pos",
+    "l": "英语",
+    "url": "https://x.com/KuchibeniSigure/status/2049539293064888450",
+    "_new": true
+  },
+  {
+    "p": "x",
+    "u": "@Liet4649",
+    "t": "洛克王国世界=更好的阿尔宙斯+霍格沃茨遗产，值得期待",
+    "d": "2026-04-29",
+    "s": "pos",
+    "l": "英语",
+    "url": "https://x.com/Liet4649/status/2049383285583954162",
+    "_new": true
+  },
+  {
+    "p": "x",
+    "u": "@Kultur_t",
+    "t": "[日语]日媒Kultur报道洛克王国世界全球化路线图",
+    "d": "2026-05-06",
+    "s": "neu",
+    "l": "日语",
+    "url": "https://x.com/Kultur_t/status/2051871399325925417",
+    "_new": true,
+    "author": {
+      "postCount": 2
+    }
+  },
+  {
+    "p": "media",
     "u": "腾讯新闻/游戏日报",
     "t": "[深度分析] iOS畅销榜TOP3稳定7天！首日1500万用户。付费集中外观收集，无数值锁。",
     "d": "2026-04-02",
@@ -188,12 +625,12 @@
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=NG-wH0z9FLs",
     "stats": {
-      "views": 211,
+      "views": 311,
       "likes": 0,
-      "comments": 3
+      "comments": 5
     },
     "author": {
-      "followers": 8120,
+      "followers": 8200,
       "postCount": 5
     }
   },
@@ -386,9 +823,9 @@
     "l": "中文",
     "url": "https://www.youtube.com/watch?v=kVJVCaVoR4E",
     "stats": {
-      "views": 13839,
-      "likes": 520,
-      "comments": 107
+      "views": 18314,
+      "likes": 645,
+      "comments": 127
     },
     "author": {
       "followers": 243000
@@ -403,12 +840,12 @@
     "l": "越南语",
     "url": "https://www.youtube.com/watch?v=X8F_HBx-xY4",
     "stats": {
-      "views": 6749,
-      "likes": 68,
-      "comments": 47
+      "views": 9299,
+      "likes": 79,
+      "comments": 48
     },
     "author": {
-      "followers": 225000,
+      "followers": 226000,
       "postCount": 3
     }
   },
@@ -421,12 +858,12 @@
     "l": "中文",
     "url": "https://www.youtube.com/watch?v=acd6R-cY5cI",
     "stats": {
-      "views": 158,
+      "views": 165,
       "likes": 1,
       "comments": 0
     },
     "author": {
-      "followers": 566
+      "followers": 809
     }
   },
   {
@@ -443,7 +880,7 @@
       "comments": 0
     },
     "author": {
-      "followers": 101644,
+      "followers": 106090,
       "followerLabel": "成员"
     }
   },
@@ -457,13 +894,13 @@
     "url": "https://www.reddit.com/r/MonsterTamerWorld/comments/1s7n70p/roco_kingdom_offical_pv/",
     "stats": {
       "views": 0,
-      "likes": 34,
+      "likes": 32,
       "comments": 2
     },
     "author": {
-      "followers": 11531,
+      "followers": 12043,
       "followerLabel": "成员",
-      "postCount": 11
+      "postCount": 12
     }
   },
   {
@@ -476,11 +913,11 @@
     "url": "https://www.reddit.com/r/gachagaming/comments/1s7ngz4/roco_kingdom_offical_pv/",
     "stats": {
       "views": 0,
-      "likes": 108,
-      "comments": 71
+      "likes": 110,
+      "comments": 76
     },
     "author": {
-      "followers": 372487,
+      "followers": 376748,
       "followerLabel": "成员",
       "postCount": 5
     }
@@ -645,12 +1082,12 @@
     "l": "西班牙语",
     "url": "https://www.youtube.com/watch?v=oK3IvbwzHy0",
     "stats": {
-      "views": 1110,
-      "likes": 50,
-      "comments": 28
+      "views": 1244,
+      "likes": 57,
+      "comments": 34
     },
     "author": {
-      "followers": 9840,
+      "followers": 9900,
       "postCount": 3
     }
   },
@@ -663,12 +1100,12 @@
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=KFIZ7g23U8k",
     "stats": {
-      "views": 163,
+      "views": 229,
       "likes": 0,
       "comments": 1
     },
     "author": {
-      "followers": 8120,
+      "followers": 8200,
       "postCount": 5
     }
   },
@@ -712,12 +1149,12 @@
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=gJbJiDSB050",
     "stats": {
-      "views": 711,
+      "views": 1098,
       "likes": 0,
-      "comments": 6
+      "comments": 8
     },
     "author": {
-      "followers": 8120,
+      "followers": 8200,
       "postCount": 5
     }
   },
@@ -730,12 +1167,12 @@
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=oxMy32gh54o",
     "stats": {
-      "views": 2295,
-      "likes": 41,
-      "comments": 9
+      "views": 3045,
+      "likes": 47,
+      "comments": 10
     },
     "author": {
-      "followers": 3280
+      "followers": 3410
     }
   },
   {
@@ -747,12 +1184,12 @@
     "l": "越南语",
     "url": "https://www.youtube.com/watch?v=L2l1y5CiQCI",
     "stats": {
-      "views": 6162,
-      "likes": 66,
-      "comments": 29
+      "views": 8553,
+      "likes": 72,
+      "comments": 33
     },
     "author": {
-      "followers": 225000,
+      "followers": 226000,
       "postCount": 3
     }
   },
@@ -765,9 +1202,9 @@
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=hYiE8nGsMNQ",
     "stats": {
-      "views": 2688,
-      "likes": 56,
-      "comments": 10
+      "views": 3356,
+      "likes": 66,
+      "comments": 16
     },
     "author": {
       "followers": 415000,
@@ -783,12 +1220,12 @@
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=mq9lbcrlOfY",
     "stats": {
-      "views": 84,
+      "views": 102,
       "likes": 0,
       "comments": 0
     },
     "author": {
-      "followers": 3180
+      "followers": 3200
     }
   },
   {
@@ -800,12 +1237,12 @@
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=2fg3UEvzpSM",
     "stats": {
-      "views": 23,
+      "views": 26,
       "likes": 0,
       "comments": 0
     },
     "author": {
-      "followers": 14
+      "followers": 18
     }
   },
   {
@@ -818,13 +1255,13 @@
     "url": "https://www.reddit.com/r/MonsterTamerWorld/comments/1s40qnq/roco_kingdom_world_list_of_monsters/",
     "stats": {
       "views": 0,
-      "likes": 15,
-      "comments": 21
+      "likes": 19,
+      "comments": 32
     },
     "author": {
-      "followers": 11531,
+      "followers": 12043,
       "followerLabel": "成员",
-      "postCount": 11
+      "postCount": 12
     }
   },
   {
@@ -915,8 +1352,8 @@
     "l": "中文",
     "url": "https://www.youtube.com/watch?v=Z2WFAq-j71w",
     "stats": {
-      "views": 203,
-      "likes": 4,
+      "views": 227,
+      "likes": 5,
       "comments": 5
     },
     "author": {
@@ -959,12 +1396,12 @@
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=MRiyW9AjZTw",
     "stats": {
-      "views": 8772,
-      "likes": 270,
+      "views": 9513,
+      "likes": 279,
       "comments": 32
     },
     "author": {
-      "followers": 83900
+      "followers": 85000
     }
   },
   {
@@ -976,8 +1413,8 @@
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=a_uJUUPlSEM",
     "stats": {
-      "views": 3731,
-      "likes": 36,
+      "views": 4302,
+      "likes": 39,
       "comments": 8
     },
     "author": {
@@ -993,12 +1430,12 @@
     "l": "越南语",
     "url": "https://www.youtube.com/watch?v=-yeCdgy_bLg",
     "stats": {
-      "views": 15448,
-      "likes": 208,
-      "comments": 76
+      "views": 21099,
+      "likes": 245,
+      "comments": 93
     },
     "author": {
-      "followers": 225000,
+      "followers": 226000,
       "postCount": 3
     }
   },
@@ -1011,9 +1448,9 @@
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=n6TyINmH0bE",
     "stats": {
-      "views": 3392,
-      "likes": 86,
-      "comments": 8
+      "views": 3770,
+      "likes": 90,
+      "comments": 9
     },
     "author": {
       "followers": 415000,
@@ -1029,12 +1466,12 @@
     "l": "西班牙语",
     "url": "https://www.youtube.com/watch?v=RNDXyxon68k",
     "stats": {
-      "views": 1816,
-      "likes": 68,
-      "comments": 31
+      "views": 2291,
+      "likes": 84,
+      "comments": 35
     },
     "author": {
-      "followers": 30200
+      "followers": 30400
     }
   },
   {
@@ -1046,9 +1483,9 @@
     "l": "中文",
     "url": "https://www.youtube.com/watch?v=KC7EmPNqf74",
     "stats": {
-      "views": 1799,
-      "likes": 19,
-      "comments": 2
+      "views": 2094,
+      "likes": 20,
+      "comments": 4
     },
     "author": {
       "followers": 48200
@@ -1063,12 +1500,12 @@
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=6kbDBqRo5_Q",
     "stats": {
-      "views": 655,
-      "likes": 16,
-      "comments": 2
+      "views": 749,
+      "likes": 19,
+      "comments": 3
     },
     "author": {
-      "followers": 7840,
+      "followers": 7980,
       "postCount": 2
     }
   },
@@ -1237,9 +1674,9 @@
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=0RZlESjiH8s",
     "stats": {
-      "views": 18561,
-      "likes": 341,
-      "comments": 110
+      "views": 25544,
+      "likes": 384,
+      "comments": 141
     },
     "author": {
       "followers": 415000,
@@ -1255,12 +1692,12 @@
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=9T8gnTV8qY4",
     "stats": {
-      "views": 692,
-      "likes": 25,
+      "views": 749,
+      "likes": 26,
       "comments": 14
     },
     "author": {
-      "followers": 9840,
+      "followers": 9900,
       "postCount": 3
     }
   },
@@ -1273,12 +1710,12 @@
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=KJnHzL_9KaY",
     "stats": {
-      "views": 635,
-      "likes": 5,
+      "views": 794,
+      "likes": 6,
       "comments": 7
     },
     "author": {
-      "followers": 32900,
+      "followers": 32800,
       "postCount": 2
     }
   },
@@ -1291,12 +1728,12 @@
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=pCBeeR7ap6w",
     "stats": {
-      "views": 2288,
-      "likes": 34,
-      "comments": 22
+      "views": 2681,
+      "likes": 36,
+      "comments": 23
     },
     "author": {
-      "followers": 7840,
+      "followers": 7980,
       "postCount": 2
     }
   },
@@ -1309,12 +1746,12 @@
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=8Hpj88u2o0Y",
     "stats": {
-      "views": 587,
+      "views": 611,
       "likes": 12,
       "comments": 3
     },
     "author": {
-      "followers": 21300
+      "followers": 21400
     }
   },
   {
@@ -1326,12 +1763,12 @@
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=T4HqQKOdV7Q",
     "stats": {
-      "views": 159,
+      "views": 190,
       "likes": 1,
       "comments": 1
     },
     "author": {
-      "followers": 11500
+      "followers": 11600
     }
   },
   {
@@ -1343,12 +1780,12 @@
     "l": "中文",
     "url": "https://www.youtube.com/watch?v=at57YzSflR0",
     "stats": {
-      "views": 5991,
-      "likes": 51,
-      "comments": 7
+      "views": 8048,
+      "likes": 70,
+      "comments": 11
     },
     "author": {
-      "followers": 1720,
+      "followers": 1740,
       "postCount": 2
     }
   },
@@ -1361,12 +1798,12 @@
     "l": "中文",
     "url": "https://www.youtube.com/watch?v=hvWT9YFcKco",
     "stats": {
-      "views": 1138,
-      "likes": 9,
-      "comments": 2
+      "views": 1495,
+      "likes": 14,
+      "comments": 4
     },
     "author": {
-      "followers": 1720,
+      "followers": 1740,
       "postCount": 2
     }
   },
@@ -1379,12 +1816,12 @@
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=9SPrdmAOW5M",
     "stats": {
-      "views": 321,
+      "views": 434,
       "likes": 0,
       "comments": 1
     },
     "author": {
-      "followers": 773,
+      "followers": 789,
       "postCount": 3
     }
   },
@@ -1402,7 +1839,7 @@
       "comments": 0
     },
     "author": {
-      "followers": 195,
+      "followers": 233,
       "followerLabel": "成员"
     }
   },
@@ -1434,7 +1871,10 @@
     "d": "2026-03-26",
     "s": "neu",
     "l": "中文",
-    "url": "https://roco-kingdom-mobile.en.uptodown.com/android"
+    "url": "https://roco-kingdom-mobile.en.uptodown.com/android",
+    "author": {
+      "postCount": 2
+    }
   },
   {
     "p": "media",
@@ -1501,6 +1941,9 @@
     "stats": {
       "likes": 5,
       "retweets": 3
+    },
+    "author": {
+      "postCount": 2
     }
   },
   {
@@ -1525,12 +1968,12 @@
     "l": "日语",
     "url": "https://www.youtube.com/watch?v=UVpmMgMAdZ8",
     "stats": {
-      "views": 5262,
-      "likes": 70,
-      "comments": 29
+      "views": 8466,
+      "likes": 92,
+      "comments": 37
     },
     "author": {
-      "followers": 3420,
+      "followers": 3470,
       "postCount": 2
     }
   },
@@ -1603,12 +2046,12 @@
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=tonqNItO9pw",
     "stats": {
-      "views": 557,
+      "views": 593,
       "likes": 17,
       "comments": 12
     },
     "author": {
-      "followers": 9840,
+      "followers": 9900,
       "postCount": 3
     }
   },
@@ -1663,7 +2106,7 @@
     "l": "英语",
     "url": "https://gamingonphone.com/news/roco-kingdom-world-china-beta-turns-chaotic-for-unexpected-semi-nudity-as-players-run-around-undressed/",
     "author": {
-      "postCount": 4
+      "postCount": 5
     }
   },
   {
@@ -1735,12 +2178,12 @@
     "l": "印尼语",
     "url": "https://www.youtube.com/watch?v=V5mcgPZj6pk",
     "stats": {
-      "views": 5897,
-      "likes": 54,
+      "views": 6028,
+      "likes": 56,
       "comments": 32
     },
     "author": {
-      "followers": 389000
+      "followers": 390000
     }
   },
   {
@@ -1752,12 +2195,12 @@
     "l": "英语",
     "url": "https://www.youtube.com/shorts/o-aU0Rg-8Dw",
     "stats": {
-      "views": 983,
+      "views": 1103,
       "likes": 22,
       "comments": 0
     },
     "author": {
-      "followers": 5290
+      "followers": 5370
     }
   },
   {
@@ -1774,7 +2217,7 @@
       "comments": 0
     },
     "author": {
-      "followers": 4
+      "followers": 5
     }
   },
   {
@@ -1786,12 +2229,12 @@
     "l": "中文",
     "url": "https://www.youtube.com/shorts/TnbbwxV2yVU",
     "stats": {
-      "views": 4171,
-      "likes": 443,
+      "views": 4205,
+      "likes": 442,
       "comments": 44
     },
     "author": {
-      "followers": 3910
+      "followers": 4290
     }
   },
   {
@@ -1826,7 +2269,7 @@
       "comments": 2
     },
     "author": {
-      "followers": 3826186,
+      "followers": 3839644,
       "followerLabel": "成员"
     }
   },
@@ -1971,12 +2414,12 @@
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=DfIyYhyI-tc",
     "stats": {
-      "views": 606,
-      "likes": 10,
+      "views": 746,
+      "likes": 13,
       "comments": 8
     },
     "author": {
-      "followers": 32900,
+      "followers": 32800,
       "postCount": 2
     }
   },
@@ -2118,12 +2561,12 @@
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=KA3yE70j6s8",
     "stats": {
-      "views": 1500,
-      "likes": 30,
+      "views": 1694,
+      "likes": 31,
       "comments": 13
     },
     "author": {
-      "followers": 2300,
+      "followers": 2340,
       "postCount": 2
     }
   },
@@ -2158,11 +2601,11 @@
     "url": "https://www.reddit.com/r/gachagaming/comments/1pd3a7j/roco_kingdom_world_finally_has_a_release_date/",
     "stats": {
       "views": 0,
-      "likes": 58,
+      "likes": 62,
       "comments": 39
     },
     "author": {
-      "followers": 372487,
+      "followers": 376748,
       "followerLabel": "成员",
       "postCount": 5
     }
@@ -2177,13 +2620,13 @@
     "url": "https://www.reddit.com/r/MonsterTamerWorld/comments/1pd39dm/roco_kingdom_world_finally_has_a_release_date/",
     "stats": {
       "views": 0,
-      "likes": 79,
+      "likes": 76,
       "comments": 14
     },
     "author": {
-      "followers": 11531,
+      "followers": 12043,
       "followerLabel": "成员",
-      "postCount": 11
+      "postCount": 12
     }
   },
   {
@@ -2195,7 +2638,7 @@
     "l": "英语",
     "url": "https://gamingonphone.com/news/roco-kingdom-world-brings-its-creature-bonding-mmorpg-gameplay-to-china-on-march-26-2026",
     "author": {
-      "postCount": 4
+      "postCount": 5
     }
   },
   {
@@ -2208,13 +2651,13 @@
     "url": "https://www.reddit.com/r/MonsterTamerWorld/comments/1pd39dm/",
     "stats": {
       "views": 0,
-      "likes": 80,
+      "likes": 75,
       "comments": 14
     },
     "author": {
-      "followers": 11531,
+      "followers": 12043,
       "followerLabel": "成员",
-      "postCount": 11
+      "postCount": 12
     }
   },
   {
@@ -2227,11 +2670,11 @@
     "url": "https://www.reddit.com/r/gachagaming/comments/1pd3a7j/",
     "stats": {
       "views": 0,
-      "likes": 59,
+      "likes": 61,
       "comments": 39
     },
     "author": {
-      "followers": 372487,
+      "followers": 376748,
       "followerLabel": "成员",
       "postCount": 5
     }
@@ -2246,13 +2689,13 @@
     "url": "https://www.reddit.com/r/MonsterTamerWorld/comments/1p4hit0/",
     "stats": {
       "views": 0,
-      "likes": 49,
+      "likes": 47,
       "comments": 8
     },
     "author": {
-      "followers": 11531,
+      "followers": 12043,
       "followerLabel": "成员",
-      "postCount": 11
+      "postCount": 12
     }
   },
   {
@@ -2264,12 +2707,12 @@
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=_Msv2C9a1C4",
     "stats": {
-      "views": 966,
+      "views": 1033,
       "likes": 0,
       "comments": 0
     },
     "author": {
-      "followers": 773,
+      "followers": 789,
       "postCount": 3
     }
   },
@@ -2282,12 +2725,12 @@
     "l": "中文",
     "url": "https://www.youtube.com/watch?v=OABReb3Bnvs",
     "stats": {
-      "views": 1993,
-      "likes": 17,
+      "views": 2711,
+      "likes": 29,
       "comments": 4
     },
     "author": {
-      "followers": 397
+      "followers": 413
     }
   },
   {
@@ -2299,12 +2742,12 @@
     "l": "中文",
     "url": "https://www.youtube.com/watch?v=g4VzrKjhpb8",
     "stats": {
-      "views": 1107,
-      "likes": 29,
-      "comments": 13
+      "views": 1166,
+      "likes": 30,
+      "comments": 14
     },
     "author": {
-      "followers": 90
+      "followers": 98
     }
   },
   {
@@ -2316,7 +2759,7 @@
     "l": "英语",
     "url": "https://www.tiktok.com/@celozaga/video/7565351361282346251",
     "author": {
-      "postCount": 2
+      "postCount": 3
     }
   },
   {
@@ -2337,7 +2780,7 @@
     "l": "英语",
     "url": "https://www.threads.com/@celozaga/post/DQaF401Eo8Y/",
     "author": {
-      "postCount": 2
+      "postCount": 3
     }
   },
   {
@@ -2361,12 +2804,12 @@
     "l": "日语",
     "url": "https://www.youtube.com/watch?v=ONZyPbcHSNo",
     "stats": {
-      "views": 1585,
-      "likes": 22,
+      "views": 1722,
+      "likes": 23,
       "comments": 2
     },
     "author": {
-      "followers": 3420,
+      "followers": 3470,
       "postCount": 2
     }
   },
@@ -2380,13 +2823,13 @@
     "url": "https://www.reddit.com/r/MonsterTamerWorld/comments/1oj58rw/roco_kingdom/",
     "stats": {
       "views": 0,
-      "likes": 11,
+      "likes": 12,
       "comments": 4
     },
     "author": {
-      "followers": 11531,
+      "followers": 12043,
       "followerLabel": "成员",
-      "postCount": 11
+      "postCount": 12
     }
   },
   {
@@ -2407,12 +2850,12 @@
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=kXBvE9JPXs4",
     "stats": {
-      "views": 1266,
+      "views": 1330,
       "likes": 0,
       "comments": 0
     },
     "author": {
-      "followers": 773,
+      "followers": 789,
       "postCount": 3
     }
   },
@@ -2434,7 +2877,7 @@
     "l": "英语",
     "url": "https://gamingonphone.com/news/tencent-games-roco-kingdom-world-lets-you-bond-with-cute-creatures-begins-pre-registration-on-ios-in-china/",
     "author": {
-      "postCount": 4
+      "postCount": 5
     }
   },
   {
@@ -2464,7 +2907,7 @@
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=yVwv3huCx38",
     "stats": {
-      "views": 12747,
+      "views": 12891,
       "likes": 328,
       "comments": 47
     },
@@ -2503,12 +2946,12 @@
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=HXU6KGkaakE",
     "stats": {
-      "views": 5563,
-      "likes": 117,
-      "comments": 20
+      "views": 5718,
+      "likes": 116,
+      "comments": 21
     },
     "author": {
-      "followers": 845
+      "followers": 849
     }
   },
   {
@@ -2521,11 +2964,11 @@
     "url": "https://www.reddit.com/r/gachagaming/comments/1ishhh7/",
     "stats": {
       "views": 0,
-      "likes": 24,
+      "likes": 28,
       "comments": 11
     },
     "author": {
-      "followers": 372487,
+      "followers": 376748,
       "followerLabel": "成员",
       "postCount": 5
     }
@@ -2552,13 +2995,13 @@
     "url": "https://www.reddit.com/r/MonsterTamerWorld/comments/1i9d1rs/",
     "stats": {
       "views": 0,
-      "likes": 10,
+      "likes": 11,
       "comments": 14
     },
     "author": {
-      "followers": 11531,
+      "followers": 12043,
       "followerLabel": "成员",
-      "postCount": 11
+      "postCount": 12
     }
   },
   {
@@ -2571,13 +3014,13 @@
     "url": "https://www.reddit.com/r/MonsterTamerWorld/comments/1f2ir87/roco_kingdom_gameplay_information/",
     "stats": {
       "views": 0,
-      "likes": 6,
-      "comments": 6
+      "likes": 7,
+      "comments": 7
     },
     "author": {
-      "followers": 11531,
+      "followers": 12043,
       "followerLabel": "成员",
-      "postCount": 11
+      "postCount": 12
     }
   },
   {
@@ -2589,8 +3032,8 @@
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=kk0cqWvgD7M",
     "stats": {
-      "views": 27686,
-      "likes": 534,
+      "views": 28607,
+      "likes": 542,
       "comments": 54
     },
     "author": {
@@ -2618,9 +3061,9 @@
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=Dr4um2PPqCk",
     "stats": {
-      "views": 8406,
-      "likes": 295,
-      "comments": 16
+      "views": 9267,
+      "likes": 308,
+      "comments": 17
     },
     "author": {
       "followers": 415000,
@@ -2645,7 +3088,7 @@
     "l": "中文",
     "url": "https://gamingonphone.com/news/tencent-games-exploration-rpg-roco-kingdom-to-begin-its-first-beta-test-on-august-19-2024-in-china/",
     "author": {
-      "postCount": 4
+      "postCount": 5
     }
   },
   {
@@ -2678,12 +3121,12 @@
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=9iMsn6FqRew",
     "stats": {
-      "views": 7532,
-      "likes": 300,
-      "comments": 22
+      "views": 8863,
+      "likes": 345,
+      "comments": 24
     },
     "author": {
-      "followers": 34500
+      "followers": 35300
     }
   },
   {
@@ -2696,11 +3139,11 @@
     "url": "https://www.reddit.com/r/gachagaming/comments/re0tsh/roco_kingdom/",
     "stats": {
       "views": 0,
-      "likes": 292,
+      "likes": 291,
       "comments": 100
     },
     "author": {
-      "followers": 372487,
+      "followers": 376748,
       "followerLabel": "成员",
       "postCount": 5
     }
@@ -2723,12 +3166,12 @@
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=4fuEePQcp8Y",
     "stats": {
-      "views": 84555,
-      "likes": 2588,
+      "views": 84574,
+      "likes": 2589,
       "comments": 470
     },
     "author": {
-      "followers": 361000
+      "followers": 360000
     }
   },
   {
@@ -2766,12 +3209,12 @@
     "l": "中文",
     "url": "https://www.youtube.com/watch?v=ogUdtCfSVxA",
     "stats": {
-      "views": 3589,
+      "views": 3592,
       "likes": 51,
       "comments": 17
     },
     "author": {
-      "followers": 307000,
+      "followers": 309000,
       "postCount": 3
     }
   },
@@ -2784,12 +3227,12 @@
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=EIWFHL6Dz7M",
     "stats": {
-      "views": 472,
-      "likes": 14,
-      "comments": 4
+      "views": 515,
+      "likes": 16,
+      "comments": 5
     },
     "author": {
-      "followers": 2300,
+      "followers": 2340,
       "postCount": 2
     }
   },
@@ -2802,8 +3245,8 @@
     "l": "中文",
     "url": "https://www.youtube.com/shorts/jlPzet60LyU",
     "stats": {
-      "views": 3750,
-      "likes": 64,
+      "views": 4356,
+      "likes": 70,
       "comments": 2
     },
     "author": {
@@ -2825,7 +3268,7 @@
       "comments": 3
     },
     "author": {
-      "followers": 2670,
+      "followers": 2680,
       "postCount": 3
     }
   },
@@ -2838,12 +3281,12 @@
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=s_VT6jyuHy4",
     "stats": {
-      "views": 628,
-      "likes": 21,
+      "views": 719,
+      "likes": 22,
       "comments": 16
     },
     "author": {
-      "followers": 16500,
+      "followers": 16600,
       "postCount": 3
     }
   },
@@ -3076,7 +3519,10 @@
     "d": "2026-04-08",
     "s": "pos",
     "l": "英语",
-    "url": "https://x.com/emofishkiller/status/2041611596695531646"
+    "url": "https://x.com/emofishkiller/status/2041611596695531646",
+    "author": {
+      "postCount": 2
+    }
   },
   {
     "p": "x",
@@ -3132,7 +3578,14 @@
     "l": "英语",
     "url": "https://www.reddit.com/r/MonsterTamerWorld/comments/1s9x67c/roco_kingdom_world_features_incredibly_fun/",
     "author": {
-      "postCount": 11
+      "postCount": 12,
+      "followers": 12043,
+      "followerLabel": "成员"
+    },
+    "stats": {
+      "views": 0,
+      "likes": 24,
+      "comments": 8
     }
   },
   {
@@ -3144,7 +3597,14 @@
     "l": "英语",
     "url": "https://www.reddit.com/r/MonsterTamerWorld/comments/1sc538u/gorgeous_magicbattle_performanceroco_kingdom/",
     "author": {
-      "postCount": 11
+      "postCount": 12,
+      "followers": 12043,
+      "followerLabel": "成员"
+    },
+    "stats": {
+      "views": 0,
+      "likes": 141,
+      "comments": 22
     }
   },
   {
@@ -3156,7 +3616,14 @@
     "l": "英语",
     "url": "https://www.reddit.com/r/MonsterTamerWorld/comments/1sf96xv/roco_kingdom_groups/",
     "author": {
-      "postCount": 11
+      "postCount": 12,
+      "followers": 12043,
+      "followerLabel": "成员"
+    },
+    "stats": {
+      "views": 0,
+      "likes": 6,
+      "comments": 23
     }
   },
   {
@@ -3216,12 +3683,12 @@
     "l": "西班牙语",
     "url": "https://www.youtube.com/watch?v=AP6KR6-Wd0w",
     "stats": {
-      "views": 424,
-      "likes": 16,
-      "comments": 13
+      "views": 601,
+      "likes": 19,
+      "comments": 19
     },
     "author": {
-      "followers": 9840,
+      "followers": 9900,
       "postCount": 8
     }
   },
@@ -3234,12 +3701,12 @@
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=zL4Aym4p3MY",
     "stats": {
-      "views": 389,
+      "views": 492,
       "likes": 13,
       "comments": 2
     },
     "author": {
-      "followers": 192,
+      "followers": 287,
       "postCount": 8
     }
   },
@@ -3270,12 +3737,12 @@
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=XBGkviHDoek",
     "stats": {
-      "views": 168,
+      "views": 229,
       "likes": 0,
       "comments": 7
     },
     "author": {
-      "followers": 8120,
+      "followers": 8200,
       "postCount": 8
     }
   },
@@ -3288,12 +3755,12 @@
     "l": "中文",
     "url": "https://www.youtube.com/watch?v=3dSTCvQPYsM",
     "stats": {
-      "views": 4006,
-      "likes": 31,
-      "comments": 14
+      "views": 7223,
+      "likes": 46,
+      "comments": 19
     },
     "author": {
-      "followers": 730,
+      "followers": 744,
       "postCount": 8
     }
   },
@@ -3384,11 +3851,11 @@
     "l": "多语种",
     "url": "https://www.youtube.com/watch?v=KdbU45VrzbU",
     "author": {
-      "followers": 88000
+      "followers": 88300
     },
     "stats": {
-      "views": 658,
-      "likes": 40,
+      "views": 834,
+      "likes": 45,
       "comments": 5
     }
   },
@@ -3401,11 +3868,11 @@
     "l": "多语种",
     "url": "https://www.youtube.com/watch?v=Wt8m9MlJv9E",
     "author": {
-      "followers": 8120,
+      "followers": 8200,
       "postCount": 5
     },
     "stats": {
-      "views": 38,
+      "views": 142,
       "likes": 0,
       "comments": 0
     }
@@ -3419,11 +3886,11 @@
     "l": "多语种",
     "url": "https://www.youtube.com/watch?v=GgCs6fDTlrY",
     "author": {
-      "followers": 8120,
+      "followers": 8200,
       "postCount": 5
     },
     "stats": {
-      "views": 253,
+      "views": 365,
       "likes": 0,
       "comments": 16
     }
@@ -3437,10 +3904,10 @@
     "l": "多语种",
     "url": "https://www.youtube.com/watch?v=QH1hoSV7QEI",
     "author": {
-      "followers": 841
+      "followers": 982
     },
     "stats": {
-      "views": 151,
+      "views": 193,
       "likes": 3,
       "comments": 0
     }
@@ -3675,7 +4142,6 @@
     "s": "pos",
     "l": "英语",
     "url": "https://substack.nikopartners.com/p/livestreaming-tracker-march-2026",
-    "_new": true,
     "author": {
       "postCount": 2
     }
@@ -3687,8 +4153,7 @@
     "d": "2026-04-13",
     "s": "pos",
     "l": "英语",
-    "url": "https://www.answeroverflow.com/m/1493345127287099453",
-    "_new": true
+    "url": "https://www.answeroverflow.com/m/1493345127287099453"
   },
   {
     "p": "x",
@@ -3697,8 +4162,7 @@
     "d": "2026-04-13",
     "s": "neu",
     "l": "英语",
-    "url": "https://x.com/CeloZaga/status/2043784978211733602",
-    "_new": true
+    "url": "https://x.com/CeloZaga/status/2043784978211733602"
   },
   {
     "p": "x",
@@ -3707,8 +4171,7 @@
     "d": "2026-04-13",
     "s": "pos",
     "l": "中文",
-    "url": "https://x.com/hardy16649679/status/2043747457117360483",
-    "_new": true
+    "url": "https://x.com/hardy16649679/status/2043747457117360483"
   },
   {
     "p": "x",
@@ -3717,8 +4180,7 @@
     "d": "2026-04-13",
     "s": "pos",
     "l": "英语",
-    "url": "https://x.com/BowsetteKoopa/status/2043728301512921213",
-    "_new": true
+    "url": "https://x.com/BowsetteKoopa/status/2043728301512921213"
   },
   {
     "p": "x",
@@ -3727,8 +4189,7 @@
     "d": "2026-04-13",
     "s": "pos",
     "l": "中文",
-    "url": "https://x.com/limo_0829/status/2043682541333536995",
-    "_new": true
+    "url": "https://x.com/limo_0829/status/2043682541333536995"
   },
   {
     "p": "x",
@@ -3738,7 +4199,6 @@
     "s": "neg",
     "l": "中文",
     "url": "https://x.com/zhongqi233/status/2043691110011412925",
-    "_new": true,
     "author": {
       "postCount": 2
     }
@@ -3750,8 +4210,7 @@
     "d": "2026-04-11",
     "s": "neu",
     "l": "英语",
-    "url": "https://x.com/Castor_VT/status/2043055748716920914",
-    "_new": true
+    "url": "https://x.com/Castor_VT/status/2043055748716920914"
   },
   {
     "p": "x",
@@ -3760,8 +4219,7 @@
     "d": "2026-04-10",
     "s": "pos",
     "l": "中文",
-    "url": "https://x.com/likizzyz/status/2042684719926853960",
-    "_new": true
+    "url": "https://x.com/likizzyz/status/2042684719926853960"
   },
   {
     "p": "x",
@@ -3771,7 +4229,6 @@
     "s": "pos",
     "l": "中文",
     "url": "https://x.com/zhongqi233/status/2042575894439694394",
-    "_new": true,
     "author": {
       "postCount": 2
     }
@@ -3783,8 +4240,7 @@
     "d": "2026-04-09",
     "s": "neg",
     "l": "中文",
-    "url": "https://x.com/Cf2Jq/status/2042201176087880150",
-    "_new": true
+    "url": "https://x.com/Cf2Jq/status/2042201176087880150"
   },
   {
     "p": "x",
@@ -3793,8 +4249,7 @@
     "d": "2026-04-13",
     "s": "pos",
     "l": "英语",
-    "url": "https://x.com/joshranierrr/status/2043794132133695832",
-    "_new": true
+    "url": "https://x.com/joshranierrr/status/2043794132133695832"
   },
   {
     "p": "x",
@@ -3803,8 +4258,7 @@
     "d": "2026-04-10",
     "s": "pos",
     "l": "英语",
-    "url": "https://x.com/MantisOnMoon/status/2042712312247689519",
-    "_new": true
+    "url": "https://x.com/MantisOnMoon/status/2042712312247689519"
   },
   {
     "p": "x",
@@ -3814,7 +4268,6 @@
     "s": "neu",
     "l": "英语",
     "url": "https://x.com/deweibs/status/2042190888928002371",
-    "_new": true,
     "author": {
       "postCount": 5
     }
@@ -3826,8 +4279,7 @@
     "d": "2026-04-08",
     "s": "neu",
     "l": "英语",
-    "url": "https://x.com/BKGZ192959/status/2041746213910016349",
-    "_new": true
+    "url": "https://x.com/BKGZ192959/status/2041746213910016349"
   },
   {
     "p": "x",
@@ -3836,8 +4288,7 @@
     "d": "2026-04-08",
     "s": "pos",
     "l": "英语",
-    "url": "https://x.com/nikopartnersinc/status/2041733441541304520",
-    "_new": true
+    "url": "https://x.com/nikopartnersinc/status/2041733441541304520"
   },
   {
     "p": "x",
@@ -3846,8 +4297,7 @@
     "d": "2026-04-08",
     "s": "neu",
     "l": "中文",
-    "url": "https://x.com/lutonie65881/status/2041850780890886155",
-    "_new": true
+    "url": "https://x.com/lutonie65881/status/2041850780890886155"
   },
   {
     "p": "x",
@@ -3856,8 +4306,7 @@
     "d": "2026-04-13",
     "s": "neu",
     "l": "中文",
-    "url": "https://x.com/shenyingdashen/status/2043745554564559107",
-    "_new": true
+    "url": "https://x.com/shenyingdashen/status/2043745554564559107"
   },
   {
     "p": "x",
@@ -3866,8 +4315,7 @@
     "d": "2026-04-13",
     "s": "neu",
     "l": "中文",
-    "url": "https://x.com/dream1346791739/status/2043727247618576727",
-    "_new": true
+    "url": "https://x.com/dream1346791739/status/2043727247618576727"
   },
   {
     "p": "x",
@@ -3876,8 +4324,7 @@
     "d": "2026-04-13",
     "s": "neg",
     "l": "中文",
-    "url": "https://x.com/Ai1Ruiba20275/status/2043597987637772735",
-    "_new": true
+    "url": "https://x.com/Ai1Ruiba20275/status/2043597987637772735"
   },
   {
     "p": "x",
@@ -3886,8 +4333,7 @@
     "d": "2026-04-13",
     "s": "neu",
     "l": "英语",
-    "url": "https://x.com/dingxiang233/status/2043580980754358734",
-    "_new": true
+    "url": "https://x.com/dingxiang233/status/2043580980754358734"
   },
   {
     "p": "media",
@@ -3896,8 +4342,7 @@
     "d": "2026-04-01",
     "s": "neu",
     "l": "英语",
-    "url": "https://tvtropes.org/pmwiki/pmwiki.php/VideoGame/RocoKingdom",
-    "_new": true
+    "url": "https://tvtropes.org/pmwiki/pmwiki.php/VideoGame/RocoKingdom"
   },
   {
     "p": "youtube",
@@ -3907,9 +4352,13 @@
     "s": "pos",
     "l": "越南语",
     "url": "https://www.youtube.com/watch?v=PK7nH-8zz6Y",
-    "_new": true,
     "author": {
-      "followers": 192
+      "followers": 287
+    },
+    "stats": {
+      "views": 404,
+      "likes": 5,
+      "comments": 2
     }
   },
   {
@@ -3920,9 +4369,13 @@
     "s": "neu",
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=7gsNcGZNl2E",
-    "_new": true,
     "author": {
-      "followers": 18
+      "followers": 23
+    },
+    "stats": {
+      "views": 21,
+      "likes": 0,
+      "comments": 0
     }
   },
   {
@@ -3933,10 +4386,14 @@
     "s": "neu",
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=whqdqJq2E9w",
-    "_new": true,
     "author": {
-      "followers": 8120,
+      "followers": 8200,
       "postCount": 8
+    },
+    "stats": {
+      "views": 307,
+      "likes": 0,
+      "comments": 3
     }
   },
   {
@@ -3947,10 +4404,14 @@
     "s": "neu",
     "l": "英语",
     "url": "https://www.youtube.com/watch?v=zzQAxGYuSfk",
-    "_new": true,
     "author": {
-      "followers": 245000,
+      "followers": 246000,
       "postCount": 8
+    },
+    "stats": {
+      "views": 1231,
+      "likes": 53,
+      "comments": 27
     }
   },
   {
@@ -3961,6 +4422,14 @@
     "s": "neu",
     "l": "英语",
     "url": "https://www.reddit.com/r/CookierunKingdom/comments/1rt0qob/i_dont_like_cookie_kingdom_world_anymore/",
-    "_new": true
+    "stats": {
+      "views": 0,
+      "likes": 19,
+      "comments": 34
+    },
+    "author": {
+      "followers": 58358,
+      "followerLabel": "成员"
+    }
   }
 ]

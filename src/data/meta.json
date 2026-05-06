@@ -1,8 +1,8 @@
 {
-  "lastScan": "2026-04-14T12:20:02+08:00",
-  "lastScanHuman": "2026-04-14 12:20 自动化日扫",
-  "totalPosts": 319,
-  "scanCount": 24,
+  "lastScan": "2026-05-06T14:57:25+08:00",
+  "lastScanHuman": "2026-05-06 14:57 自动化扫描",
+  "totalPosts": 352,
+  "scanCount": 25,
   "dataSource": {
     "webSearch": true,
     "tavily": true,
@@ -10,8 +10,8 @@
     "grokX": true
   },
   "apiCosts": {
-    "grokX USD": 0.63
+    "grokX USD": 0.67
   },
-  "notes": "第24次扫描(自动化) - +27新帖子(319总), 7议题(1 critical/3 warning/3 watch), Niko Partners密集报道+越南主播+加速器教程",
+  "notes": "第25次扫描(自动化) - +33新帖子(352总), 全球热度持续上升, 多巴西/葡语用户期待全球版",
   "scanBy": "automation"
 }
