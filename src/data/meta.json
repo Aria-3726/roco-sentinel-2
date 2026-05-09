@@ -1,17 +1,17 @@
 {
-  "lastScan": "2026-05-06T14:57:25+08:00",
-  "lastScanHuman": "2026-05-06 14:57 自动化扫描",
-  "totalPosts": 352,
-  "scanCount": 25,
+  "lastScan": "2026-05-09T12:09:03+08:00",
+  "lastScanHuman": "2026-05-09 12:09 自动化扫描",
+  "totalPosts": 365,
+  "scanCount": 26,
   "dataSource": {
     "webSearch": true,
     "tavily": true,
     "youtube": true,
-    "grokX": true
+    "grokX": false
   },
   "apiCosts": {
-    "grokX USD": 0.67
+    "grokX USD": 0.0
   },
-  "notes": "第25次扫描(自动化) - +33新帖子(352总), 全球热度持续上升, 多巴西/葡语用户期待全球版",
+  "notes": "第26次扫描(自动化) - +13新帖(总365条), Grok连接失败跳过",
   "scanBy": "automation"
 }
