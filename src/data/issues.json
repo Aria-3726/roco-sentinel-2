@@ -1,75 +1,51 @@
 [
   {
+    "title": "S2暗改门引爆国内信任危机",
+    "sev": "critical",
+    "desc": "5月21日S2赛季上线后爆发严重舆情,TapTap评分跌至2.8分(3天4000+差评),B站官方动态评论破百万。核心问题:女角色战败动作/骑乘/表情等暗改未公告,版本管理错误导致S1修复回退。主策5/24发长文致歉,已热更回退。共10+条相关帖,涉及GameKee/腾讯新闻/百家号/小米商店等。最新帖2026-05-27。信号⬆️🆕",
+    "plats": ["media", "x", "forum"],
+    "tip": "持续跟踪海外玩家对此事件的反应,关注是否影响全球版预期;若出海需确保版本管理流程严格透明"
+  },
+  {
     "title": "全球版呼声持续高涨",
     "sev": "critical",
-    "desc": "共55+条相关帖子(+5条新增)。本期新增GamingOnPhone 5月3日发布中国版下载教程、RocoKingdom.app粉丝工具站5月5日上线(英日韩中四语)、r/gachagaming持续讨论锁区问题。Uptodown/LagoFast/GearUp等多个VPN/加速器站持续产出教程内容，说明海外自然需求仍在增长。信号⬆️",
-    "plats": [
-      "reddit",
-      "媒体",
-      "网站",
-      "youtube"
-    ],
-    "tip": "粉丝工具站rocokingdom.app已支持4语种，建议关注社区自组织热度作为全球化时机参考指标"
+    "desc": "共60+条相关帖子(+8条新增)。Daniel Ahmad公布DAU 1300万后海外集体震动,多国玩家高呼求出全球版。新增X推文:@Biellinos(葡)表达兴奋等待、@OriginMon列入期待清单、@GilbertLin79832发出'不推荐'论(因锁区)。LagoFast/GearUp等VPN翻墙教程持续增长。最新帖2026-05-27。信号⬆️",
+    "plats": ["x", "reddit", "media", "youtube"],
+    "tip": "海外玩家情绪已从期待转向焦虑;建议尽早释放全球版时间线信号,避免焦虑转化为负面情绪"
   },
   {
-    "title": "宝可梦对比与正面评价并存",
+    "title": "宝可梦对比与差异化评价",
     "sev": "warning",
-    "desc": "共40+条相关帖子(+3条新增)。r/MonsterTamerWorld新帖称赞坐骑系统'充满个性'、VGOver繁中评测'不玩PVP也给夯分'、巴哈姆特万字评测称'教科书级'仍在传播。正面评价持续增长，与宝可梦的对比叙事已从争议转向认可。最新帖子2026-05-01。信号➡️",
-    "plats": [
-      "reddit",
-      "forum",
-      "媒体"
-    ],
-    "tip": "正面叙事占主导，可考虑在全球版宣发中引用海外玩家真实好评作为社会证明"
+    "desc": "共45+条相关帖子(+5条新增)。巴哈姆特万字评测称'抓宠教科书'('抄越所有捉宠游戏')持续传播,GamingOnPhone评测定位为'Genshin meets Pokémon'。新增@kotIDget称'open world monster collector',Reddit持续讨论差异化。最新帖2026-05-23。信号➡️",
+    "plats": ["forum", "reddit", "media", "x"],
+    "tip": "海外定位已基本稳定为'Pokémon+Genshin';出海宣发可借力此标签但需强调独创性避免侵权争议"
   },
   {
-    "title": "YouTube英语实况系列持续更新",
+    "title": "YouTube英语实况持续增长",
     "sev": "warning",
-    "desc": "共90+条YouTube视频(+6条新增)。Broccoli Gaming Channel连续更新至Part 27(5月8日)，保持日更节奏；越南博主Tuyệt Kế Game发布Level 40攻略。海外YouTube创作生态活跃且稳定增长。最新视频2026-05-08。信号⬆️",
-    "plats": [
-      "youtube"
-    ],
-    "tip": "Broccoli Gaming Channel已成为核心英语内容创作者(27期连载)，建议纳入全球版KOL合作优先名单"
+    "desc": "共95+条YouTube视频(+9条新增)。Broccoli Gaming Channel系列已超Part 27,新增@winggi_yt发布下载教程视频(5/22),多个新频道开始做洛克王国内容。越南/泰语频道活跃。最新帖2026-05-22。信号⬆️",
+    "plats": ["youtube"],
+    "tip": "英语YouTube创作者生态已形成,可重点联系Broccoli Gaming/winggi等高频创作者作为出海KOL种子"
   },
   {
-    "title": "繁中/台湾社区热度延续",
-    "sev": "warning",
-    "desc": "共14+条相关帖子(+1条新增)。VGOver繁中评测持续获得流量，巴哈姆特评测仍在讨论中。台湾玩家群体已形成稳定的内容消费和创作循环。最新相关帖2026-04-20。信号➡️",
-    "plats": [
-      "forum",
-      "媒体"
-    ],
-    "tip": "繁中市场已有自然热度基础，全球版如包含繁中可快速启动台港澳市场"
-  },
-  {
-    "title": "营收与行业认可数据积累",
+    "title": "营收数据与行业认可",
     "sev": "watch",
-    "desc": "共14+条相关帖子(+0条新增)。Niko Partners确认进入3月RPG直播TOP10、@Gacharevenueall 4月$52M数据仍在流传。本期无新增营收相关帖子，信号稳定。最新帖2026-05-06。信号➡️",
-    "plats": [
-      "x",
-      "媒体",
-      "substack"
-    ],
-    "tip": "行业数据已形成正面背书，可作为B2B合作和投资者沟通素材使用"
+    "desc": "共18+条相关帖子(+3条新增)。Sensor Tower确认3月全球手游收入增长榜第6;Niko Partners报告3月RPG直播TOP10;腾讯Q1财报DAU1300万。新增GameLook/Niko Partners/BBG News报道。最新帖2026-05-19。信号⬆️",
+    "plats": ["media", "x", "substack"],
+    "tip": "行业分析机构持续关注;可准备海外媒体数据包(MAU/DAU/营收)为出海预热铺路"
   },
   {
-    "title": "日语社区关注度稳定",
+    "title": "葡语/巴西社区兴趣扩大",
     "sev": "watch",
-    "desc": "共17+条相关帖子(+0条新增)。Kultur.jp报道和日语推文持续存在但本期无新增。日本市场兴趣停留在'观望'阶段。最新帖2026-05-06。信号➡️",
-    "plats": [
-      "x",
-      "媒体"
-    ],
-    "tip": "日本市场需要实质性动作(如TGS展示或日语Demo)来激活从观望到行动的转化"
+    "desc": "共12+条相关帖子(+2条新增)。新增@Biellinos期待全球版、@DeMassaroni发布葡语推介内容(5/26)。巴西玩家群体活跃度持续上升,已有专门翻墙教程流传。最新帖2026-05-27。信号⬆️",
+    "plats": ["x", "youtube", "threads"],
+    "tip": "巴西市场信号明确;出海优先级考虑加入葡语(巴西)本地化,可对接当地游戏KOL"
   },
   {
-    "title": "越南/东南亚创作者活跃",
+    "title": "日语/韩语社区关注度",
     "sev": "watch",
-    "desc": "共10+条相关帖子(+1条新增)。越南博主Tuyệt Kế Game发布Level 40攻略视频(4月26日)，泰语媒体mustplay.in.th此前报道。东南亚地区创作者自发产出内容，市场信号缓慢积累中。信号⬆️",
-    "plats": [
-      "youtube",
-      "媒体"
-    ],
-    "tip": "越南/泰国创作者已开始自发内容产出，建议密切跟踪东南亚预注册数据表现"
+    "desc": "共20+条相关帖子(+2条新增)。新增@YamayaT(日语)和@gpzJzhetV8xcrtv(日语)讨论洛克王国,提及S2事件。Kultur.jp此前已有报道。最新帖2026-05-25。信号➡️",
+    "plats": ["x", "media"],
+    "tip": "日韩社区保持稳定关注;如计划日本测试需注意S2事件可能被日媒引用作为负面案例"
   }
 ]

@@ -1,17 +1,17 @@
 {
-  "lastScan": "2026-05-09T12:09:03+08:00",
-  "lastScanHuman": "2026-05-09 12:09 自动化扫描",
-  "totalPosts": 365,
-  "scanCount": 26,
+  "lastScan": "2026-05-28T17:33:52.063317+08:00",
+  "lastScanHuman": "2026-05-28 17:33 北京时间",
+  "totalPosts": 418,
+  "scanCount": 28,
   "dataSource": {
     "webSearch": true,
     "tavily": true,
     "youtube": true,
-    "grokX": false
+    "grokX": true
   },
   "apiCosts": {
-    "grokX USD": 0.0
+    "grokX USD": 0.34
   },
-  "notes": "第26次扫描(自动化) - +13新帖(总365条), Grok连接失败跳过",
+  "notes": "第28次扫描(自动化) - +53帖子(总418条), S2暗改门爆发",
   "scanBy": "automation"
 }
