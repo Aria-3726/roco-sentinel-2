@@ -1,6 +1,6 @@
 # 🛡️ Roco Sentinel v2
 
-**洛克王国：世界 (Roco Kingdom: World)** 海外舆情监控面板。
+**NRC** 海外舆情监控面板。
 
 > 📊 **线上面板**: [roco-sentinel-2.vercel.app](https://roco-sentinel-2.vercel.app/)
 
