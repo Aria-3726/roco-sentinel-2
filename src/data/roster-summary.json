@@ -1,0 +1,148 @@
+{
+  "generated_at": "2026-08-27T08:29:47.672Z",
+  "total_creators": 2638,
+  "total_accounts": 2832,
+  "by_list_type": [
+    {
+      "name": "koc",
+      "count": 2444
+    },
+    {
+      "name": "paid_kol",
+      "count": 153
+    },
+    {
+      "name": "media",
+      "count": 41
+    }
+  ],
+  "by_region": [
+    {
+      "name": "日本",
+      "count": 648
+    },
+    {
+      "name": "未知",
+      "count": 628
+    },
+    {
+      "name": "美国",
+      "count": 288
+    },
+    {
+      "name": "韩国",
+      "count": 116
+    },
+    {
+      "name": "US",
+      "count": 115
+    },
+    {
+      "name": "巴西",
+      "count": 99
+    },
+    {
+      "name": "EN",
+      "count": 74
+    },
+    {
+      "name": "墨西哥",
+      "count": 56
+    },
+    {
+      "name": "西班牙",
+      "count": 51
+    },
+    {
+      "name": "印度",
+      "count": 49
+    },
+    {
+      "name": "印度尼西亚",
+      "count": 45
+    },
+    {
+      "name": "欧美",
+      "count": 39
+    }
+  ],
+  "by_platform": [
+    {
+      "name": "youtube",
+      "count": 2214
+    },
+    {
+      "name": "tiktok",
+      "count": 461
+    },
+    {
+      "name": "x",
+      "count": 78
+    },
+    {
+      "name": "website",
+      "count": 42
+    },
+    {
+      "name": "twitch",
+      "count": 33
+    },
+    {
+      "name": "instagram",
+      "count": 4
+    }
+  ],
+  "by_status": [
+    {
+      "name": "已首次触达",
+      "count": 1086
+    },
+    {
+      "name": "已拿到联系方式",
+      "count": 886
+    },
+    {
+      "name": "未填写",
+      "count": 360
+    },
+    {
+      "name": "已完成报价",
+      "count": 89
+    },
+    {
+      "name": "未答复",
+      "count": 44
+    },
+    {
+      "name": "已初步达成合作意向",
+      "count": 33
+    },
+    {
+      "name": "已确认档期",
+      "count": 23
+    },
+    {
+      "name": "已商单合作",
+      "count": 19
+    },
+    {
+      "name": "确定可合作",
+      "count": 17
+    },
+    {
+      "name": "建联中",
+      "count": 17
+    },
+    {
+      "name": "已拒绝",
+      "count": 15
+    },
+    {
+      "name": "◎",
+      "count": 15
+    }
+  ],
+  "published_creators": 11,
+  "commercial_records": 299,
+  "private_fields_excluded": true
+}

@@ -9,3 +9,5 @@ data/private/
 data/*.db
 data/*.sqlite*
 exports/
+work/
+.vercel/

@@ -1,413 +1,171 @@
-import { useEffect, useState, useMemo } from "react";
-import { ResponsiveContainer, Tooltip, BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid, Legend } from "recharts";
+import { useEffect, useMemo, useState } from "react";
+import { ResponsiveContainer, AreaChart, Area, BarChart, Bar, CartesianGrid, Tooltip, XAxis, YAxis } from "recharts";
 import postsData from "./data/posts.json";
 import issuesData from "./data/issues.json";
 import meta from "./data/meta.json";
+import rosterFallback from "./data/roster-summary.json";
 
-/* ─── 洛克王国画风配色 ─── */
-const C = {
-  pos:'#43a047', neg:'#e53935', neu:'#78909c',
-  x:'#1d9bf0', reddit:'#ff6d00', youtube:'#ff0000', tiktok:'#e040fb', instagram:'#e91e63',
-  facebook:'#1877f2', media:'#7c4dff', forum:'#00bcd4', threads:'#424242'
+const PLATFORM = { x:"X", reddit:"Reddit", youtube:"YouTube", tiktok:"TikTok", instagram:"Instagram", twitch:"Twitch", media:"媒体", website:"网站" };
+const PLATFORM_COLOR = { x:"#111827", reddit:"#f4511e", youtube:"#ef4444", tiktok:"#111827", instagram:"#db2777", twitch:"#7c3aed", media:"#6366f1", website:"#0f766e" };
+const TYPE = { paid_kol:"商单 KOL", media:"媒体", platform:"平台", koc:"KOC", official:"官方", organic:"自然传播" };
+const TYPE_COLOR = { paid_kol:"#7c3aed", media:"#2563eb", platform:"#0f766e", koc:"#d97706", official:"#db2777", organic:"#64748b" };
+const LANG = { en:"英语", ja:"日语", zh:"中文", ko:"韩语", de:"德语", fr:"法语", es:"西班牙语", it:"意大利语", pt:"葡萄牙语" };
+
+const fmt = (value) => {
+  const n = Number(value || 0);
+  if (n >= 1e6) return `${(n / 1e6).toFixed(1)}M`;
+  if (n >= 1e3) return `${(n / 1e3).toFixed(1)}K`;
+  return n.toLocaleString("zh-CN");
 };
-const PN = { x:'𝕏', reddit:'Reddit', youtube:'YouTube', tiktok:'TikTok', instagram:'Instagram', facebook:'Facebook', media:'媒体', forum:'论坛', threads:'Threads' };
-const SN = { pos:'正面', neg:'负面', neu:'中性' };
-const LC = { '英语':'#1d9bf0', '中文':'#e53935', '日语':'#e040fb', '泰语':'#ff9800', '印尼语':'#43a047', '越南语':'#7c4dff', '韩语':'#00bcd4', '西班牙语':'#ff6d00', '德语':'#78909c', '葡萄牙语':'#2e7d32', '法语':'#5c6bc0', '意大利语':'#00897b', '阿拉伯语':'#6d4c41', '土耳其语':'#c62828', '俄语':'#1565c0' };
-const LANG = { en:'英语', ja:'日语', zh:'中文', ko:'韩语', de:'德语', fr:'法语', es:'西班牙语', it:'意大利语', pt:'葡萄牙语' };
 
-function asDashboardPost(row) {
+function mapPost(row) {
   return {
-    p: row.platform,
-    u: row.author_name || (row.author_handle ? `@${row.author_handle}` : '未知账号'),
-    t: row.body || row.title || '',
-    d: row.published_at ? String(row.published_at).slice(0, 10) : '',
-    s: row.sentiment || 'neu',
-    l: LANG[row.language] || row.language || '',
-    url: row.canonical_url,
-    listType: row.list_type || 'organic',
-    stats: { views: row.views || 0, likes: row.likes || 0, comments: row.comments || 0, shares: row.shares || 0 },
-    _new: row.first_seen_at ? Date.now() - new Date(row.first_seen_at).getTime() < 36 * 3600 * 1000 : false,
+    p: row.platform, u: row.author_name || (row.author_handle ? `@${row.author_handle}` : "未知账号"),
+    t: row.body || row.title || "", d: row.published_at ? String(row.published_at).slice(0, 10) : "",
+    s: row.sentiment || "neu", l: LANG[row.language] || row.language || "未知",
+    url: row.canonical_url, listType: row.list_type || "organic",
+    stats: { views:Number(row.views || 0), likes:Number(row.likes || 0), comments:Number(row.comments || 0), shares:Number(row.shares || 0) },
+    isNew: row.first_seen_at ? Date.now() - new Date(row.first_seen_at).getTime() < 36 * 3600 * 1000 : false,
   };
 }
 
-/* ─── 全局样式 token ─── */
-const T = {
-  bg: '#f0f7ff',            // 淡天蓝背景
-  card: '#ffffff',          // 白色卡片
-  cardAlt: '#f8fbff',       // 浅蓝卡片
-  border: '#d6e4f0',        // 淡蓝灰边框
-  borderLight: '#e8f0fe',
-  hero: 'linear-gradient(135deg, #42a5f5 0%, #7e57c2 50%, #66bb6a 100%)', // 天蓝→紫→绿
-  accent: '#42a5f5',        // 天蓝主色
-  accent2: '#66bb6a',       // 草绿辅色
-  accent3: '#ffb74d',       // 暖橙点缀
-  t1: '#1a237e',            // 深蓝文字
-  t2: '#546e7a',            // 灰蓝二级文字
-  t3: '#90a4ae',            // 浅灰三级
-  radius: 16,
-  radiusSm: 10,
-  shadow: '0 2px 12px rgba(66,165,245,0.08)',
-  shadowHover: '0 4px 20px rgba(66,165,245,0.15)',
-  font: "'Noto Sans SC', system-ui, -apple-system, sans-serif",
-};
+function Card({ children, className="" }) { return <section className={`card ${className}`}>{children}</section>; }
+function Metric({ label, value, note, tone="blue" }) {
+  return <Card className={`metric ${tone}`}><span>{label}</span><strong>{value}</strong><small>{note}</small></Card>;
+}
+function Chip({ children, color="#64748b" }) { return <span className="chip" style={{ color, background:`${color}14`, borderColor:`${color}28` }}>{children}</span>; }
+function Empty({ children }) { return <div className="empty">{children}</div>; }
 
 export default function App() {
-  const [databasePosts, setDatabasePosts] = useState([]);
-  const [databaseMeta, setDatabaseMeta] = useState(null);
-  const issues = issuesData;
-  const [filter, setFilter] = useState("all");
-  const [langFilter, setLangFilter] = useState("all");
+  const [tab, setTab] = useState("overview");
+  const [dbPosts, setDbPosts] = useState([]);
+  const [dbMeta, setDbMeta] = useState(null);
+  const [roster, setRoster] = useState(rosterFallback);
+  const [platformFilter, setPlatformFilter] = useState("all");
+  const [typeFilter, setTypeFilter] = useState("all");
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
-    let active = true;
-    Promise.all([
-      fetch('/api/posts?limit=1000').then(r => r.ok ? r.json() : Promise.reject(new Error(`posts ${r.status}`))),
-      fetch('/api/summary').then(r => r.ok ? r.json() : Promise.reject(new Error(`summary ${r.status}`))),
-    ]).then(([postResult, summary]) => {
-      if (!active) return;
-      setDatabasePosts((postResult.posts || []).map(asDashboardPost));
-      setDatabaseMeta(summary);
-    }).catch(() => {
-      // Static history remains available during local work or a temporary API outage.
+    let alive = true;
+    Promise.allSettled([
+      fetch("/api/posts?limit=1000").then(r => r.ok ? r.json() : Promise.reject()),
+      fetch("/api/summary").then(r => r.ok ? r.json() : Promise.reject()),
+      fetch("/api/roster-summary").then(r => r.ok ? r.json() : Promise.reject()),
+    ]).then(([postsResult, summaryResult, rosterResult]) => {
+      if (!alive) return;
+      if (postsResult.status === "fulfilled") setDbPosts((postsResult.value.posts || []).map(mapPost));
+      if (summaryResult.status === "fulfilled") setDbMeta(summaryResult.value);
+      if (rosterResult.status === "fulfilled" && rosterResult.value.total_creators > 0) setRoster(rosterResult.value);
     });
-    return () => { active = false; };
+    return () => { alive = false; };
   }, []);
 
   const posts = useMemo(() => {
-    const merged = new Map(postsData.map(post => [post.url, post]));
-    databasePosts.forEach(post => merged.set(post.url, { ...merged.get(post.url), ...post }));
-    return Array.from(merged.values());
-  }, [databasePosts]);
+    const merged = new Map(postsData.map(item => [item.url, { ...item, listType:item.listType || "organic", isNew:false }]));
+    dbPosts.forEach(item => merged.set(item.url, { ...merged.get(item.url), ...item }));
+    return [...merged.values()];
+  }, [dbPosts]);
 
-  const lastScanText = useMemo(() => {
-    const lastScan = databaseMeta?.last_scan || meta.lastScan;
-    if (!lastScan) return '未知';
-    try {
-      const d = new Date(lastScan);
-      return d.toLocaleString('zh-CN', { month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit', hour12:false });
-    } catch { return lastScan; }
-  }, [databaseMeta]);
+  const organic = posts.filter(item => item.listType === "organic");
+  const rosterPosts = posts.filter(item => item.listType !== "organic");
+  const totalViews = posts.reduce((sum, item) => sum + Number(item.stats?.views || 0), 0);
+  const totalEngagement = posts.reduce((sum, item) => sum + Number(item.stats?.likes || 0) + Number(item.stats?.comments || 0) + Number(item.stats?.shares || 0), 0);
+  const lastScan = dbMeta?.last_scan || meta.lastScan;
+  const lastScanText = lastScan ? new Date(lastScan).toLocaleString("zh-CN", { timeZone:"Asia/Shanghai", month:"numeric", day:"numeric", hour:"2-digit", minute:"2-digit", hour12:false }) : "等待首次扫描";
 
-  // Computed
-  const posN = posts.filter(x => x.s === "pos").length;
-  const negN = posts.filter(x => x.s === "neg").length;
-  const neuN = posts.filter(x => x.s === "neu").length;
-  const sentData = [{ name:"正面", value:posN, color:C.pos }, { name:"中性", value:neuN, color:C.neu }, { name:"负面", value:negN, color:C.neg }].filter(x => x.value > 0);
-  const platMap = {}; posts.forEach(x => { platMap[x.p] = (platMap[x.p]||0)+1; });
-  const platData = Object.entries(platMap).map(([k,v]) => ({ name:PN[k]||k, value:v, color:C[k]||"#78909c" })).sort((a,b) => b.value-a.value);
-  const langMap = {}; posts.forEach(x => { const l=x.l||'未知'; langMap[l]=(langMap[l]||0)+1; });
-  const langData = Object.entries(langMap).map(([k,v]) => ({ name:k, value:v, color:LC[k]||"#78909c" })).sort((a,b) => b.value-a.value);
-  const allPlats = ["all", ...Object.keys(platMap)];
-  const allLangs = ["all", ...Object.keys(langMap)];
-  const list = posts.filter(x => (filter==="all" || x.p===filter) && (langFilter==="all" || x.l===langFilter)).sort((a,b) => (b.d||"0").localeCompare(a.d||"0"));
+  const trend = useMemo(() => {
+    const map = {};
+    posts.forEach(item => {
+      if (!item.d) return;
+      map[item.d] ||= { date:item.d, posts:0, views:0, organic:0, roster:0 };
+      map[item.d].posts += 1;
+      map[item.d].views += Number(item.stats?.views || 0);
+      map[item.d][item.listType === "organic" ? "organic" : "roster"] += 1;
+    });
+    return Object.values(map).sort((a,b) => a.date.localeCompare(b.date)).slice(-21).map(item => ({ ...item, label:item.date.slice(5) }));
+  }, [posts]);
 
-  const dailyMap = {};
-  posts.forEach(x => { if(!x.d) return; if(!dailyMap[x.d]) dailyMap[x.d]={date:x.d,total:0,pos:0,neg:0,neu:0}; dailyMap[x.d].total++; dailyMap[x.d][x.s]++; });
-  const dailyData = Object.values(dailyMap).sort((a,b) => a.date.localeCompare(b.date)).map(d => ({ name:d.date.slice(5), ...d }));
+  const platformData = useMemo(() => {
+    const map = {};
+    posts.forEach(item => { map[item.p] = (map[item.p] || 0) + 1; });
+    return Object.entries(map).map(([name,count]) => ({ name:PLATFORM[name] || name, count })).sort((a,b) => b.count - a.count);
+  }, [posts]);
 
-  // 每日声量 (帖子数 + 播放量 + 互动量)
-  const volumeMap = {};
-  posts.forEach(x => {
-    if (!x.d) return;
-    if (!volumeMap[x.d]) volumeMap[x.d] = { date:x.d, posts:0, views:0, likes:0, comments:0, engagement:0 };
-    const v = volumeMap[x.d];
-    v.posts++;
-    if (x.stats) {
-      v.views += (x.stats.views || 0);
-      v.likes += (x.stats.likes || 0);
-      v.comments += (x.stats.comments || 0);
-    }
-    v.engagement = v.views + v.likes * 10 + v.comments * 20; // 加权声量
-  });
-  const volumeData = Object.values(volumeMap).sort((a,b) => a.date.localeCompare(b.date)).map(d => ({ name:d.date.slice(5), ...d }));
-  const totalViews = posts.reduce((s,p) => s + (p.stats?.views||0), 0);
-  const totalLikes = posts.reduce((s,p) => s + (p.stats?.likes||0), 0);
-  const totalComments = posts.reduce((s,p) => s + (p.stats?.comments||0), 0);
+  const filtered = posts.filter(item => {
+    const text = `${item.u} ${item.t}`.toLowerCase();
+    return (platformFilter === "all" || item.p === platformFilter)
+      && (typeFilter === "all" || item.listType === typeFilter)
+      && (!query || text.includes(query.toLowerCase()));
+  }).sort((a,b) => (b.d || "").localeCompare(a.d || ""));
 
-  /* ─── 通用组件 ─── */
-  const Card = ({ children, style }) => (
-    <div style={{ background:T.card, border:`1px solid ${T.border}`, borderRadius:T.radius, boxShadow:T.shadow, overflow:'hidden', ...style }}>{children}</div>
-  );
-  const CardHeader = ({ icon, title, sub }) => (
-    <div style={{ padding:'14px 18px', borderBottom:`1px solid ${T.borderLight}`, display:'flex', alignItems:'center', gap:8 }}>
-      <span style={{ fontSize:16 }}>{icon}</span>
-      <span style={{ fontWeight:700, fontSize:14, color:T.t1 }}>{title}</span>
-      {sub && <span style={{ fontSize:11, color:T.t3, fontWeight:400 }}>{sub}</span>}
-    </div>
-  );
-  const Badge = ({ type, children }) => {
-    const m = {
-      pos:[C.pos,'#e8f5e9'], neg:[C.neg,'#ffebee'], neu:[C.neu,'#eceff1'],
-      critical:[C.neg,'#ffebee'], warning:['#f57f17','#fff8e1'], watch:[T.accent,'#e3f2fd']
-    };
-    const [fg, bgc] = m[type] || [T.t3, '#f5f5f5'];
-    return <span style={{ fontSize:10, fontWeight:700, padding:'2px 8px', borderRadius:20, color:fg, background:bgc, whiteSpace:'nowrap' }}>{children}</span>;
-  };
-  const HBar = ({ data, labelWidth=56 }) => (
-    <div style={{ display:'flex', flexDirection:'column', gap:5 }}>
-      {data.map((d,i) => {
-        const maxVal = data[0]?.value || 1;
-        const pct = Math.round(d.value/maxVal*100);
-        return (
-          <div key={i} style={{ display:'flex', alignItems:'center', gap:8 }}>
-            <span style={{ fontSize:11, color:T.t2, width:labelWidth, textAlign:'right', flexShrink:0, fontWeight:500 }}>{d.name}</span>
-            <div style={{ flex:1, height:18, background:T.bg, borderRadius:20, overflow:'hidden' }}>
-              <div style={{ height:'100%', width:pct+'%', background:`linear-gradient(90deg, ${d.color}, ${d.color}cc)`, borderRadius:20, minWidth:4, transition:'width 0.6s ease' }}/>
-            </div>
-            <span style={{ fontSize:12, fontWeight:700, color:d.color, fontFamily:'monospace', width:30, textAlign:'right', flexShrink:0 }}>{d.value}</span>
-          </div>
-        );
-      })}
-    </div>
-  );
+  const statusTotal = (roster.by_status || []).reduce((sum, item) => sum + Number(item.count), 0) || 1;
+  const tabItems = [
+    ["overview", "传播总览"], ["execution", "名单执行"], ["organic", "自然声量"], ["feed", "内容明细"],
+  ];
 
-  return (
-    <div style={{ minHeight:'100vh', background:T.bg, color:T.t1, fontFamily:T.font, paddingBottom:40 }}>
+  return <main>
+    <style>{`
+      :root{font-family:Inter,"Noto Sans SC",system-ui,sans-serif;color:#14213d;background:#f4f7fb;font-synthesis:none}
+      *{box-sizing:border-box} body{margin:0} button,input{font:inherit} a{color:inherit}
+      main{min-height:100vh;background:linear-gradient(180deg,#edf5ff 0,#f7f9fc 300px)}
+      .hero{background:radial-gradient(circle at 85% 15%,#8b5cf680,transparent 32%),linear-gradient(125deg,#0f3d73,#2367a6 56%,#0f766e);color:white;padding:28px max(24px,calc((100vw - 1380px)/2)) 82px}
+      .heroTop,.row,.between{display:flex;align-items:center}.heroTop,.between{justify-content:space-between}.brand{display:flex;gap:14px;align-items:center}.logo{width:50px;height:50px;border-radius:15px;display:grid;place-items:center;background:#ffffff20;border:1px solid #ffffff40;font-weight:900}.brand h1{font-size:21px;margin:0}.brand p{font-size:12px;margin:4px 0 0;color:#dbeafe}.live{font-size:12px;padding:8px 12px;border:1px solid #ffffff30;border-radius:99px;background:#ffffff14}.live i{display:inline-block;width:8px;height:8px;border-radius:50%;background:#86efac;margin-right:7px;box-shadow:0 0 0 5px #86efac25}
+      .wrap{max-width:1380px;margin:-56px auto 0;padding:0 24px 48px}.tabs{display:flex;gap:6px;background:#fff;border:1px solid #e2e8f0;padding:6px;border-radius:14px;box-shadow:0 12px 35px #164e6315;margin-bottom:16px;overflow:auto}.tabs button{border:0;background:transparent;color:#64748b;padding:10px 16px;border-radius:10px;cursor:pointer;white-space:nowrap;font-weight:650}.tabs button.active{color:#0f4c81;background:#e7f2ff}
+      .grid{display:grid;gap:14px}.metrics{grid-template-columns:repeat(5,1fr);margin-bottom:14px}.two{grid-template-columns:1.35fr 1fr}.three{grid-template-columns:repeat(3,1fr)}.card{background:#fff;border:1px solid #e1e8f0;border-radius:16px;box-shadow:0 7px 24px #3341550a;overflow:hidden}.metric{padding:17px 18px;border-top:3px solid #3b82f6}.metric.purple{border-top-color:#8b5cf6}.metric.green{border-top-color:#10b981}.metric.orange{border-top-color:#f59e0b}.metric.slate{border-top-color:#64748b}.metric span{display:block;font-size:11px;color:#64748b;font-weight:700}.metric strong{display:block;font-size:27px;margin:7px 0 4px;letter-spacing:-1px}.metric small{color:#94a3b8;font-size:10px}.head{padding:16px 18px;border-bottom:1px solid #eef2f7}.head h2{font-size:14px;margin:0}.head p{font-size:11px;color:#94a3b8;margin:4px 0 0}.pad{padding:18px}.chart{height:300px}.privacy{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;background:#effaf6;border:1px solid #cceee1;border-radius:13px;color:#0f5f4b;margin-bottom:14px}.privacy strong{font-size:12px}.privacy p{font-size:11px;margin:3px 0 0;color:#438273}
+      .bars{display:flex;flex-direction:column;gap:10px}.barLabel{display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px}.barLabel span{color:#64748b}.track{height:8px;background:#eef2f7;border-radius:99px;overflow:hidden}.fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#3b82f6,#8b5cf6)}
+      .list{display:flex;flex-direction:column}.listRow{display:grid;grid-template-columns:minmax(160px,1.2fr) .7fr 1fr 100px;gap:12px;align-items:center;padding:13px 18px;border-bottom:1px solid #f0f3f7;font-size:12px}.listRow:last-child{border-bottom:0}.listRow strong{font-size:12px}.muted{color:#94a3b8}.chip{display:inline-flex;border:1px solid;padding:3px 8px;border-radius:99px;font-size:10px;font-weight:750;white-space:nowrap}.feed{display:flex;flex-direction:column;gap:9px}.post{padding:14px 16px;border:1px solid #e9eef4;border-radius:13px;background:#fbfdff}.post.new{border-left:4px solid #3b82f6;background:#f6faff}.postTop{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.postTop strong{font-size:12px}.postTop time{margin-left:auto;font-size:10px;color:#94a3b8}.post p{font-size:12px;line-height:1.65;margin:9px 0;color:#334155}.postFoot{display:flex;align-items:center;gap:12px;font-size:10px;color:#64748b}.postFoot a{margin-left:auto;color:#2563eb;text-decoration:none;font-weight:700}.filters{display:flex;gap:8px;flex-wrap:wrap;padding:12px 18px;border-bottom:1px solid #eef2f7}.filters select,.filters input{border:1px solid #dbe3ed;background:white;border-radius:9px;padding:8px 10px;font-size:11px;color:#475569}.filters input{min-width:230px}.issue{padding:12px 0;border-bottom:1px solid #eef2f7}.issue:last-child{border:0}.issue strong{font-size:12px}.issue p{font-size:11px;color:#64748b;line-height:1.6;margin:5px 0}.empty{padding:40px;text-align:center;color:#94a3b8;font-size:12px}.foot{text-align:center;color:#94a3b8;font-size:10px;margin-top:20px}
+      @media(max-width:1000px){.metrics{grid-template-columns:repeat(2,1fr)}.two,.three{grid-template-columns:1fr}.heroTop{align-items:flex-start;gap:16px;flex-direction:column}.listRow{grid-template-columns:1fr 1fr}.listRow>:last-child{text-align:right}}
+      @media(max-width:600px){.hero{padding-left:18px;padding-right:18px}.wrap{padding:0 12px 35px}.metrics{grid-template-columns:1fr 1fr}.metric{padding:14px}.metric strong{font-size:23px}.live{display:none}.filters input{min-width:100%;width:100%}.listRow{grid-template-columns:1fr}.listRow>:last-child{text-align:left}}
+    `}</style>
 
-      {/* ═══ Hero Header ═══ */}
-      <div style={{ background:T.hero, padding:'28px 0 24px', marginBottom:20 }}>
-        <div style={{ maxWidth:1360, margin:'0 auto', padding:'0 24px' }}>
-          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:12 }}>
-            <div style={{ display:'flex', alignItems:'center', gap:14 }}>
-              <div style={{ width:48, height:48, borderRadius:14, background:'rgba(255,255,255,0.2)', backdropFilter:'blur(8px)', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:900, fontSize:18, color:'#fff', fontFamily:'monospace', border:'2px solid rgba(255,255,255,0.3)' }}>RK</div>
-              <div>
-                <div style={{ fontWeight:800, fontSize:20, color:'#fff', letterSpacing:0.5 }}>洛克王国: 世界</div>
-                <div style={{ fontSize:12, color:'rgba(255,255,255,0.8)', marginTop:2 }}>海外舆情实时监控 · Overseas Sentinel</div>
-              </div>
-            </div>
-            <div style={{ display:'flex', alignItems:'center', gap:10, flexWrap:'wrap' }}>
-              <div style={{ background:'rgba(255,255,255,0.15)', backdropFilter:'blur(8px)', border:'1px solid rgba(255,255,255,0.2)', borderRadius:20, padding:'6px 14px', fontSize:11.5, color:'#fff', fontWeight:500 }}>
-                📡 {lastScanText} 更新 {meta.scanCount > 0 && <span>· 第{meta.scanCount}次扫描</span>}
-                {databaseMeta && <span> · 数据库已连接</span>}
-              </div>
-              <div style={{ background:'rgba(255,255,255,0.15)', backdropFilter:'blur(8px)', border:'1px solid rgba(255,255,255,0.2)', borderRadius:20, padding:'6px 14px', fontSize:11.5, color:'#fff' }}>
-                🌏 覆盖 英/日/韩/泰/越/印尼/西/葡/法/德/意/阿/土/俄 {new Set(posts.map(p=>p.l).filter(Boolean)).size}种语言
-              </div>
-            </div>
-          </div>
-        </div>
+    <header className="hero">
+      <div className="heroTop">
+        <div className="brand"><div className="logo">RK</div><div><h1>Roco Kingdom 海外传播哨塔</h1><p>商单执行、媒体释出、KOC 与自然声量统一监测</p></div></div>
+        <div className="live"><i />数据库在线 · 北京时间 {lastScanText} 更新</div>
       </div>
+    </header>
 
-      <div style={{ maxWidth:1360, margin:'0 auto', padding:'0 24px' }}>
+    <div className="wrap">
+      <nav className="tabs">{tabItems.map(([key,label]) => <button key={key} className={tab === key ? "active" : ""} onClick={() => setTab(key)}>{label}</button>)}</nav>
 
-        {/* ═══ KPI Cards ═══ */}
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:14, marginBottom:18 }}>
-          {[
-            { label:'已采集帖子', val:posts.length, icon:'📊', color:T.accent, bg:'#e3f2fd' },
-            { label:'总播放量', val:totalViews>=1e6?(totalViews/1e6).toFixed(1)+'M':totalViews>=1e3?(totalViews/1e3).toFixed(1)+'K':totalViews, icon:'👁', color:'#7c4dff', bg:'#ede7f6' },
-            { label:'活跃议题', val:issues.length, icon:'🔥', color:'#f57f17', bg:'#fff8e1' },
-          ].map((k,i) => (
-            <Card key={i} style={{ padding:'16px 18px', borderLeft:`4px solid ${k.color}` }}>
-              <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-                <div>
-                  <div style={{ fontSize:10, color:T.t3, textTransform:'uppercase', letterSpacing:1.5, fontWeight:600, marginBottom:6 }}>{k.label}</div>
-                  <div style={{ fontFamily:'monospace', fontSize:28, fontWeight:800, color:k.color }}>{k.val}</div>
-                </div>
-                <div style={{ width:42, height:42, borderRadius:12, background:k.bg, display:'flex', alignItems:'center', justifyContent:'center', fontSize:20 }}>{k.icon}</div>
-              </div>
-            </Card>
-          ))}
+      {tab === "overview" && <>
+        <div className="grid metrics">
+          <Metric label="名单条目" value={fmt(roster.total_creators)} note={`${fmt(roster.total_accounts)} 个可匹配账号`} />
+          <Metric label="已采集内容" value={fmt(posts.length)} note={`${fmt(dbMeta?.total_posts || dbPosts.length)} 条来自实时数据库`} tone="purple" />
+          <Metric label="名单内发布" value={fmt(rosterPosts.length)} note="按账号自动归类" tone="green" />
+          <Metric label="自然传播" value={fmt(organic.length)} note="名单外自发内容" tone="orange" />
+          <Metric label="累计播放" value={fmt(totalViews)} note={`${fmt(totalEngagement)} 次互动`} tone="slate" />
         </div>
-
-        {/* ═══ 三栏分布图: 情绪 + 渠道 + 语种 ═══ */}
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:14, marginBottom:18 }}>
-          {/* 情绪分布 */}
-          <Card>
-            <CardHeader icon="🎭" title="情绪分布" sub={`${posts.length}条`} />
-            <div style={{ padding:'16px 18px', display:'flex', flexDirection:'column', gap:14 }}>
-              {sentData.map((d,i) => {
-                const pct = Math.round(d.value/posts.length*100);
-                return (
-                  <div key={i}>
-                    <div style={{ display:'flex', justifyContent:'space-between', alignItems:'baseline', marginBottom:6 }}>
-                      <span style={{ fontSize:13, fontWeight:600, color:T.t1 }}>{d.name}</span>
-                      <div style={{ display:'flex', alignItems:'baseline', gap:4 }}>
-                        <span style={{ fontSize:22, fontWeight:800, color:d.color, fontFamily:'monospace' }}>{pct}%</span>
-                        <span style={{ fontSize:10, color:T.t3 }}>({d.value})</span>
-                      </div>
-                    </div>
-                    <div style={{ height:8, background:T.bg, borderRadius:20, overflow:'hidden' }}>
-                      <div style={{ height:'100%', width:pct+'%', background:`linear-gradient(90deg, ${d.color}, ${d.color}aa)`, borderRadius:20, transition:'width 0.6s ease' }}/>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </Card>
-
-          {/* 渠道分布 */}
-          <Card>
-            <CardHeader icon="📱" title="渠道分布" sub={`${Object.keys(platMap).length}个平台`} />
-            <div style={{ padding:'12px 18px' }}><HBar data={platData} labelWidth={62} /></div>
-          </Card>
-
-          {/* 语种分布 */}
-          <Card>
-            <CardHeader icon="🌐" title="语种分布" sub={`${langData.length}种语言`} />
-            <div style={{ padding:'12px 18px' }}><HBar data={langData} labelWidth={52} /></div>
-          </Card>
+        <div className="privacy"><span>🔒</span><div><strong>商业数据保持私有</strong><p>报价、联系人、邮箱、Discord 与供应商备注仅存于数据库，不通过公开接口或网页返回。</p></div></div>
+        <div className="grid two">
+          <Card><div className="head"><h2>21 日传播趋势</h2><p>名单内释出与自然传播分层观察</p></div><div className="pad chart"><ResponsiveContainer><AreaChart data={trend}><defs><linearGradient id="organic" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#f59e0b" stopOpacity={0.3}/><stop offset="95%" stopColor="#f59e0b" stopOpacity={0}/></linearGradient><linearGradient id="roster" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/><stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/></linearGradient></defs><CartesianGrid stroke="#edf1f6" vertical={false}/><XAxis dataKey="label" tick={{fontSize:10,fill:"#94a3b8"}} axisLine={false} tickLine={false}/><YAxis tick={{fontSize:10,fill:"#94a3b8"}} axisLine={false} tickLine={false}/><Tooltip/><Area type="monotone" dataKey="organic" name="自然传播" stroke="#f59e0b" fill="url(#organic)"/><Area type="monotone" dataKey="roster" name="名单内" stroke="#3b82f6" fill="url(#roster)"/></AreaChart></ResponsiveContainer></div></Card>
+          <Card><div className="head"><h2>渠道采集分布</h2><p>当前内容库的平台构成</p></div><div className="pad chart"><ResponsiveContainer><BarChart data={platformData} layout="vertical"><CartesianGrid stroke="#edf1f6" horizontal={false}/><XAxis type="number" tick={{fontSize:10,fill:"#94a3b8"}} axisLine={false}/><YAxis dataKey="name" type="category" width={72} tick={{fontSize:10,fill:"#64748b"}} axisLine={false} tickLine={false}/><Tooltip/><Bar dataKey="count" name="内容数" fill="#3b82f6" radius={[0,5,5,0]}/></BarChart></ResponsiveContainer></div></Card>
         </div>
+      </>}
 
-        {/* ═══ 核心议题 + 每日趋势 ═══ */}
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14, marginBottom:18 }}>
-          {/* 核心议题 */}
-          <Card>
-            <CardHeader icon="🚨" title="核心议题追踪" sub={`${issues.length}个`} />
-            <div style={{ padding:14, maxHeight:440, overflowY:'auto' }}>
-              {issues.map((a,i) => {
-                const sevC = a.sev==='critical'?C.neg:a.sev==='warning'?'#f57f17':T.accent;
-                return (
-                  <div key={i} style={{ background:T.cardAlt, border:`1px solid ${T.borderLight}`, borderRadius:T.radiusSm, padding:13, marginBottom:i<issues.length-1?10:0, borderLeft:`4px solid ${sevC}` }}>
-                    <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:6, flexWrap:'wrap' }}>
-                      <Badge type={a.sev}>{a.sev==='critical'?'⚡ 需响应':a.sev==='warning'?'👁 关注':'📌 背景'}</Badge>
-                      {(a.plats||[]).map((p,j)=><span key={j} style={{ fontSize:9, fontWeight:600, padding:'2px 6px', borderRadius:20, background:'#e8eaf6', color:'#3f51b5' }}>{p}</span>)}
-                    </div>
-                    <div style={{ fontSize:13, fontWeight:700, color:T.t1, marginBottom:4 }}>{a.title}</div>
-                    <div style={{ fontSize:11, color:T.t2, lineHeight:1.6, marginBottom:6 }}>{a.desc}</div>
-                    {a.tip && <div style={{ fontSize:10.5, color:'#f57f17', fontWeight:500, background:'#fff8e1', padding:'4px 8px', borderRadius:6, display:'inline-block' }}>💡 {a.tip}</div>}
-                  </div>
-                );
-              })}
-            </div>
-          </Card>
-
-          {/* 每日趋势 */}
-          <Card>
-            <CardHeader icon="📈" title="舆情每日趋势" sub={`${dailyData.length}个活跃日`} />
-            <div style={{ padding:'12px 16px', height:420 }}>
-              <ResponsiveContainer>
-                <BarChart data={dailyData} barGap={1} barCategoryGap="18%">
-                  <CartesianGrid strokeDasharray="3 3" stroke={T.borderLight} vertical={false} />
-                  <XAxis dataKey="name" tick={{ fill:T.t3, fontSize:10 }} axisLine={{ stroke:T.border }} tickLine={false} angle={-35} textAnchor="end" height={50} />
-                  <YAxis tick={{ fill:T.t3, fontSize:10 }} axisLine={false} tickLine={false} allowDecimals={false} width={28} />
-                  <Tooltip contentStyle={{ background:'#fff', border:`1px solid ${T.border}`, borderRadius:8, fontSize:11, color:T.t1, boxShadow:T.shadow }} />
-                  <Bar dataKey="pos" name="正面" stackId="a" fill={C.pos} radius={[0,0,0,0]} />
-                  <Bar dataKey="neu" name="中性" stackId="a" fill={C.neu} />
-                  <Bar dataKey="neg" name="负面" stackId="a" fill={C.neg} radius={[3,3,0,0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </Card>
+      {tab === "execution" && <>
+        <div className="grid metrics">
+          {(roster.by_list_type || []).map((item,index) => <Metric key={item.name} label={TYPE[item.name] || item.name} value={fmt(item.count)} note={index === 0 ? "已导入私有名单" : "按来源表去重账号"} tone={["blue","purple","orange","green"][index % 4]} />)}
+          <Metric label="表内已填发布链接" value={fmt(roster.published_creators)} note="草稿与排期不计发布" tone="green" />
         </div>
-
-        {/* ═══ 每日声量变化 (全宽) ═══ */}
-        <Card style={{ marginBottom:18 }}>
-          <CardHeader icon="📢" title="每日声量变化" sub={`播放量 + 互动量 · ${volumeData.length}个活跃日`} />
-          <div style={{ padding:'6px 18px 0', display:'flex', gap:16, flexWrap:'wrap' }}>
-            <span style={{ fontSize:10, color:T.t2, display:'flex', alignItems:'center', gap:4 }}><span style={{ width:10, height:10, borderRadius:2, background:'#42a5f5' }}/> 播放量</span>
-            <span style={{ fontSize:10, color:T.t2, display:'flex', alignItems:'center', gap:4 }}><span style={{ width:10, height:10, borderRadius:2, background:'#66bb6a' }}/> 点赞</span>
-            <span style={{ fontSize:10, color:T.t2, display:'flex', alignItems:'center', gap:4 }}><span style={{ width:10, height:10, borderRadius:2, background:'#ffb74d' }}/> 评论</span>
-            <span style={{ fontSize:10, color:T.t2, display:'flex', alignItems:'center', gap:4 }}><span style={{ width:10, height:3, borderRadius:2, background:'#e53935' }}/> 帖子数</span>
-          </div>
-          <div style={{ padding:'8px 16px 16px', height:260 }}>
-            <ResponsiveContainer>
-              <AreaChart data={volumeData}>
-                <defs>
-                  <linearGradient id="gViews" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#42a5f5" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#42a5f5" stopOpacity={0}/>
-                  </linearGradient>
-                  <linearGradient id="gLikes" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#66bb6a" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#66bb6a" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke={T.borderLight} vertical={false} />
-                <XAxis dataKey="name" tick={{ fill:T.t3, fontSize:10 }} axisLine={{ stroke:T.border }} tickLine={false} angle={-35} textAnchor="end" height={50} />
-                <YAxis yAxisId="left" tick={{ fill:T.t3, fontSize:10 }} axisLine={false} tickLine={false} width={50} tickFormatter={v => v>=1e3?(v/1e3).toFixed(0)+'K':v} />
-                <YAxis yAxisId="right" orientation="right" tick={{ fill:T.t3, fontSize:10 }} axisLine={false} tickLine={false} width={30} />
-                <Tooltip contentStyle={{ background:'#fff', border:`1px solid ${T.border}`, borderRadius:8, fontSize:11, color:T.t1, boxShadow:T.shadow }} formatter={(v,name) => [name==='播放量'?(v>=1e3?(v/1e3).toFixed(1)+'K':v):v, name]} />
-                <Area yAxisId="left" type="monotone" dataKey="views" name="播放量" stroke="#42a5f5" strokeWidth={2} fill="url(#gViews)" />
-                <Area yAxisId="left" type="monotone" dataKey="likes" name="点赞" stroke="#66bb6a" strokeWidth={2} fill="url(#gLikes)" />
-                <Bar yAxisId="right" dataKey="comments" name="评论" fill="#ffb74d" radius={[3,3,0,0]} barSize={14} />
-                <Bar yAxisId="right" dataKey="posts" name="帖子数" fill="#e5393580" radius={[3,3,0,0]} barSize={8} />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </Card>
-        {/* ═══ 动态流 ═══ */}
-        <Card style={{ marginBottom:18 }}>
-          <CardHeader icon="🔗" title="动态流" sub={`${list.length}/${posts.length}条 · 全部附原始链接`} />
-          <div style={{ padding:'10px 18px 0', display:'flex', flexDirection:'column', gap:6 }}>
-            {/* 平台筛选 */}
-            <div style={{ display:'flex', gap:5, flexWrap:'wrap', alignItems:'center' }}>
-              <span style={{ fontSize:10, color:T.t3, fontWeight:600, marginRight:2 }}>📱 平台</span>
-              {allPlats.map(pp => {
-                const cnt = pp==='all'?posts.length:posts.filter(x=>x.p===pp).length;
-                const active = filter===pp;
-                return <button key={pp} onClick={()=>setFilter(pp)} style={{
-                  padding:'4px 12px', borderRadius:20, fontSize:11, fontWeight:600, cursor:'pointer',
-                  border:`1.5px solid ${active?T.accent:'transparent'}`,
-                  background:active?'#e3f2fd':'#f5f7fa', color:active?T.accent:T.t3,
-                  fontFamily:'inherit', transition:'all 0.2s'
-                }}>{pp==='all'?'全部':(PN[pp]||pp)} ({cnt})</button>;
-              })}
-            </div>
-            {/* 语种筛选 */}
-            <div style={{ display:'flex', gap:5, flexWrap:'wrap', alignItems:'center' }}>
-              <span style={{ fontSize:10, color:T.t3, fontWeight:600, marginRight:2 }}>🌐 语种</span>
-              {allLangs.map(ll => {
-                const cnt = ll==='all'?posts.length:posts.filter(x=>x.l===ll).length;
-                const active = langFilter===ll;
-                const clr = LC[ll] || '#5c6bc0';
-                return <button key={ll} onClick={()=>setLangFilter(ll)} style={{
-                  padding:'4px 12px', borderRadius:20, fontSize:11, fontWeight:600, cursor:'pointer',
-                  border:`1.5px solid ${active?clr:'transparent'}`,
-                  background:active?(clr+'18'):'#f5f7fa', color:active?clr:T.t3,
-                  fontFamily:'inherit', transition:'all 0.2s'
-                }}>{ll==='all'?'全部':ll} ({cnt})</button>;
-              })}
-            </div>
-          </div>
-          <div style={{ maxHeight:520, overflowY:'auto', padding:'10px 18px 16px', display:'flex', flexDirection:'column', gap:8 }}>
-            {list.map((f,i) => (
-              <div key={i} style={{
-                background:f._new?'#f3f8ff':T.cardAlt, border:`1px solid ${f._new?'#bbdefb':T.borderLight}`,
-                borderRadius:T.radiusSm, padding:'11px 14px', borderLeft:f._new?`4px solid ${T.accent}`:'4px solid transparent',
-                transition:'box-shadow 0.2s'
-              }}>
-                <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:5 }}>
-                  <span style={{ fontSize:10, fontWeight:700, padding:'2px 8px', borderRadius:20, background:(C[f.p]||'#78909c')+'18', color:C[f.p]||T.t2 }}>{PN[f.p]||f.p}</span>
-                  <span style={{ fontSize:12, fontWeight:600, color:T.t2 }}>{f.u}</span>
-                  {f.author?.followers > 0 && (
-                    <span style={{ fontSize:9, padding:'2px 7px', borderRadius:20, background:'#fff3e0', color:'#e65100', fontWeight:600 }} title={f.author.followerLabel==='成员'?'论坛成员数':'订阅/粉丝数'}>
-                      {f.author.followerLabel==='成员'?'👥':'🔔'} {f.author.followers>=1e6?(f.author.followers/1e6).toFixed(1)+'M':f.author.followers>=1e3?(f.author.followers/1e3).toFixed(1)+'K':f.author.followers}
-                    </span>
-                  )}
-                  {f.author?.postCount >= 2 && (
-                    <span style={{ fontSize:9, padding:'2px 7px', borderRadius:20, background:'#e8f5e9', color:'#2e7d32', fontWeight:700 }} title={`该博主共出现${f.author.postCount}次`}>
-                      🔄 频繁×{f.author.postCount}
-                    </span>
-                  )}
-                  {f._new && <span style={{ fontSize:9, fontWeight:700, color:'#fff', background:T.accent, padding:'1px 7px', borderRadius:20 }}>NEW</span>}
-                  <span style={{ fontSize:10, color:f.d?T.t3:'#f57f17', marginLeft:'auto' }}>{f.d || '日期未知'}</span>
-                </div>
-                <div style={{ fontSize:13, color:T.t1, lineHeight:1.6, marginBottom:6 }}>{f.t}</div>
-                <div style={{ display:'flex', alignItems:'center', gap:6, flexWrap:'wrap' }}>
-                  <Badge type={f.s}>{SN[f.s]||f.s}</Badge>
-                  {f.l && <span style={{ fontSize:9.5, padding:'2px 8px', borderRadius:20, background:'#e8eaf6', color:'#5c6bc0', fontWeight:500 }}>{f.l}</span>}
-                  {f.stats && (f.stats.views > 0 || f.stats.likes > 0 || f.stats.comments > 0) && (
-                    <span style={{ display:'inline-flex', gap:8, fontSize:10, color:T.t3, marginLeft:4 }}>
-                      {f.stats.views > 0 && <span title="播放量/浏览量">👁 {f.stats.views>=1e6?(f.stats.views/1e6).toFixed(1)+'M':f.stats.views>=1e3?(f.stats.views/1e3).toFixed(1)+'K':f.stats.views}</span>}
-                      {f.stats.likes > 0 && <span title="点赞/Upvotes">👍 {f.stats.likes>=1e3?(f.stats.likes/1e3).toFixed(1)+'K':f.stats.likes}</span>}
-                      {f.stats.comments > 0 && <span title="评论数">💬 {f.stats.comments}</span>}
-                    </span>
-                  )}
-                  <a href={f.url} target="_blank" rel="noopener noreferrer" style={{
-                    marginLeft:'auto', fontSize:10.5, color:T.accent, textDecoration:'none',
-                    background:'#e3f2fd', padding:'3px 10px', borderRadius:20, fontWeight:600
-                  }}>🔗 来源</a>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
-
-        {/* ═══ Footer ═══ */}
-        <div style={{ textAlign:'center', padding:'16px 0', fontSize:10, color:T.t3 }}>
-          🌟 洛克王国: 世界 Overseas Sentinel · {posts.length}条海外验证数据 · Powered by WorkBuddy Skill
+        <div className="grid two">
+          <Card><div className="head"><h2>建联与执行状态</h2><p>仅展示聚合数量，不展示联系人与报价</p></div><div className="pad bars">{(roster.by_status || []).map(item => <div key={item.name}><div className="barLabel"><span>{item.name}</span><b>{fmt(item.count)}</b></div><div className="track"><div className="fill" style={{width:`${Math.max(2, Number(item.count) / statusTotal * 100)}%`}}/></div></div>)}</div></Card>
+          <Card><div className="head"><h2>可监测平台账号</h2><p>一位创作者可对应多个平台</p></div><div className="list">{(roster.by_platform || []).map(item => <div className="listRow" key={item.name}><strong>{PLATFORM[item.name] || item.name}</strong><span className="muted">账号</span><span><Chip color={PLATFORM_COLOR[item.name]}>{TYPE.koc} / KOL / 媒体</Chip></span><b>{fmt(item.count)}</b></div>)}</div></Card>
         </div>
-      </div>
+      </>}
+
+      {tab === "organic" && <>
+        <div className="grid metrics"><Metric label="自然发布" value={fmt(organic.length)} note="已排除名单内账号" tone="orange"/><Metric label="覆盖平台" value={new Set(organic.map(item => item.p)).size} note="公开可检索来源"/><Metric label="自然播放" value={fmt(organic.reduce((s,p) => s + Number(p.stats?.views || 0),0))} note="平台返回的公开数据" tone="purple"/><Metric label="新增内容" value={organic.filter(item => item.isNew).length} note="最近 36 小时首次发现" tone="green"/></div>
+        <div className="grid two"><Card><div className="head"><h2>自然声量趋势</h2><p>每日自发发布数量</p></div><div className="pad chart"><ResponsiveContainer><AreaChart data={trend}><CartesianGrid stroke="#edf1f6" vertical={false}/><XAxis dataKey="label" tick={{fontSize:10,fill:"#94a3b8"}} axisLine={false}/><YAxis tick={{fontSize:10,fill:"#94a3b8"}} axisLine={false}/><Tooltip/><Area type="monotone" dataKey="organic" name="自然发布" stroke="#f59e0b" fill="#fef3c7"/></AreaChart></ResponsiveContainer></div></Card><Card><div className="head"><h2>重点风险与议题</h2><p>基于当前样本的人工复核线索</p></div><div className="pad">{issuesData.length ? issuesData.map((item,index) => <div className="issue" key={index}><strong>{item.title}</strong><p>{item.desc}</p><Chip color={item.sev === "critical" ? "#dc2626" : "#d97706"}>{item.sev === "critical" ? "需响应" : "持续关注"}</Chip></div>) : <Empty>当前没有需要提示的议题</Empty>}</div></Card></div>
+      </>}
+
+      {tab === "feed" && <Card>
+        <div className="head"><h2>内容明细</h2><p>名单内与名单外统一查看，支持来源跳转</p></div>
+        <div className="filters"><select value={typeFilter} onChange={e => setTypeFilter(e.target.value)}><option value="all">全部类型</option>{Object.entries(TYPE).map(([key,label]) => <option key={key} value={key}>{label}</option>)}</select><select value={platformFilter} onChange={e => setPlatformFilter(e.target.value)}><option value="all">全部平台</option>{[...new Set(posts.map(item => item.p))].map(key => <option key={key} value={key}>{PLATFORM[key] || key}</option>)}</select><input value={query} onChange={e => setQuery(e.target.value)} placeholder="搜索账号或内容关键词"/><span className="muted">{filtered.length} 条</span></div>
+        <div className="pad feed">{filtered.length ? filtered.map((item,index) => <article className={`post ${item.isNew ? "new" : ""}`} key={`${item.url}-${index}`}><div className="postTop"><Chip color={PLATFORM_COLOR[item.p]}>{PLATFORM[item.p] || item.p}</Chip><Chip color={TYPE_COLOR[item.listType]}>{TYPE[item.listType] || item.listType}</Chip><strong>{item.u}</strong>{item.isNew && <Chip color="#2563eb">NEW</Chip>}<time>{item.d || "日期待复核"}</time></div><p>{item.t}</p><div className="postFoot"><span>👁 {fmt(item.stats?.views)}</span><span>👍 {fmt(item.stats?.likes)}</span><span>💬 {fmt(item.stats?.comments)}</span><span>{item.l}</span><a href={item.url} target="_blank" rel="noreferrer">查看来源 ↗</a></div></article>) : <Empty>没有符合当前筛选条件的内容</Empty>}</div>
+      </Card>}
+
+      <div className="foot">Roco Kingdom Overseas Sentinel · 每日增量采集 · 商业字段不公开</div>
     </div>
-  );
+  </main>;
 }

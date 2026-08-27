@@ -24,6 +24,66 @@ CREATE TABLE IF NOT EXISTS accounts (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   UNIQUE(platform, handle)
 );
+CREATE TABLE IF NOT EXISTS creators (
+  id TEXT PRIMARY KEY,
+  display_name TEXT NOT NULL,
+  list_type TEXT NOT NULL CHECK(list_type IN ('paid_kol','media','platform','koc','official')),
+  region TEXT,
+  language TEXT,
+  category TEXT,
+  priority TEXT,
+  content_direction TEXT,
+  outreach_status TEXT,
+  supplier TEXT,
+  notes TEXT,
+  contact_name TEXT,
+  email TEXT,
+  discord_id TEXT,
+  creator_hub_id TEXT,
+  freelancer_id TEXT,
+  gid TEXT,
+  nda_status TEXT,
+  source_workbook TEXT NOT NULL,
+  source_sheet TEXT NOT NULL,
+  source_row INTEGER NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+ALTER TABLE accounts ADD COLUMN IF NOT EXISTS creator_id TEXT REFERENCES creators(id) ON DELETE SET NULL;
+ALTER TABLE accounts ADD COLUMN IF NOT EXISTS canonical_url TEXT;
+ALTER TABLE accounts ADD COLUMN IF NOT EXISTS followers BIGINT;
+ALTER TABLE accounts ADD COLUMN IF NOT EXISTS avg_views BIGINT;
+ALTER TABLE accounts ADD COLUMN IF NOT EXISTS primary_platform BOOLEAN NOT NULL DEFAULT FALSE;
+CREATE TABLE IF NOT EXISTS commercial_terms (
+  id TEXT PRIMARY KEY,
+  creator_id TEXT NOT NULL REFERENCES creators(id) ON DELETE CASCADE,
+  currency TEXT,
+  quote_text TEXT,
+  quoted_amount NUMERIC,
+  firm_offer_text TEXT,
+  firm_offer_amount NUMERIC,
+  trial_event_quote TEXT,
+  video_quote TEXT,
+  expected_views BIGINT,
+  cpm NUMERIC,
+  cpc NUMERIC,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE TABLE IF NOT EXISTS campaign_deliverables (
+  id TEXT PRIMARY KEY,
+  creator_id TEXT NOT NULL REFERENCES creators(id) ON DELETE CASCADE,
+  deliverables TEXT,
+  status TEXT,
+  draft_url TEXT,
+  scheduled_at_text TEXT,
+  published_url TEXT,
+  expected_views BIGINT,
+  actual_views BIGINT,
+  clicks BIGINT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
 CREATE TABLE IF NOT EXISTS posts (
   id BIGSERIAL PRIMARY KEY,
   platform TEXT NOT NULL,
@@ -75,6 +135,9 @@ CREATE TABLE IF NOT EXISTS crawl_runs (
 CREATE INDEX IF NOT EXISTS idx_posts_published ON posts(published_at DESC);
 CREATE INDEX IF NOT EXISTS idx_posts_type ON posts(list_type, platform);
 CREATE INDEX IF NOT EXISTS idx_snapshots_post_time ON post_snapshots(post_id, observed_at DESC);
+CREATE INDEX IF NOT EXISTS idx_creators_type_region ON creators(list_type, region);
+CREATE INDEX IF NOT EXISTS idx_creators_status ON creators(outreach_status);
+CREATE INDEX IF NOT EXISTS idx_accounts_creator ON accounts(creator_id);
 """
 
 
@@ -149,9 +212,12 @@ class PostgresDatabase:
             account = None
             if post.get("author_handle"):
                 account = conn.execute(
-                    """SELECT list_type FROM accounts WHERE platform=%s
-                       AND lower(handle)=lower(%s) AND active=TRUE""",
-                    (post["platform"], post["author_handle"]),
+                    """SELECT list_type FROM accounts WHERE platform=%s AND active=TRUE
+                       AND (lower(handle)=lower(%s) OR (%s IS NOT NULL AND lower(display_name)=lower(%s)))
+                       ORDER BY CASE list_type WHEN 'official' THEN 1 WHEN 'platform' THEN 2
+                                WHEN 'paid_kol' THEN 3 WHEN 'media' THEN 4 WHEN 'koc' THEN 5 ELSE 6 END
+                       LIMIT 1""",
+                    (post["platform"], post["author_handle"], post.get("author_name"), post.get("author_name")),
                 ).fetchone()
             list_type = post.get("list_type") or (account["list_type"] if account else "organic")
             existing = conn.execute(
@@ -199,10 +265,109 @@ class PostgresDatabase:
             ).fetchone()["t"]
         return {"total_posts": total, "by_platform": by_platform, "by_list_type": by_type, "last_scan": last_scan}
 
+    def import_roster_bundle(self, bundle: dict[str, Any]) -> dict[str, int]:
+        """Import private roster data without making commercial/contact fields public."""
+        counts = {"creators": 0, "accounts": 0, "commercial_terms": 0, "deliverables": 0}
+        with self.connect() as conn:
+            for item in bundle.get("creators", []):
+                conn.execute(
+                    """INSERT INTO creators(
+                         id,display_name,list_type,region,language,category,priority,content_direction,
+                         outreach_status,supplier,notes,contact_name,email,discord_id,creator_hub_id,
+                         freelancer_id,gid,nda_status,source_workbook,source_sheet,source_row)
+                       VALUES(%(id)s,%(display_name)s,%(list_type)s,%(region)s,%(language)s,%(category)s,
+                         %(priority)s,%(content_direction)s,%(outreach_status)s,%(supplier)s,%(notes)s,
+                         %(contact_name)s,%(email)s,%(discord_id)s,%(creator_hub_id)s,%(freelancer_id)s,
+                         %(gid)s,%(nda_status)s,%(source_workbook)s,%(source_sheet)s,%(source_row)s)
+                       ON CONFLICT(id) DO UPDATE SET
+                         display_name=excluded.display_name,list_type=excluded.list_type,region=excluded.region,
+                         language=excluded.language,category=excluded.category,priority=excluded.priority,
+                         content_direction=excluded.content_direction,outreach_status=excluded.outreach_status,
+                         supplier=excluded.supplier,notes=excluded.notes,contact_name=excluded.contact_name,
+                         email=excluded.email,discord_id=excluded.discord_id,creator_hub_id=excluded.creator_hub_id,
+                         freelancer_id=excluded.freelancer_id,gid=excluded.gid,nda_status=excluded.nda_status,
+                         updated_at=now()""",
+                    item,
+                )
+                counts["creators"] += 1
+            for item in bundle.get("accounts", []):
+                conn.execute(
+                    """INSERT INTO accounts(platform,handle,display_name,list_type,region,source,creator_id,
+                                              canonical_url,followers,avg_views,primary_platform)
+                       SELECT %(platform)s,%(handle)s,%(display_name)s,c.list_type,c.region,'roster_import',%(creator_id)s,
+                              %(canonical_url)s,%(followers)s,%(avg_views)s,%(primary_platform)s
+                       FROM creators c WHERE c.id=%(creator_id)s
+                       ON CONFLICT(platform,handle) DO UPDATE SET
+                         display_name=excluded.display_name,
+                         list_type=CASE
+                           WHEN accounts.list_type IN ('paid_kol','media','platform','official') THEN accounts.list_type
+                           ELSE excluded.list_type END,
+                         region=COALESCE(excluded.region,accounts.region),
+                         creator_id=CASE
+                           WHEN accounts.list_type IN ('paid_kol','media','platform','official') THEN accounts.creator_id
+                           ELSE excluded.creator_id END,
+                         canonical_url=excluded.canonical_url,followers=excluded.followers,
+                         avg_views=excluded.avg_views,primary_platform=excluded.primary_platform,active=TRUE""",
+                    item,
+                )
+                counts["accounts"] += 1
+            for table, key in (("commercial_terms", "commercial_terms"), ("campaign_deliverables", "deliverables")):
+                for item in bundle.get(key, []):
+                    columns = list(item)
+                    assignments = ",".join(f"{name}=excluded.{name}" for name in columns if name not in {"id", "creator_id"})
+                    names = ",".join(columns)
+                    placeholders = ",".join(f"%({name})s" for name in columns)
+                    conn.execute(
+                        f"INSERT INTO {table}({names}) VALUES({placeholders}) ON CONFLICT(id) DO UPDATE SET {assignments},updated_at=now()",
+                        item,
+                    )
+                    counts[key] += 1
+            # Reclassify already collected posts after roster accounts become available.
+            conn.execute(
+                """UPDATE posts p SET list_type=a.list_type,region=COALESCE(p.region,a.region)
+                   FROM accounts a WHERE p.platform=a.platform
+                     AND (lower(p.author_handle)=lower(a.handle)
+                          OR (p.author_name IS NOT NULL AND lower(p.author_name)=lower(a.display_name)))
+                     AND a.active=TRUE AND p.list_type='organic'"""
+            )
+        return counts
+
+    def roster_summary(self) -> dict[str, Any]:
+        """Return only safe aggregates. No pricing, contacts, notes, or raw roster rows."""
+        with self.connect() as conn:
+            total_creators = conn.execute("SELECT count(*) AS n FROM creators").fetchone()["n"]
+            total_accounts = conn.execute("SELECT count(*) AS n FROM accounts WHERE creator_id IS NOT NULL").fetchone()["n"]
+            by_type = list(conn.execute(
+                "SELECT list_type AS name,count(*) AS count FROM creators GROUP BY list_type ORDER BY count DESC"
+            ).fetchall())
+            by_region = list(conn.execute(
+                "SELECT COALESCE(region,'未知') AS name,count(*) AS count FROM creators GROUP BY 1 ORDER BY count DESC LIMIT 12"
+            ).fetchall())
+            by_platform = list(conn.execute(
+                "SELECT platform AS name,count(*) AS count FROM accounts WHERE creator_id IS NOT NULL GROUP BY platform ORDER BY count DESC"
+            ).fetchall())
+            by_status = list(conn.execute(
+                "SELECT COALESCE(outreach_status,'未填写') AS name,count(*) AS count FROM creators GROUP BY 1 ORDER BY count DESC LIMIT 12"
+            ).fetchall())
+            published = conn.execute(
+                "SELECT count(DISTINCT creator_id) AS n FROM campaign_deliverables WHERE published_url ~ '^https?://'"
+            ).fetchone()["n"]
+            matched = conn.execute(
+                "SELECT count(DISTINCT lower(p.platform || ':' || p.author_handle)) AS n FROM posts p WHERE p.list_type <> 'organic'"
+            ).fetchone()["n"]
+        return {
+            "total_creators": total_creators, "total_accounts": total_accounts,
+            "by_list_type": by_type, "by_region": by_region, "by_platform": by_platform,
+            "by_status": by_status, "published_creators": published, "matched_accounts": matched,
+            "private_fields_excluded": True,
+        }
+
     def posts(self, limit: int = 100, platform: str | None = None) -> list[dict[str, Any]]:
         with self.connect() as conn:
             rows = conn.execute(
-                """SELECT p.*,s.views,s.likes,s.comments,s.shares
+                """SELECT p.id,p.platform,p.external_id,p.canonical_url,p.author_handle,p.author_name,
+                          p.title,p.body,p.language,p.region,p.list_type,p.sentiment,p.published_at,
+                          p.first_seen_at,p.last_seen_at,s.views,s.likes,s.comments,s.shares
                    FROM posts p LEFT JOIN LATERAL (
                      SELECT views,likes,comments,shares FROM post_snapshots
                      WHERE post_id=p.id ORDER BY observed_at DESC LIMIT 1
