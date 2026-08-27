@@ -78,10 +78,11 @@ class XaiConnector:
         return bool(self.api_key)
 
     def search(self, query: str, from_date: str, to_date: str) -> CrawlResult:
-        prompt = f"""Search X for posts that genuinely mention the exact game keyword {query!r}.
-Only include posts published from {from_date} through {to_date}. Include English, Japanese,
-and European-language posts. Exclude unrelated uses of the words and exclude invented URLs.
-Return ONLY a JSON array. Each item must contain canonical_url, author_handle, author_name,
+        prompt = f"""Search X thoroughly for posts that genuinely mention the exact game keyword {query!r}.
+Run multiple keyword and semantic searches so that small accounts, replies, quote posts, and posts in
+English, Japanese, German, French, Spanish, Italian, and Portuguese are represented. Only include posts
+published from {from_date} through {to_date}. Exclude unrelated uses, duplicates, and invented URLs.
+Return up to 100 distinct results as ONLY a JSON array. Each item must contain canonical_url, author_handle, author_name,
 body, published_at (ISO 8601), language, region, and stats with views/likes/comments/shares.
 Every canonical_url must be a real x.com/<handle>/status/<numeric_id> URL found by X Search."""
         payload = request_json(

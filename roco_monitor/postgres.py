@@ -265,6 +265,22 @@ class PostgresDatabase:
             ).fetchone()["t"]
         return {"total_posts": total, "by_platform": by_platform, "by_list_type": by_type, "last_scan": last_scan}
 
+    def coverage(self) -> dict[str, Any]:
+        with self.connect() as conn:
+            latest_runs = list(conn.execute(
+                """SELECT DISTINCT ON(source) source,query,status,fetched,inserted,updated,
+                          started_at,finished_at,error
+                   FROM crawl_runs ORDER BY source,started_at DESC"""
+            ).fetchall())
+            by_platform = list(conn.execute(
+                "SELECT platform,count(*) AS count,max(COALESCE(published_at,first_seen_at)) AS latest_at FROM posts GROUP BY platform ORDER BY count DESC"
+            ).fetchall())
+            recent = conn.execute(
+                """SELECT count(*) AS posts_48h,count(DISTINCT platform) AS platforms_48h
+                   FROM posts WHERE COALESCE(published_at,first_seen_at) >= now() - interval '48 hours'"""
+            ).fetchone()
+        return {"latest_runs": latest_runs, "by_platform": by_platform, **recent}
+
     def import_roster_bundle(self, bundle: dict[str, Any]) -> dict[str, int]:
         """Import private roster data without making commercial/contact fields public."""
         counts = {"creators": 0, "accounts": 0, "commercial_terms": 0, "deliverables": 0}

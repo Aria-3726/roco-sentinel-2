@@ -7,6 +7,9 @@ from pathlib import Path
 from roco_monitor.db import Database
 from roco_monitor.importers import import_accounts
 from roco_monitor.connectors.xai import parse_x_posts
+from roco_monitor.connectors.xai_web import parse_web_posts
+from roco_monitor.topics import build_topics
+from datetime import datetime, timezone
 
 
 class DatabaseTest(unittest.TestCase):
@@ -47,6 +50,27 @@ class DatabaseTest(unittest.TestCase):
         posts = parse_x_posts(text)
         self.assertEqual(len(posts), 1)
         self.assertEqual(posts[0]["external_id"], "123")
+
+    def test_web_parser_requires_real_platform_post_urls(self):
+        text = '''[{"canonical_url":"https://www.tiktok.com/@creator/video/123","body":"Roco Kingdom"},
+                   {"canonical_url":"https://www.tiktok.com/search?q=roco","body":"Roco Kingdom"}]'''
+        posts = parse_web_posts(text, "tiktok")
+        self.assertEqual(len(posts), 1)
+        self.assertEqual(posts[0]["author_handle"], "creator")
+
+    def test_topics_use_recent_posts_and_report_negative_share(self):
+        posts = [
+            {"canonical_url":"https://x.com/a/status/1","platform":"x","title":"Roco Kingdom Pokemon clone concern",
+             "published_at":"2026-08-27T00:00:00+00:00","sentiment":"neu"},
+            {"canonical_url":"https://x.com/b/status/2","platform":"x","title":"Cute creatures, can't wait",
+             "published_at":"2026-08-27T01:00:00+00:00","sentiment":"neu"},
+            {"canonical_url":"https://x.com/c/status/3","platform":"x","title":"Old Pokemon post",
+             "published_at":"2026-05-01T00:00:00+00:00","sentiment":"neg"},
+        ]
+        result = build_topics(posts, days=7, now=datetime(2026, 8, 28, tzinfo=timezone.utc))
+        ip = next(item for item in result["topics"] if item["id"] == "ip_similarity")
+        self.assertEqual(ip["volume"], 1)
+        self.assertEqual(ip["negative_pct"], 100)
 
 
 if __name__ == "__main__":
