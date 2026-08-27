@@ -207,7 +207,7 @@ class PostgresDatabase:
                      SELECT views,likes,comments,shares FROM post_snapshots
                      WHERE post_id=p.id ORDER BY observed_at DESC LIMIT 1
                    ) s ON TRUE
-                   WHERE (%s IS NULL OR p.platform=%s)
+                   WHERE (%s::text IS NULL OR p.platform=%s::text)
                    ORDER BY COALESCE(p.published_at,p.first_seen_at) DESC LIMIT %s""",
                 (platform, platform, min(max(limit, 1), 1000)),
             ).fetchall()
