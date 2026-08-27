@@ -1,0 +1,2 @@
+# The core collector deliberately uses only Python's standard library.
+# Install these only when PostgreSQL or a production ASGI server is added.

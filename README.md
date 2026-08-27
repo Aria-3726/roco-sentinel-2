@@ -2,6 +2,28 @@
 
 **NRC** 海外舆情监控面板。
 
+> **v3 prototype:** `codex/v3-incremental-monitor` 分支新增了 SQLite 增量监测内核、官方 API 连接器、名单分类、游标去重和指标快照。现有 v2 React 看板保持不变。
+
+## v3 快速开始
+
+```bash
+cp .env.example .env
+python3 -m roco_monitor init
+python3 -m roco_monitor import-accounts data/examples/accounts.sample.csv
+python3 -m roco_monitor import-posts data/examples/posts.sample.csv
+python3 -m roco_monitor summary
+python3 -m roco_monitor serve
+```
+
+配置 API Key 后执行增量采集：
+
+```bash
+python3 -m roco_monitor crawl --source youtube --source x --source reddit --source rss
+python3 -m roco_monitor export --output src/data/v3.json
+```
+
+完整数据模型、平台边界与生产化建议见 [`docs/V3_ARCHITECTURE.md`](docs/V3_ARCHITECTURE.md)。真实 KOL/KOC 名单和数据库位于 `data/private/` 或 `data/*.db`，均被 `.gitignore` 排除；不要把联系人、报价或 API Key 提交到仓库。
+
 > 📊 **线上面板**: [roco-sentinel-2.vercel.app](https://roco-sentinel-2.vercel.app/)
 
 ## 架构
