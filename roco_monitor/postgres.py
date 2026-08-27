@@ -348,13 +348,13 @@ class PostgresDatabase:
                 "SELECT list_type AS name,count(*) AS count FROM creators GROUP BY list_type ORDER BY count DESC"
             ).fetchall())
             by_region = list(conn.execute(
-                "SELECT COALESCE(region,'未知') AS name,count(*) AS count FROM creators GROUP BY 1 ORDER BY count DESC LIMIT 12"
+                "SELECT COALESCE(NULLIF(trim(region),''),'未知') AS name,count(*) AS count FROM creators GROUP BY 1 ORDER BY count DESC LIMIT 12"
             ).fetchall())
             by_platform = list(conn.execute(
                 "SELECT platform AS name,count(*) AS count FROM accounts WHERE creator_id IS NOT NULL GROUP BY platform ORDER BY count DESC"
             ).fetchall())
             by_status = list(conn.execute(
-                "SELECT COALESCE(outreach_status,'未填写') AS name,count(*) AS count FROM creators GROUP BY 1 ORDER BY count DESC LIMIT 12"
+                "SELECT COALESCE(NULLIF(trim(outreach_status),''),'未填写') AS name,count(*) AS count FROM creators GROUP BY 1 ORDER BY count DESC LIMIT 12"
             ).fetchall())
             published = conn.execute(
                 "SELECT count(DISTINCT creator_id) AS n FROM campaign_deliverables WHERE published_url ~ '^https?://'"
