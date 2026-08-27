@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from datetime import datetime, timezone
+
 from .base import CrawlResult
 from ..http import request_json
 
@@ -18,8 +20,10 @@ class YouTubeConnector:
             "part": "snippet", "type": "video", "order": "date", "maxResults": 50,
             "q": query, "key": self.api_key,
         }
-        if cursor:
-            params["pageToken"] = cursor
+        # Daily jobs always start from the newest result. The cursor is an ISO
+        # timestamp (with an overlap supplied by the caller), not a page token.
+        if cursor and "T" in cursor:
+            params["publishedAfter"] = cursor.replace("+00:00", "Z")
         data = request_json("https://www.googleapis.com/youtube/v3/search", params=params)
         ids = [x["id"]["videoId"] for x in data.get("items", [])]
         stats_by_id = {}
@@ -44,4 +48,7 @@ class YouTubeConnector:
                           "comments": int(stats.get("commentCount", 0))},
                 "raw": item,
             })
-        return CrawlResult(posts=posts, cursor=data.get("nextPageToken"))
+        return CrawlResult(
+            posts=posts,
+            cursor=datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        )
