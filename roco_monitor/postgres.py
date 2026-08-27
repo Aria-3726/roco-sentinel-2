@@ -275,6 +275,13 @@ class PostgresDatabase:
         counts = {"creators": 0, "accounts": 0, "commercial_terms": 0, "deliverables": 0}
         with self.connect() as conn:
             for item in bundle.get("creators", []):
+                creator = {
+                    "region": None, "language": None, "category": None, "priority": None,
+                    "content_direction": None, "outreach_status": None, "supplier": None,
+                    "notes": None, "contact_name": None, "email": None, "discord_id": None,
+                    "creator_hub_id": None, "freelancer_id": None, "gid": None, "nda_status": None,
+                    **item,
+                }
                 conn.execute(
                     """INSERT INTO creators(
                          id,display_name,list_type,region,language,category,priority,content_direction,
@@ -292,7 +299,7 @@ class PostgresDatabase:
                          email=excluded.email,discord_id=excluded.discord_id,creator_hub_id=excluded.creator_hub_id,
                          freelancer_id=excluded.freelancer_id,gid=excluded.gid,nda_status=excluded.nda_status,
                          updated_at=now()""",
-                    item,
+                    creator,
                 )
                 counts["creators"] += 1
             for item in bundle.get("accounts", []):
