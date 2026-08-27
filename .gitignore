@@ -11,3 +11,5 @@ data/*.sqlite*
 exports/
 work/
 .vercel/
+.vercel
+.env*
