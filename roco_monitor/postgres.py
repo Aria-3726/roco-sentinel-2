@@ -84,11 +84,6 @@ CREATE TABLE IF NOT EXISTS campaign_deliverables (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
-CREATE TABLE IF NOT EXISTS one_time_imports (
-  name TEXT PRIMARY KEY,
-  completed_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-  result_json JSONB NOT NULL DEFAULT '{}'::jsonb
-);
 CREATE TABLE IF NOT EXISTS posts (
   id BIGSERIAL PRIMARY KEY,
   platform TEXT NOT NULL,
@@ -343,30 +338,6 @@ class PostgresDatabase:
                      AND a.active=TRUE AND p.list_type='organic'"""
             )
         return counts
-
-    def import_roster_bundle_once(self, bundle: dict[str, Any]) -> dict[str, Any]:
-        """Run the production roster import once, guarded by a DB advisory lock and completion marker."""
-        import_name = "production-rosters-v1"
-        with self.connect() as lock_conn:
-            locked = bool(lock_conn.execute(
-                "SELECT pg_try_advisory_lock(hashtext(%s)) AS ok", (import_name,)
-            ).fetchone()["ok"])
-            if not locked:
-                return {"ok": False, "error": "import_already_running"}
-            try:
-                previous = lock_conn.execute(
-                    "SELECT result_json FROM one_time_imports WHERE name=%s", (import_name,)
-                ).fetchone()
-                if previous:
-                    return {"ok": False, "error": "import_already_completed"}
-                result = self.import_roster_bundle(bundle)
-                lock_conn.execute(
-                    "INSERT INTO one_time_imports(name,result_json) VALUES(%s,%s::jsonb)",
-                    (import_name, json.dumps(result)),
-                )
-                return {"ok": True, **result}
-            finally:
-                lock_conn.execute("SELECT pg_advisory_unlock(hashtext(%s))", (import_name,))
 
     def roster_summary(self) -> dict[str, Any]:
         """Return only safe aggregates. No pricing, contacts, notes, or raw roster rows."""
