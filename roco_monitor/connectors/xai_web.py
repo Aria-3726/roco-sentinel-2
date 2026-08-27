@@ -57,7 +57,8 @@ def parse_web_posts(text: str, expected_platform: str) -> list[dict[str, Any]]:
             external_id = match.group(1)
         else:
             external_id = hashlib.sha256(url.encode()).hexdigest()[:24]
-            platform = "media"
+            platform = "website"
+            author_handle = author_handle or parsed.netloc.lower().removeprefix("www.")
         stats = item.get("stats") if isinstance(item.get("stats"), dict) else {}
         posts.append({
             "platform": platform, "external_id": external_id, "canonical_url": url,
@@ -97,6 +98,8 @@ Search English, Japanese, and European-language results. Exclude unrelated uses 
 {url_rule} Return up to 100 results as ONLY a JSON array with canonical_url, author_handle,
 author_name/source_name, title, body/snippet, published_at ISO 8601, language, region, and public stats when visible.
 Do not invent URLs, dates, or metrics; use null when a metric is not visible."""
+        if self.platform == "web":
+            prompt += " Exclude X, YouTube, TikTok, Reddit, and Instagram results because separate connectors cover social posts."
         tool: dict[str, Any] = {"type": "web_search"}
         if domain:
             tool["filters"] = {"allowed_domains": [domain]}
