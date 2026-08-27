@@ -6,6 +6,7 @@ from pathlib import Path
 
 from roco_monitor.db import Database
 from roco_monitor.importers import import_accounts
+from roco_monitor.connectors.xai import parse_x_posts
 
 
 class DatabaseTest(unittest.TestCase):
@@ -37,6 +38,15 @@ class DatabaseTest(unittest.TestCase):
             "author_handle": "creator", "body": "ロコキングダム",
         })
         self.assertEqual(self.db.posts()[0]["list_type"], "koc")
+
+    def test_xai_parser_rejects_unverifiable_urls(self):
+        text = '''```json
+        [{"canonical_url":"https://x.com/creator/status/123","body":"Roco Kingdom"},
+         {"canonical_url":"https://example.com/fake","body":"Roco Kingdom"}]
+        ```'''
+        posts = parse_x_posts(text)
+        self.assertEqual(len(posts), 1)
+        self.assertEqual(posts[0]["external_id"], "123")
 
 
 if __name__ == "__main__":

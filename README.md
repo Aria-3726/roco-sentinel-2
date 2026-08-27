@@ -26,6 +26,17 @@ python3 -m roco_monitor export --output src/data/v3.json
 
 > 📊 **线上面板**: [roco-sentinel-2.vercel.app](https://roco-sentinel-2.vercel.app/)
 
+## Neon 实时数据层
+
+线上版本使用 Vercel 连接的 Neon PostgreSQL 保存账号名单、帖子、每日互动快照、采集游标和运行记录。前端会读取数据库增量并与已有静态历史合并；API 暂时不可用时，页面仍可回退到静态历史。
+
+- `GET /api/health`：初始化表结构并检查数据库连接
+- `GET /api/summary`：监测概览
+- `GET /api/posts?limit=100&platform=x`：帖子明细
+- `GET /api/cron`：Vercel Cron 专用入口，必须携带 `CRON_SECRET`
+
+Vercel 每天北京时间 10:00 自动运行一次，以两天重叠窗口增量抓取 YouTube Data API 和 xAI X Search；数据库唯一键负责去重，指标变化另存为快照。X/TikTok 不使用高频浏览器抓取或绕过平台限制。
+
 ## 架构
 
 ```

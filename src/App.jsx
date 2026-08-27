@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { ResponsiveContainer, Tooltip, BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid, Legend } from "recharts";
 import postsData from "./data/posts.json";
 import issuesData from "./data/issues.json";
@@ -13,6 +13,22 @@ const C = {
 const PN = { x:'𝕏', reddit:'Reddit', youtube:'YouTube', tiktok:'TikTok', instagram:'Instagram', facebook:'Facebook', media:'媒体', forum:'论坛', threads:'Threads' };
 const SN = { pos:'正面', neg:'负面', neu:'中性' };
 const LC = { '英语':'#1d9bf0', '中文':'#e53935', '日语':'#e040fb', '泰语':'#ff9800', '印尼语':'#43a047', '越南语':'#7c4dff', '韩语':'#00bcd4', '西班牙语':'#ff6d00', '德语':'#78909c', '葡萄牙语':'#2e7d32', '法语':'#5c6bc0', '意大利语':'#00897b', '阿拉伯语':'#6d4c41', '土耳其语':'#c62828', '俄语':'#1565c0' };
+const LANG = { en:'英语', ja:'日语', zh:'中文', ko:'韩语', de:'德语', fr:'法语', es:'西班牙语', it:'意大利语', pt:'葡萄牙语' };
+
+function asDashboardPost(row) {
+  return {
+    p: row.platform,
+    u: row.author_name || (row.author_handle ? `@${row.author_handle}` : '未知账号'),
+    t: row.body || row.title || '',
+    d: row.published_at ? String(row.published_at).slice(0, 10) : '',
+    s: row.sentiment || 'neu',
+    l: LANG[row.language] || row.language || '',
+    url: row.canonical_url,
+    listType: row.list_type || 'organic',
+    stats: { views: row.views || 0, likes: row.likes || 0, comments: row.comments || 0, shares: row.shares || 0 },
+    _new: row.first_seen_at ? Date.now() - new Date(row.first_seen_at).getTime() < 36 * 3600 * 1000 : false,
+  };
+}
 
 /* ─── 全局样式 token ─── */
 const T = {
@@ -36,18 +52,41 @@ const T = {
 };
 
 export default function App() {
-  const posts = postsData;
+  const [databasePosts, setDatabasePosts] = useState([]);
+  const [databaseMeta, setDatabaseMeta] = useState(null);
   const issues = issuesData;
   const [filter, setFilter] = useState("all");
   const [langFilter, setLangFilter] = useState("all");
 
-  const lastScanText = useMemo(() => {
-    if (!meta.lastScan) return '未知';
-    try {
-      const d = new Date(meta.lastScan);
-      return d.toLocaleString('zh-CN', { month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit', hour12:false });
-    } catch { return meta.lastScan; }
+  useEffect(() => {
+    let active = true;
+    Promise.all([
+      fetch('/api/posts?limit=1000').then(r => r.ok ? r.json() : Promise.reject(new Error(`posts ${r.status}`))),
+      fetch('/api/summary').then(r => r.ok ? r.json() : Promise.reject(new Error(`summary ${r.status}`))),
+    ]).then(([postResult, summary]) => {
+      if (!active) return;
+      setDatabasePosts((postResult.posts || []).map(asDashboardPost));
+      setDatabaseMeta(summary);
+    }).catch(() => {
+      // Static history remains available during local work or a temporary API outage.
+    });
+    return () => { active = false; };
   }, []);
+
+  const posts = useMemo(() => {
+    const merged = new Map(postsData.map(post => [post.url, post]));
+    databasePosts.forEach(post => merged.set(post.url, { ...merged.get(post.url), ...post }));
+    return Array.from(merged.values());
+  }, [databasePosts]);
+
+  const lastScanText = useMemo(() => {
+    const lastScan = databaseMeta?.last_scan || meta.lastScan;
+    if (!lastScan) return '未知';
+    try {
+      const d = new Date(lastScan);
+      return d.toLocaleString('zh-CN', { month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit', hour12:false });
+    } catch { return lastScan; }
+  }, [databaseMeta]);
 
   // Computed
   const posN = posts.filter(x => x.s === "pos").length;
@@ -139,6 +178,7 @@ export default function App() {
             <div style={{ display:'flex', alignItems:'center', gap:10, flexWrap:'wrap' }}>
               <div style={{ background:'rgba(255,255,255,0.15)', backdropFilter:'blur(8px)', border:'1px solid rgba(255,255,255,0.2)', borderRadius:20, padding:'6px 14px', fontSize:11.5, color:'#fff', fontWeight:500 }}>
                 📡 {lastScanText} 更新 {meta.scanCount > 0 && <span>· 第{meta.scanCount}次扫描</span>}
+                {databaseMeta && <span> · 数据库已连接</span>}
               </div>
               <div style={{ background:'rgba(255,255,255,0.15)', backdropFilter:'blur(8px)', border:'1px solid rgba(255,255,255,0.2)', borderRadius:20, padding:'6px 14px', fontSize:11.5, color:'#fff' }}>
                 🌏 覆盖 英/日/韩/泰/越/印尼/西/葡/法/德/意/阿/土/俄 {new Set(posts.map(p=>p.l).filter(Boolean)).size}种语言
