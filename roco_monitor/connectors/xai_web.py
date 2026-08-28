@@ -109,3 +109,38 @@ Do not invent URLs, dates, or metrics; use null when a metric is not visible."""
             json_body={"model": self.model, "input": prompt, "tools": [tool]}, timeout=120,
         )
         return CrawlResult(posts=parse_web_posts(_response_text(payload), self.platform))
+
+    def search_accounts(self, accounts: list[dict[str, Any]], from_date: str, to_date: str) -> CrawlResult:
+        """Target named roster accounts when an official account API is unavailable."""
+        if self.platform != "tiktok":
+            raise ValueError("Account-targeted web fallback currently supports TikTok only")
+        handles = [str(item.get("handle") or "").strip().lstrip("@") for item in accounts]
+        handles = [handle for handle in handles if handle][:20]
+        account_by_handle = {str(item.get("handle") or "").strip().lstrip("@").lower(): item for item in accounts}
+        prompt = f"""Search TikTok's publicly indexed pages for videos published from {from_date} through {to_date}
+by these exact accounts: {', '.join('@' + handle for handle in handles)}.
+Find campaign or Roco Kingdom / ロコキングダム posts even when the caption omits the exact game name.
+Every result must be a real https://www.tiktok.com/@<handle>/video/<numeric_id> URL whose handle is in the list.
+Return only a JSON array with canonical_url, author_handle, author_name, title, body/snippet,
+published_at ISO 8601, language, region, and public stats when visible. Do not invent URLs, dates, or metrics."""
+        payload = request_json(
+            "https://api.x.ai/v1/responses", method="POST",
+            headers={"Authorization": f"Bearer {self.api_key}"},
+            json_body={
+                "model": self.model, "input": prompt,
+                "tools": [{"type": "web_search", "filters": {"allowed_domains": ["tiktok.com"]}}],
+            }, timeout=120,
+        )
+        posts = []
+        for post in parse_web_posts(_response_text(payload), "tiktok"):
+            account = account_by_handle.get(str(post.get("author_handle") or "").lower())
+            if not account:
+                continue
+            post["list_type"] = account.get("list_type")
+            post["region"] = post.get("region") or account.get("region")
+            post["raw"]["account_id"] = account.get("id")
+            posts.append(post)
+        return CrawlResult(
+            posts=posts,
+            account_updates=[{"id": account["id"], "status": "indexed_search", "error": None} for account in accounts],
+        )

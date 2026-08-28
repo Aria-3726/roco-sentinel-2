@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS accounts (
   handle TEXT NOT NULL,
   display_name TEXT,
   list_type TEXT NOT NULL DEFAULT 'organic'
-    CHECK(list_type IN ('paid_kol','media','platform','koc','organic','official')),
+    CHECK(list_type IN ('paid_kol','media','platform','koc','third_party','organic','official')),
   region TEXT,
   source TEXT,
   active BOOLEAN NOT NULL DEFAULT TRUE,
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS accounts (
 CREATE TABLE IF NOT EXISTS creators (
   id TEXT PRIMARY KEY,
   display_name TEXT NOT NULL,
-  list_type TEXT NOT NULL CHECK(list_type IN ('paid_kol','media','platform','koc','official')),
+  list_type TEXT NOT NULL CHECK(list_type IN ('paid_kol','media','platform','koc','third_party','official')),
   region TEXT,
   language TEXT,
   category TEXT,
@@ -54,6 +54,18 @@ ALTER TABLE accounts ADD COLUMN IF NOT EXISTS canonical_url TEXT;
 ALTER TABLE accounts ADD COLUMN IF NOT EXISTS followers BIGINT;
 ALTER TABLE accounts ADD COLUMN IF NOT EXISTS avg_views BIGINT;
 ALTER TABLE accounts ADD COLUMN IF NOT EXISTS primary_platform BOOLEAN NOT NULL DEFAULT FALSE;
+ALTER TABLE accounts ADD COLUMN IF NOT EXISTS monitor_tier TEXT NOT NULL DEFAULT 'candidate';
+ALTER TABLE accounts ADD COLUMN IF NOT EXISTS platform_account_id TEXT;
+ALTER TABLE accounts ADD COLUMN IF NOT EXISTS uploads_playlist_id TEXT;
+ALTER TABLE accounts ADD COLUMN IF NOT EXISTS last_checked_at TIMESTAMPTZ;
+ALTER TABLE accounts ADD COLUMN IF NOT EXISTS last_check_status TEXT;
+ALTER TABLE accounts ADD COLUMN IF NOT EXISTS last_error TEXT;
+ALTER TABLE accounts DROP CONSTRAINT IF EXISTS accounts_list_type_check;
+ALTER TABLE accounts ADD CONSTRAINT accounts_list_type_check
+  CHECK(list_type IN ('paid_kol','media','platform','koc','third_party','organic','official'));
+ALTER TABLE creators DROP CONSTRAINT IF EXISTS creators_list_type_check;
+ALTER TABLE creators ADD CONSTRAINT creators_list_type_check
+  CHECK(list_type IN ('paid_kol','media','platform','koc','third_party','official'));
 CREATE TABLE IF NOT EXISTS commercial_terms (
   id TEXT PRIMARY KEY,
   creator_id TEXT NOT NULL REFERENCES creators(id) ON DELETE CASCADE,
@@ -213,11 +225,12 @@ class PostgresDatabase:
             if post.get("author_handle"):
                 account = conn.execute(
                     """SELECT list_type FROM accounts WHERE platform=%s AND active=TRUE
-                       AND (lower(handle)=lower(%s) OR (%s IS NOT NULL AND lower(display_name)=lower(%s)))
+                       AND (lower(handle)=lower(%s) OR lower(COALESCE(platform_account_id,''))=lower(%s)
+                            OR (%s IS NOT NULL AND lower(display_name)=lower(%s)))
                        ORDER BY CASE list_type WHEN 'official' THEN 1 WHEN 'platform' THEN 2
                                 WHEN 'paid_kol' THEN 3 WHEN 'media' THEN 4 WHEN 'koc' THEN 5 ELSE 6 END
                        LIMIT 1""",
-                    (post["platform"], post["author_handle"], post.get("author_name"), post.get("author_name")),
+                    (post["platform"], post["author_handle"], post["author_handle"], post.get("author_name"), post.get("author_name")),
                 ).fetchone()
             list_type = post.get("list_type") or (account["list_type"] if account else "organic")
             existing = conn.execute(
@@ -283,7 +296,7 @@ class PostgresDatabase:
 
     def import_roster_bundle(self, bundle: dict[str, Any]) -> dict[str, int]:
         """Import private roster data without making commercial/contact fields public."""
-        counts = {"creators": 0, "accounts": 0, "commercial_terms": 0, "deliverables": 0}
+        counts = {"creators": 0, "accounts": 0, "commercial_terms": 0, "deliverables": 0, "seed_posts": 0}
         with self.connect() as conn:
             for item in bundle.get("creators", []):
                 creator = {
@@ -316,9 +329,9 @@ class PostgresDatabase:
             for item in bundle.get("accounts", []):
                 conn.execute(
                     """INSERT INTO accounts(platform,handle,display_name,list_type,region,source,creator_id,
-                                              canonical_url,followers,avg_views,primary_platform)
+                                              canonical_url,followers,avg_views,primary_platform,monitor_tier)
                        SELECT %(platform)s,%(handle)s,%(display_name)s,c.list_type,c.region,'roster_import',%(creator_id)s,
-                              %(canonical_url)s,%(followers)s,%(avg_views)s,%(primary_platform)s
+                              %(canonical_url)s,%(followers)s,%(avg_views)s,%(primary_platform)s,%(monitor_tier)s
                        FROM creators c WHERE c.id=%(creator_id)s
                        ON CONFLICT(platform,handle) DO UPDATE SET
                          display_name=excluded.display_name,
@@ -330,8 +343,9 @@ class PostgresDatabase:
                            WHEN accounts.list_type IN ('paid_kol','media','platform','official') THEN accounts.creator_id
                            ELSE excluded.creator_id END,
                          canonical_url=excluded.canonical_url,followers=excluded.followers,
-                         avg_views=excluded.avg_views,primary_platform=excluded.primary_platform,active=TRUE""",
-                    item,
+                         avg_views=excluded.avg_views,primary_platform=excluded.primary_platform,
+                         monitor_tier=excluded.monitor_tier,active=TRUE""",
+                    {"monitor_tier": "candidate", **item},
                 )
                 counts["accounts"] += 1
             for table, key in (("commercial_terms", "commercial_terms"), ("campaign_deliverables", "deliverables")):
@@ -350,10 +364,37 @@ class PostgresDatabase:
                 """UPDATE posts p SET list_type=a.list_type,region=COALESCE(p.region,a.region)
                    FROM accounts a WHERE p.platform=a.platform
                      AND (lower(p.author_handle)=lower(a.handle)
+                          OR lower(p.author_handle)=lower(COALESCE(a.platform_account_id,''))
                           OR (p.author_name IS NOT NULL AND lower(p.author_name)=lower(a.display_name)))
                      AND a.active=TRUE AND p.list_type='organic'"""
             )
+        for post in bundle.get("seed_posts", []):
+            self.upsert_post(post)
+            counts["seed_posts"] += 1
         return counts
+
+    def monitor_accounts(self, platform: str, *, tier: str = "daily", limit: int = 1000) -> list[dict[str, Any]]:
+        with self.connect() as conn:
+            rows = conn.execute(
+                """SELECT a.id,a.platform,a.handle,a.display_name,a.list_type,a.region,a.canonical_url,
+                          a.platform_account_id,a.uploads_playlist_id,a.last_checked_at,a.last_check_status
+                   FROM accounts a
+                   WHERE a.platform=%s AND a.active=TRUE AND a.monitor_tier=%s
+                   ORDER BY COALESCE(a.last_checked_at,'epoch'::timestamptz),a.id LIMIT %s""",
+                (platform, tier, min(max(limit, 1), 5000)),
+            ).fetchall()
+        return list(rows)
+
+    def update_account_monitor(self, update: dict[str, Any]) -> None:
+        with self.connect() as conn:
+            conn.execute(
+                """UPDATE accounts SET last_checked_at=now(),last_check_status=%s,last_error=%s,
+                          platform_account_id=COALESCE(%s,platform_account_id),
+                          uploads_playlist_id=COALESCE(%s,uploads_playlist_id)
+                   WHERE id=%s""",
+                (update.get("status"), update.get("error"), update.get("platform_account_id"),
+                 update.get("uploads_playlist_id"), update["id"]),
+            )
 
     def roster_summary(self) -> dict[str, Any]:
         """Return only safe aggregates. No pricing, contacts, notes, or raw roster rows."""
@@ -375,13 +416,29 @@ class PostgresDatabase:
             published = conn.execute(
                 "SELECT count(DISTINCT creator_id) AS n FROM campaign_deliverables WHERE published_url ~ '^https?://'"
             ).fetchone()["n"]
+            seed_posts = conn.execute(
+                "SELECT count(*) AS n FROM posts WHERE raw_json->>'discovery'='third_party_workbook'"
+            ).fetchone()["n"]
             matched = conn.execute(
                 "SELECT count(DISTINCT lower(p.platform || ':' || p.author_handle)) AS n FROM posts p WHERE p.list_type <> 'organic'"
             ).fetchone()["n"]
+            monitoring = list(conn.execute(
+                """SELECT list_type AS name,
+                          count(*) FILTER (WHERE monitor_tier='daily') AS daily_accounts,
+                          count(*) FILTER (WHERE monitor_tier='daily' AND last_checked_at IS NOT NULL) AS checked_accounts,
+                          count(*) FILTER (WHERE monitor_tier='daily' AND last_check_status IN ('ok','indexed_search')) AS healthy_accounts,
+                          max(last_checked_at) AS last_checked_at
+                   FROM accounts WHERE creator_id IS NOT NULL GROUP BY list_type ORDER BY list_type"""
+            ).fetchall())
+            posts_by_type = list(conn.execute(
+                """SELECT list_type AS name,count(*) AS posts,max(COALESCE(published_at,first_seen_at)) AS latest_post_at
+                   FROM posts WHERE list_type <> 'organic' GROUP BY list_type ORDER BY list_type"""
+            ).fetchall())
         return {
             "total_creators": total_creators, "total_accounts": total_accounts,
             "by_list_type": by_type, "by_region": by_region, "by_platform": by_platform,
-            "by_status": by_status, "published_creators": published, "matched_accounts": matched,
+            "by_status": by_status, "published_creators": published, "seed_posts": seed_posts, "matched_accounts": matched,
+            "monitoring_by_type": monitoring, "posts_by_type": posts_by_type,
             "private_fields_excluded": True,
         }
 

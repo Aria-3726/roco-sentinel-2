@@ -5,5 +5,6 @@ from .x import XConnector
 from .youtube import YouTubeConnector
 from .xai import XaiConnector
 from .xai_web import XaiWebConnector
+from .tiktok_research import TikTokResearchConnector
 
-__all__ = ["Connector", "CrawlResult", "RedditConnector", "RssConnector", "XConnector", "XaiConnector", "XaiWebConnector", "YouTubeConnector"]
+__all__ = ["Connector", "CrawlResult", "RedditConnector", "RssConnector", "XConnector", "XaiConnector", "XaiWebConnector", "TikTokResearchConnector", "YouTubeConnector"]

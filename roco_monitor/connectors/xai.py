@@ -97,3 +97,37 @@ Every canonical_url must be a real x.com/<handle>/status/<numeric_id> URL found 
             timeout=120,
         )
         return CrawlResult(posts=parse_x_posts(_response_text(payload)))
+
+    def search_accounts(self, accounts: list[dict[str, Any]], from_date: str, to_date: str) -> CrawlResult:
+        handles = [str(item.get("handle") or "").strip().lstrip("@") for item in accounts]
+        handles = [handle for handle in handles if handle][:50]
+        account_by_handle = {str(item.get("handle") or "").strip().lstrip("@").lower(): item for item in accounts}
+        prompt = f"""For every named X account below, search its posts published from {from_date} through {to_date}:
+{', '.join('@' + handle for handle in handles)}.
+Return posts related to the Roco Kingdom / ロコキングダム campaign, including announcement, trailer,
+quote-post, reply, artwork, or sponsored deliverable posts even when the exact game name is absent.
+Use separate from:<handle> searches as needed. Return only a JSON array with real
+x.com/<handle>/status/<numeric_id> canonical URLs, author_handle, author_name, body, published_at ISO 8601,
+language, region, and public stats. Do not invent URLs, dates, or metrics."""
+        payload = request_json(
+            "https://api.x.ai/v1/responses", method="POST",
+            headers={"Authorization": f"Bearer {self.api_key}"},
+            json_body={
+                "model": self.model, "input": prompt,
+                "tools": [{"type": "x_search", "from_date": from_date, "to_date": to_date}],
+            }, timeout=120,
+        )
+        posts = []
+        for post in parse_x_posts(_response_text(payload)):
+            account = account_by_handle.get(str(post.get("author_handle") or "").lower())
+            if not account:
+                continue
+            post["list_type"] = account.get("list_type")
+            post["region"] = post.get("region") or account.get("region")
+            post["raw"]["discovery"] = "x_roster_search"
+            post["raw"]["account_id"] = account.get("id")
+            posts.append(post)
+        return CrawlResult(
+            posts=posts,
+            account_updates=[{"id": account["id"], "status": "ok", "error": None} for account in accounts],
+        )

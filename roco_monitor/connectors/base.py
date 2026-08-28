@@ -8,6 +8,7 @@ from typing import Any, Protocol
 class CrawlResult:
     posts: list[dict[str, Any]] = field(default_factory=list)
     cursor: str | None = None
+    account_updates: list[dict[str, Any]] = field(default_factory=list)
 
 
 class Connector(Protocol):

@@ -35,7 +35,16 @@ python3 -m roco_monitor export --output src/data/v3.json
 - `GET /api/posts?limit=100&platform=x`：帖子明细
 - `GET /api/cron`：Vercel Cron 专用入口，必须携带 `CRON_SECRET`
 
-Vercel 每天北京时间 10:00 自动运行一次，以两天重叠窗口增量抓取 YouTube Data API 和 xAI X Search；数据库唯一键负责去重，指标变化另存为快照。X/TikTok 不使用高频浏览器抓取或绕过平台限制。
+Vercel 每天北京时间 10:00 自动运行一次。名单账号采用高优先级链路：YouTube 读取各频道上传列表，X 按账号定向搜索；TikTok 配置 Research API 后按用户名和日期分页查询，未配置时仅使用公开网页索引轮询。数据库唯一键负责去重，指标变化另存为快照。X/TikTok 不使用高频浏览器抓取或绕过平台限制。
+
+TikTok Research API（可选，需项目获批）使用以下生产环境变量；系统会通过 client credentials 自动生成两小时有效的访问令牌：
+
+```text
+TIKTOK_RESEARCH_CLIENT_KEY
+TIKTOK_RESEARCH_CLIENT_SECRET
+```
+
+也可临时配置 `TIKTOK_RESEARCH_ACCESS_TOKEN`，但令牌过期后需更换。没有 Research API 时，面板会明确标记 TikTok 名单巡检为非全量覆盖。
 
 ## 架构
 

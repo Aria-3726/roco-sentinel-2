@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS accounts (
   handle TEXT NOT NULL,
   display_name TEXT,
   list_type TEXT NOT NULL DEFAULT 'organic'
-    CHECK(list_type IN ('paid_kol','media','platform','koc','organic','official')),
+    CHECK(list_type IN ('paid_kol','media','platform','koc','third_party','organic','official')),
   region TEXT,
   source TEXT,
   active INTEGER NOT NULL DEFAULT 1,

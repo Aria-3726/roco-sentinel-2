@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-08-27T08:29:47.672Z",
-  "total_creators": 2638,
-  "total_accounts": 2832,
+  "generated_at": "2026-08-28T05:52:17.571Z",
+  "total_creators": 2681,
+  "total_accounts": 2888,
   "by_list_type": [
     {
       "name": "koc",
@@ -12,6 +12,10 @@
       "count": 153
     },
     {
+      "name": "third_party",
+      "count": 43
+    },
+    {
       "name": "media",
       "count": 41
     }
@@ -19,7 +23,7 @@
   "by_region": [
     {
       "name": "日本",
-      "count": 648
+      "count": 653
     },
     {
       "name": "未知",
@@ -27,7 +31,7 @@
     },
     {
       "name": "美国",
-      "count": 288
+      "count": 291
     },
     {
       "name": "韩国",
@@ -63,21 +67,21 @@
     },
     {
       "name": "欧美",
-      "count": 39
+      "count": 43
     }
   ],
   "by_platform": [
     {
       "name": "youtube",
-      "count": 2214
+      "count": 2242
     },
     {
       "name": "tiktok",
-      "count": 461
+      "count": 487
     },
     {
       "name": "x",
-      "count": 78
+      "count": 80
     },
     {
       "name": "website",
@@ -114,6 +118,10 @@
       "count": 44
     },
     {
+      "name": "运营中",
+      "count": 43
+    },
+    {
       "name": "已初步达成合作意向",
       "count": 33
     },
@@ -136,13 +144,40 @@
     {
       "name": "已拒绝",
       "count": 15
-    },
-    {
-      "name": "◎",
-      "count": 15
     }
   ],
   "published_creators": 11,
+  "seed_posts": 146,
+  "monitoring_by_type": [
+    {
+      "name": "paid_kol",
+      "daily_accounts": 86,
+      "checked_accounts": 0,
+      "healthy_accounts": 0,
+      "last_checked_at": null
+    },
+    {
+      "name": "media",
+      "daily_accounts": 39,
+      "checked_accounts": 0,
+      "healthy_accounts": 0,
+      "last_checked_at": null
+    },
+    {
+      "name": "third_party",
+      "daily_accounts": 58,
+      "checked_accounts": 0,
+      "healthy_accounts": 0,
+      "last_checked_at": null
+    },
+    {
+      "name": "koc",
+      "daily_accounts": 51,
+      "checked_accounts": 0,
+      "healthy_accounts": 0,
+      "last_checked_at": null
+    }
+  ],
   "commercial_records": 299,
   "private_fields_excluded": true
 }
